@@ -1,26 +1,163 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { motion } from "framer-motion";
+import { ArrowRight, Sparkles, Music, Drama } from "lucide-react";
+import { Layout } from "@/components/Layout";
+import { useLang } from "@/contexts/LanguageContext";
+import heroImg from "@/assets/hero-yakshagana.jpg";
+import mandala from "@/assets/mandala.png";
 
-export const Route = createFileRoute("/")({
-  component: Index,
-});
-
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
+export const Route = createFileRoute("/")({ component: Index });
 
 function Index() {
-  return <PlaceholderIndex />;
+  const { t } = useLang();
+  const icons = [Drama, Sparkles, Music];
+
+  return (
+    <Layout>
+      {/* HERO */}
+      <section className="relative min-h-[92vh] flex items-center overflow-hidden">
+        <div className="absolute inset-0 bg-hero" />
+        <img
+          src={mandala}
+          alt=""
+          aria-hidden
+          className="absolute -right-40 -top-40 w-[700px] opacity-10 animate-spin-slow pointer-events-none"
+        />
+        <img
+          src={mandala}
+          alt=""
+          aria-hidden
+          className="absolute -left-60 -bottom-60 w-[600px] opacity-5 animate-spin-slow pointer-events-none"
+          style={{ animationDirection: "reverse" }}
+        />
+
+        <div className="container mx-auto px-6 relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gold/40 bg-gold/5 text-xs uppercase tracking-[0.25em] text-primary mb-8"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
+              {t.hero.tag}
+            </motion.div>
+
+            <h1 className="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.05] mb-6">
+              {t.hero.title}
+              <br />
+              <span className="text-gradient-gold glow-text">{t.hero.titleAccent}</span>
+            </h1>
+
+            <p className="text-lg text-muted-foreground max-w-xl leading-relaxed mb-10">
+              {t.hero.subtitle}
+            </p>
+
+            <div className="flex flex-wrap gap-4">
+              <Link
+                to="/classes"
+                className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gold text-background font-medium shadow-glow hover:scale-105 transition-transform"
+              >
+                {t.hero.ctaPrimary}
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                to="/gallery"
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-border hover:border-gold text-foreground transition-colors"
+              >
+                {t.hero.ctaSecondary}
+              </Link>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            className="relative"
+          >
+            <div className="absolute inset-0 bg-ember rounded-full blur-3xl opacity-40 animate-float-slow" />
+            <motion.img
+              src={heroImg}
+              alt="Yakshagana performer in traditional crown headdress"
+              width={1536}
+              height={1536}
+              className="relative rounded-2xl shadow-glow border border-gold/20 animate-float-slow"
+            />
+          </motion.div>
+        </div>
+
+        <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-b from-transparent to-background pointer-events-none" />
+      </section>
+
+      {/* HIGHLIGHTS */}
+      <section className="container mx-auto px-6 py-24">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center max-w-2xl mx-auto mb-16"
+        >
+          <div className="ornament-divider w-24 mx-auto mb-6" />
+          <h2 className="text-4xl md:text-5xl font-display mb-4">{t.highlights.title}</h2>
+          <p className="text-muted-foreground">{t.highlights.subtitle}</p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {t.highlights.items.map((item, i) => {
+            const Icon = icons[i];
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.15 }}
+                whileHover={{ y: -8 }}
+                className="group relative p-8 rounded-2xl bg-card/50 border border-border hover:border-gold/50 transition-all overflow-hidden"
+              >
+                <div className="absolute -top-20 -right-20 w-40 h-40 bg-gold/10 rounded-full blur-3xl group-hover:bg-gold/20 transition" />
+                <div className="relative">
+                  <div className="w-14 h-14 rounded-full bg-gold flex items-center justify-center mb-6 shadow-glow">
+                    <Icon className="w-6 h-6 text-background" />
+                  </div>
+                  <h3 className="text-2xl font-display mb-3 text-primary">{item.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* CTA STRIP */}
+      <section className="container mx-auto px-6 pb-24">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="relative overflow-hidden rounded-3xl bg-ember p-12 md:p-16 text-center shadow-ember"
+        >
+          <img src={mandala} alt="" className="absolute -right-20 -bottom-20 w-80 opacity-20 animate-spin-slow" />
+          <h3 className="font-display text-3xl md:text-4xl mb-4 text-primary-foreground">
+            Step into the tradition
+          </h3>
+          <p className="text-primary-foreground/80 max-w-xl mx-auto mb-8">
+            Whether you are a curious beginner or a seasoned artist, our doors are open.
+          </p>
+          <Link
+            to="/contact"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-gold text-background font-medium hover:scale-105 transition-transform shadow-glow"
+          >
+            {t.nav.contact} <ArrowRight className="w-4 h-4" />
+          </Link>
+        </motion.div>
+      </section>
+    </Layout>
+  );
 }
