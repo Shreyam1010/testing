@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ScheduleRouteImport } from './routes/schedule'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ClassesRouteImport } from './routes/classes'
@@ -20,6 +21,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const ScheduleRoute = ScheduleRouteImport.update({
   id: '/schedule',
   path: '/schedule',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleryRoute = GalleryRouteImport.update({
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/classes': typeof ClassesRoute
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/schedule': typeof ScheduleRoute
 }
 export interface FileRoutesByTo {
@@ -69,6 +76,7 @@ export interface FileRoutesByTo {
   '/classes': typeof ClassesRoute
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/schedule': typeof ScheduleRoute
 }
 export interface FileRoutesById {
@@ -79,6 +87,7 @@ export interface FileRoutesById {
   '/classes': typeof ClassesRoute
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/schedule': typeof ScheduleRoute
 }
 export interface FileRouteTypes {
@@ -90,6 +99,7 @@ export interface FileRouteTypes {
     | '/classes'
     | '/contact'
     | '/gallery'
+    | '/login'
     | '/schedule'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -99,6 +109,7 @@ export interface FileRouteTypes {
     | '/classes'
     | '/contact'
     | '/gallery'
+    | '/login'
     | '/schedule'
   id:
     | '__root__'
@@ -108,6 +119,7 @@ export interface FileRouteTypes {
     | '/classes'
     | '/contact'
     | '/gallery'
+    | '/login'
     | '/schedule'
   fileRoutesById: FileRoutesById
 }
@@ -118,6 +130,7 @@ export interface RootRouteChildren {
   ClassesRoute: typeof ClassesRoute
   ContactRoute: typeof ContactRoute
   GalleryRoute: typeof GalleryRoute
+  LoginRoute: typeof LoginRoute
   ScheduleRoute: typeof ScheduleRoute
 }
 
@@ -128,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/schedule'
       fullPath: '/schedule'
       preLoaderRoute: typeof ScheduleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gallery': {
@@ -182,8 +202,18 @@ const rootRouteChildren: RootRouteChildren = {
   ClassesRoute: ClassesRoute,
   ContactRoute: ContactRoute,
   GalleryRoute: GalleryRoute,
+  LoginRoute: LoginRoute,
   ScheduleRoute: ScheduleRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
