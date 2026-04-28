@@ -25,7 +25,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t: translations[lang] }}>
+      <LanguageContext.Provider value={{ lang, setLang, t: translations[lang] as Translations }}>
       <div lang={lang} className={lang === "kn" ? "lang-kn" : ""}>{children}</div>
     </LanguageContext.Provider>
   );
