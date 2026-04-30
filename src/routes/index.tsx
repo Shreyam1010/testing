@@ -165,8 +165,9 @@ function Index() {
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {t.highlights.items.map((item, i) => {
-            const Icon = icons[i];
+          {highlightOrder.map((idx, i) => {
+            const item = t.highlights.items[idx];
+            const Icon = icons[idx];
             return (
               <motion.div
                 key={i}
