@@ -22,6 +22,15 @@ export const translations = {
     },
     about: {
       title: "Our Story",
+      homeSection: {
+        label: "OUR STORY",
+        title: "The Living Tradition",
+        body: [
+          "Rooted in the coastal soil of Karnataka, Yakshagana is more than a performance — it is a ritual, a devotion, and a mesmerizing storytelling art form that bridges the mortal and the divine.",
+          "Kathegaararu (The Storytellers) is born from a deep reverence for this centuries-old tradition. We are a collective of passionate artists, gurus, and rasikas dedicated to preserving the authenticity of the art while making it accessible to the modern seeker.",
+          "From the thunderous beats of the Chande to the elaborate hues of the Stree and Rakshasa veshas, we invite you to step into a world where every gesture speaks a thousand words, and every night is a journey into the epics.",
+        ],
+      },
       lead: "Kathe Gaararu was founded to safeguard and share the radiant heritage of Yakshagana — Karnataka’s monumental folk theatre tradition.",
       body: [
         "For over four centuries, Yakshagana has united dance, music, costume, and storytelling into a single transcendent art form. Our institution carries that flame forward — training new generations, hosting public performances, and collaborating with masters of the craft.",
@@ -84,6 +93,15 @@ export const translations = {
     },
     about: {
       title: "ನಮ್ಮ ಕಥೆ",
+      homeSection: {
+        label: "ನಮ್ಮ ಕಥೆ",
+        title: "ಜೀವಂತ ಪರಂಪರೆ",
+        body: [
+          "ಕರ್ನಾಟಕದ ಕರಾವಳಿ ನೆಲದಲ್ಲಿ ಬೇರೂರಿದ ಯಕ್ಷಗಾನವು ಕೇವಲ ಪ್ರದರ್ಶನವಲ್ಲ — ಅದು ಒಂದು ಆಚರಣೆ, ಭಕ್ತಿ, ಮತ್ತು ನಶ್ವರ ಮತ್ತು ದೈವಿಕವನ್ನು ಸೇತುವೆಯಾಗಿ ಜೋಡಿಸುವ ಮಂತ್ರಮುಗ್ಧ ಕಥಾನಕ ಕಲೆ.",
+          "ಕಥೆಗಾರರು (ಕಥೆ ಹೇಳುವವರು) ಈ ಶತಮಾನಗಳ ಹಳೆಯ ಪರಂಪರೆಯ ಆಳವಾದ ಗೌರವದಿಂದ ಹುಟ್ಟಿದೆ. ನಾವು ಕಲೆಯ ಪ್ರಾಮಾಣಿಕತೆಯನ್ನು ಸಂರಕ್ಷಿಸಲು ಮತ್ತು ಆಧುನಿಕ ಅನ್ವೇಷಕರಿಗೆ ಲಭ್ಯವಾಗಿಸಲು ಸಮರ್ಪಿತರಾದ ಕಲಾವಿದರು, ಗುರುಗಳು ಮತ್ತು ರಸಿಕರ ಸಮೂಹ.",
+          "ಚಂಡೆಯ ಗುಡುಗಿನ ಲಯದಿಂದ ಸ್ತ್ರೀ ಮತ್ತು ರಾಕ್ಷಸ ವೇಷಗಳ ವಿಸ್ತಾರವಾದ ಬಣ್ಣಗಳವರೆಗೆ, ಪ್ರತಿ ಹಾವಭಾವ ಸಾವಿರ ಪದಗಳನ್ನು ಹೇಳುವ ಮತ್ತು ಪ್ರತಿ ರಾತ್ರಿ ಪುರಾಣಗಳ ಪ್ರಯಾಣವಾಗುವ ಜಗತ್ತಿಗೆ ನಿಮ್ಮನ್ನು ಆಹ್ವಾನಿಸುತ್ತೇವೆ.",
+        ],
+      },
       lead: "ಕಥೆ ಗಾರಾರು ಯಕ್ಷಗಾನದ ತೇಜೋಮಯ ಪರಂಪರೆಯನ್ನು ಸಂರಕ್ಷಿಸಲು ಮತ್ತು ಹಂಚಿಕೊಳ್ಳಲು ಸ್ಥಾಪಿಸಲ್ಪಟ್ಟಿದೆ.",
       body: [
         "ನಾಲ್ಕು ಶತಮಾನಗಳಿಗಿಂತಲೂ ಹೆಚ್ಚು ಕಾಲದಿಂದ, ಯಕ್ಷಗಾನವು ನೃತ್ಯ, ಸಂಗೀತ, ವೇಷಭೂಷಣ ಮತ್ತು ಕಥಾನಕವನ್ನು ಒಂದು ಅದ್ಭುತ ಕಲಾರೂಪವಾಗಿ ಜೋಡಿಸಿದೆ.",
