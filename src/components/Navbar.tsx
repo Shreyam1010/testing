@@ -1,13 +1,11 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Globe, ShieldCheck } from "lucide-react";
+import { Menu, X, Globe } from "lucide-react";
 import { useLang } from "@/contexts/LanguageContext";
-import { useAuth } from "@/contexts/AuthContext";
 
 export function Navbar() {
   const { lang, setLang, t } = useLang();
-  const { isAdmin } = useAuth();
   const [open, setOpen] = useState(false);
   const path = useRouterState({ select: (s) => s.location.pathname });
 
@@ -54,15 +52,6 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-3">
-          {isAdmin && (
-            <Link
-              to="/admin"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gold/40 text-gold hover:bg-gold/10 transition-colors text-xs font-medium uppercase tracking-wider"
-            >
-              <ShieldCheck className="w-3.5 h-3.5" />
-              Admin
-            </Link>
-          )}
           <button
             onClick={() => setLang(lang === "en" ? "kn" : "en")}
             className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border border-border hover:border-gold transition-colors text-xs font-medium uppercase tracking-wider"
