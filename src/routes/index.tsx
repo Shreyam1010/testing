@@ -12,6 +12,7 @@ export const Route = createFileRoute("/")({ component: Index });
 function Index() {
   const { t } = useLang();
   const icons = [Drama, Sparkles, Music];
+  const highlightOrder = [2, 0, 1];
 
   return (
     <Layout>
@@ -164,8 +165,9 @@ function Index() {
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {t.highlights.items.map((item, i) => {
-            const Icon = icons[i];
+          {highlightOrder.map((idx, i) => {
+            const item = t.highlights.items[idx];
+            const Icon = icons[idx];
             return (
               <motion.div
                 key={i}
