@@ -22,7 +22,7 @@ export function Footer() {
           <div className="flex flex-col gap-2 text-muted-foreground">
             <Link to="/classes" className="hover:text-primary">{t.nav.classes}</Link>
             <Link to="/gallery" className="hover:text-primary">{t.nav.gallery}</Link>
-            <Link to="/admin" className="hover:text-primary">{t.nav.admin}</Link>
+            <Link to="/contact" className="hover:text-primary">{t.nav.contact}</Link>
           </div>
         </div>
       </div>
