@@ -5,6 +5,7 @@ import { Layout } from "@/components/Layout";
 import { useLang } from "@/contexts/LanguageContext";
 import heroImg from "@/assets/hero-yakshagana.jpg";
 import mandala from "@/assets/mandala.png";
+import aboutImg from "@/assets/about-performer.jpg";
 
 export const Route = createFileRoute("/")({ component: Index });
 
@@ -92,6 +93,60 @@ function Index() {
         </div>
 
         <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-b from-transparent to-background pointer-events-none" />
+      </section>
+
+      {/* OUR STORY */}
+      <section className="relative overflow-hidden">
+        <div className="grid lg:grid-cols-[45%_55%] min-h-[600px]">
+          {/* Image */}
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="relative overflow-hidden"
+          >
+            <img
+              src={aboutImg}
+              alt="Yakshagana performer with elaborate traditional face paint and golden crown"
+              loading="lazy"
+              width={768}
+              height={1024}
+              className="w-full h-full object-cover object-top min-h-[400px] lg:min-h-full"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-background/30 lg:to-background/60" />
+          </motion.div>
+
+          {/* Text */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="flex flex-col justify-center px-8 py-16 md:px-16 lg:px-20"
+          >
+            <span className="text-xs uppercase tracking-[0.3em] text-crimson font-medium mb-4">
+              {t.about.homeSection.label}
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.1] mb-8 text-foreground">
+              {t.about.homeSection.title}
+            </h2>
+            {t.about.homeSection.body.map((paragraph, i) => (
+              <p
+                key={i}
+                className="text-muted-foreground leading-[1.8] mb-6 text-base md:text-lg"
+                dangerouslySetInnerHTML={{
+                  __html: paragraph.replace(
+                    /Kathegaararu|ಕಥೆಗಾರರು/g,
+                    '<strong class="text-foreground font-semibold">$&</strong>'
+                  ),
+                }}
+              />
+            ))}
+          </motion.div>
+        </div>
+        {/* Subtle gold line separator */}
+        <div className="h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
       </section>
 
       {/* HIGHLIGHTS */}
