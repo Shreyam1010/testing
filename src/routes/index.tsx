@@ -12,6 +12,7 @@ export const Route = createFileRoute("/")({ component: Index });
 function Index() {
   const { t } = useLang();
   const icons = [Drama, Sparkles, Music];
+  const highlightOrder = [2, 0, 1];
 
   return (
     <Layout>
