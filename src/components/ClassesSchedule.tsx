@@ -20,8 +20,6 @@ export function ClassesSchedule() {
     return true;
   });
 
-  const next = filtered[0];
-  const rest = filtered.slice(1);
 
   return (
     <div className="w-full">
@@ -63,14 +61,8 @@ export function ClassesSchedule() {
         </div>
       </div>
 
-      {next && (
-        <div className="mb-12 max-w-2xl mx-auto">
-          <ClassCard item={next} featured />
-        </div>
-      )}
-
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {rest.map((c) => (
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {filtered.map((c) => (
           <ClassCard key={c.id} item={c} />
         ))}
       </div>
