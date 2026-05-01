@@ -5,7 +5,6 @@ import { Layout } from "@/components/Layout";
 import { useLang } from "@/contexts/LanguageContext";
 import { ClassesSchedule } from "@/components/ClassesSchedule";
 import { UpcomingEvents } from "@/components/UpcomingEvents";
-import { useState } from "react";
 import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
 import g3 from "@/assets/gallery-3.jpg";
@@ -22,7 +21,6 @@ function Index() {
   const { t } = useLang();
   const icons = [Drama, Sparkles, Music];
   const highlightOrder = [2, 0, 1]; // 2: Performances, 0: Classes, 1: Workshops
-
 
 
   const handleHighlightClick = (idx: number) => {
