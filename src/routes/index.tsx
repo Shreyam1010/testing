@@ -3,22 +3,26 @@ import { motion } from "framer-motion";
 import { ArrowRight, Sparkles, Music, Drama } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { useLang } from "@/contexts/LanguageContext";
-import { ClassesSchedule } from "@/components/ClassesSchedule";
 import { UpcomingEvents } from "@/components/UpcomingEvents";
+import { ClassCard } from "@/components/ClassCard";
+import { classes, workshops, blogs } from "@/lib/data";
 import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
 import g3 from "@/assets/gallery-3.jpg";
 import g4 from "@/assets/gallery-4.jpg";
 import g5 from "@/assets/gallery-5.jpg";
 import g6 from "@/assets/gallery-6.jpg";
+
 import heroImg from "@/assets/hero-yakshagana.jpg";
 import mandala from "@/assets/mandala.png";
 import aboutImg from "@/assets/about-performer.jpg";
 
+const imgMap: Record<string, string> = { g1, g2, g3, g4, g5, g6 };
+
 export const Route = createFileRoute("/")({ component: Index });
 
 function Index() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const icons = [Drama, Sparkles, Music];
   const highlightOrder = [2, 0, 1]; // 2: Performances, 0: Classes, 1: Workshops
 
@@ -262,7 +266,20 @@ function Index() {
             <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary">
               {t.highlights.items[0].title}
             </h2>
-            <ClassesSchedule />
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+              {classes.slice(0, 4).map((c) => (
+                <ClassCard key={c.id} item={c} href="/classes" />
+              ))}
+            </div>
+            <div className="flex justify-center">
+              <Link
+                to="/classes"
+                className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gold/10 border border-gold/30 text-primary hover:bg-gold hover:text-background transition-all font-display text-lg"
+              >
+                {lang === "en" ? "Explore All Classes" : "ಎಲ್ಲಾ ತರಗತಿಗಳನ್ನು ಅನ್ವೇಷಿಸಿ"}
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
           </div>
 
           {/* WORKSHOPS */}
@@ -270,43 +287,89 @@ function Index() {
             <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary">
               {t.highlights.items[1].title}
             </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {t.classes.items.map((c, i) => (
-                <motion.article
-                  key={i}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: (i % 3) * 0.1 }}
-                  whileHover={{ y: -6 }}
-                  className="group relative p-7 rounded-2xl bg-card border border-border hover:border-gold/50 hover:shadow-glow transition-all"
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {workshops.map((w) => {
+                return (
+                  <Link
+                    key={w.id}
+                    to="/gallery"
+                    className="group relative bg-card/60 border border-border rounded-2xl overflow-hidden transition-all hover:border-gold/50 flex flex-col"
+                  >
+                    <div className="relative aspect-square overflow-hidden">
+                      <img
+                        src={imgMap[w.image]}
+                        alt={w.title[lang]}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+                    </div>
+                    <div className="p-6">
+                      <h3 className="font-display text-xl text-primary mb-2">{w.title[lang]}</h3>
+                      <p className="text-sm text-gold/80 font-medium">{w.timestamp[lang]}</p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+          {/* BLOG PREVIEW */}
+          <div id="blog-preview" className="scroll-mt-32">
+            <div className="flex items-center justify-between mb-12">
+              <h2 className="text-4xl md:text-5xl font-display text-primary">
+                {lang === "en" ? "Latest Insights" : "ಇತ್ತೀಚಿನ ಒಳನೋಟಗಳು"}
+              </h2>
+              <Link
+                to="/blog"
+                className="hidden md:flex items-center gap-2 text-gold hover:text-primary transition-colors text-sm font-medium uppercase tracking-widest"
+              >
+                {lang === "en" ? "View All" : "ಎಲ್ಲವನ್ನೂ ನೋಡಿ"}
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {blogs.slice(0, 4).map((post, index) => (
+                <Link
+                  key={post.id}
+                  to="/blog"
+                  className="group relative bg-card/40 border border-border rounded-2xl overflow-hidden hover:border-gold/50 transition-all flex flex-col"
                 >
-                  <div className="absolute top-0 left-7 w-12 h-1 bg-gold rounded-b-full" />
-                  <h3 className="font-display text-2xl text-primary mb-4">{c.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-6">{c.desc}</p>
-                  <div className="space-y-2.5 text-sm border-t border-border/50 pt-5">
-                    <div className="flex items-center gap-2.5 text-foreground/80">
-                      <span className="w-4 h-4 text-gold flex items-center justify-center">👤</span>{" "}
-                      {c.teacher}
-                    </div>
-                    <div className="flex items-center gap-2.5 text-foreground/80">
-                      <span className="w-4 h-4 text-gold flex items-center justify-center">🕒</span>{" "}
-                      {c.time}
-                    </div>
-                    <div className="flex items-center gap-2.5 text-foreground/80">
-                      <span className="w-4 h-4 text-gold flex items-center justify-center">📅</span>{" "}
-                      {c.duration}
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={imgMap[post.image]}
+                      alt={post.title[lang]}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+                    <div className="absolute top-4 left-4">
+                      <span className="px-3 py-1 bg-black/40 backdrop-blur-md border border-white/10 text-[9px] font-bold text-white uppercase tracking-wider rounded-full">
+                        {post.category[lang]}
+                      </span>
                     </div>
                   </div>
-                  <Link
-                    to="/contact"
-                    className="mt-6 inline-flex w-full items-center justify-center px-4 py-2.5 rounded-full border border-gold/40 text-primary text-sm hover:bg-gold hover:text-background transition-colors"
-                  >
-                    {t.classes.enroll}
-                  </Link>
-                </motion.article>
+                  <div className="p-6 flex flex-col flex-1">
+                    <h3 className="font-display text-lg text-primary mb-3 line-clamp-2 leading-tight group-hover:text-gold transition-colors">
+                      {post.title[lang]}
+                    </h3>
+                    <p className="text-xs text-muted-foreground line-clamp-2 mb-4 flex-1">
+                      {post.excerpt[lang]}
+                    </p>
+                    <div className="flex items-center text-gold text-[10px] font-bold uppercase tracking-widest mt-auto">
+                      {lang === "en" ? "Read Article" : "ಲೇಖನ ಓದಿ"}
+                      <ArrowRight className="w-3 h-3 ml-2 transition-transform group-hover:translate-x-1" />
+                    </div>
+                  </div>
+                </Link>
               ))}
             </div>
+            
+            <Link
+              to="/blog"
+              className="md:hidden mt-8 flex items-center justify-center gap-2 text-gold text-sm font-medium uppercase tracking-widest"
+            >
+              {lang === "en" ? "View All Posts" : "ಎಲ್ಲಾ ಲೇಖನಗಳನ್ನು ನೋಡಿ"}
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </section>
 

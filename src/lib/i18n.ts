@@ -42,11 +42,11 @@ export const translations = {
       title: "Our Story",
       homeSection: {
         label: "OUR STORY",
-        title: "The Living Tradition",
+        title: "Our Story",
         body: [
-          "Rooted in the coastal soil of Karnataka, Yakshagana is more than a performance — it is a ritual, a devotion, and a mesmerizing storytelling art form that bridges the mortal and the divine.",
-          "Kathegaararu (The Storytellers) is born from a deep reverence for this centuries-old tradition. We are a collective of passionate artists, gurus, and rasikas dedicated to preserving the authenticity of the art while making it accessible to the modern seeker.",
-          "From the thunderous beats of the Chande to the elaborate hues of the Stree and Rakshasa veshas, we invite you to step into a world where every gesture speaks a thousand words, and every night is a journey into the epics.",
+          "Kathe Gaararu was founded to safeguard and share the radiant heritage of Yakshagana — Karnataka’s monumental folk theatre tradition.",
+          "For over four centuries, Yakshagana has united dance, music, costume, and storytelling into a single transcendent art form. Our institution carries that flame forward — training new generations, hosting public performances, and collaborating with masters of the craft.",
+          "We believe culture is not a museum piece. It is living, breathing, evolving — a conversation between the ancient and the present. Through immersive learning and stagecraft, we invite every seeker to step into that conversation.",
         ],
       },
       lead: "Kathe Gaararu was founded to safeguard and share the radiant heritage of Yakshagana — Karnataka’s monumental folk theatre tradition.",
@@ -164,11 +164,11 @@ export const translations = {
       title: "ನಮ್ಮ ಕಥೆ",
       homeSection: {
         label: "ನಮ್ಮ ಕಥೆ",
-        title: "ಜೀವಂತ ಪರಂಪರೆ",
+        title: "ನಮ್ಮ ಕಥೆ",
         body: [
-          "ಕರ್ನಾಟಕದ ಕರಾವಳಿ ನೆಲದಲ್ಲಿ ಬೇರೂರಿದ ಯಕ್ಷಗಾನವು ಕೇವಲ ಪ್ರದರ್ಶನವಲ್ಲ — ಅದು ಒಂದು ಆಚರಣೆ, ಭಕ್ತಿ, ಮತ್ತು ನಶ್ವರ ಮತ್ತು ದೈವಿಕವನ್ನು ಸೇತುವೆಯಾಗಿ ಜೋಡಿಸುವ ಮಂತ್ರಮುಗ್ಧ ಕಥಾನಕ ಕಲೆ.",
-          "ಕಥೆಗಾರರು (ಕಥೆ ಹೇಳುವವರು) ಈ ಶತಮಾನಗಳ ಹಳೆಯ ಪರಂಪರೆಯ ಆಳವಾದ ಗೌರವದಿಂದ ಹುಟ್ಟಿದೆ. ನಾವು ಕಲೆಯ ಪ್ರಾಮಾಣಿಕತೆಯನ್ನು ಸಂರಕ್ಷಿಸಲು ಮತ್ತು ಆಧುನಿಕ ಅನ್ವೇಷಕರಿಗೆ ಲಭ್ಯವಾಗಿಸಲು ಸಮರ್ಪಿತರಾದ ಕಲಾವಿದರು, ಗುರುಗಳು ಮತ್ತು ರಸಿಕರ ಸಮೂಹ.",
-          "ಚಂಡೆಯ ಗುಡುಗಿನ ಲಯದಿಂದ ಸ್ತ್ರೀ ಮತ್ತು ರಾಕ್ಷಸ ವೇಷಗಳ ವಿಸ್ತಾರವಾದ ಬಣ್ಣಗಳವರೆಗೆ, ಪ್ರತಿ ಹಾವಭಾವ ಸಾವಿರ ಪದಗಳನ್ನು ಹೇಳುವ ಮತ್ತು ಪ್ರತಿ ರಾತ್ರಿ ಪುರಾಣಗಳ ಪ್ರಯಾಣವಾಗುವ ಜಗತ್ತಿಗೆ ನಿಮ್ಮನ್ನು ಆಹ್ವಾನಿಸುತ್ತೇವೆ.",
+          "ಕಥೆ ಗಾರಾರು ಯಕ್ಷಗಾನದ ತೇಜೋಮಯ ಪರಂಪರೆಯನ್ನು ಸಂರಕ್ಷಿಸಲು ಮತ್ತು ಹಂಚಿಕೊಳ್ಳಲು ಸ್ಥಾಪಿಸಲ್ಪಟ್ಟಿದೆ — ಇದು ಕರ್ನಾಟಕದ ಭವ್ಯ ಜಾನಪದ ರಂಗಭೂಮಿ ಸಂಪ್ರದಾಯ.",
+          "ನಾಲ್ಕು ಶತಮಾನಗಳಿಗಿಂತಲೂ ಹೆಚ್ಚು ಕಾಲದಿಂದ, ಯಕ್ಷಗಾನವು ನೃತ್ಯ, ಸಂಗೀತ, ವೇಷಭೂಷಣ ಮತ್ತು ಕಥಾನಕವನ್ನು ಒಂದು ಅದ್ಭುತ ಕಲಾರೂಪವಾಗಿ ಜೋಡಿಸಿದೆ. ನಮ್ಮ ಸಂಸ್ಥೆಯು ಆ ಜ್ವಾಲೆಯನ್ನು ಮುಂದಕ್ಕೆ ಕೊಂಡೊಯ್ಯುತ್ತಿದೆ — ಹೊಸ ಪೀಳಿಗೆಗೆ ತರಬೇತಿ ನೀಡುತ್ತಿದೆ ಮತ್ತು ರಂಗ ಪ್ರದರ್ಶನಗಳನ್ನು ಆಯೋಜಿಸುತ್ತಿದೆ.",
+          "ಸಂಸ್ಕೃತಿ ಸಂಗ್ರಹಾಲಯದ ವಸ್ತು ಅಲ್ಲ — ಅದು ಜೀವಂತ, ಉಸಿರಾಡುತ್ತಿರುವ, ವಿಕಸಿಸುತ್ತಿರುವ ಪ್ರಾಚೀನ ಮತ್ತು ವರ್ತಮಾನದ ನಡುವಿನ ಸಂವಾದ. ಇಮ್ಮರ್ಸಿವ್ ಕಲಿಕೆ ಮತ್ತು ರಂಗಕಲೆಯ ಮೂಲಕ, ನಾವು ಪ್ರತಿಯೊಬ್ಬ ಅನ್ವೇಷಕರನ್ನು ಆ ಸಂವಾದಕ್ಕೆ ಸೇರಲು ಆಹ್ವಾನಿಸುತ್ತೇವೆ.",
         ],
       },
       lead: "ಕಥೆ ಗಾರಾರು ಯಕ್ಷಗಾನದ ತೇಜೋಮಯ ಪರಂಪರೆಯನ್ನು ಸಂರಕ್ಷಿಸಲು ಮತ್ತು ಹಂಚಿಕೊಳ್ಳಲು ಸ್ಥಾಪಿಸಲ್ಪಟ್ಟಿದೆ.",

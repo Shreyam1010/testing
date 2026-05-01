@@ -1,38 +1,41 @@
 import { motion } from "framer-motion";
 import { User, Clock } from "lucide-react";
+import { useLang } from "@/contexts/LanguageContext";
 import g2 from "@/assets/gallery-2.jpg";
 import g5 from "@/assets/gallery-5.jpg";
 import g4 from "@/assets/gallery-4.jpg";
 import g1 from "@/assets/gallery-1.jpg";
 
 export function UpcomingEvents() {
+  const { lang } = useLang();
+  
   const events = [
     {
-      title: "Bhagavata Padya (Vocal)",
-      teacher: "Vid. Keremane Shivarama",
-      time: "Saturdays, 6:00 PM",
+      title: { en: "Bhagavata Padya (Vocal)", kn: "ಭಾಗವತ ಪದ್ಯ (ಗಾಯನ)" },
+      teacher: { en: "Vid. Keremane Shivarama", kn: "ವಿದ್ವಾನ್ ಕೆರೆಮನೆ ಶಿವರಾಮ" },
+      time: { en: "Saturdays, 6:00 PM", kn: "ಶನಿವಾರ, ಸಂಜೆ ೬:೦೦" },
       image: g2,
-      badge: "NEXT CLASS",
+      badge: { en: "NEXT CLASS", kn: "ಮುಂದಿನ ತರಗತಿ" },
       status: "booking",
     },
     {
-      title: "Chande Rhythms",
-      teacher: "Chittani Subrahmanya",
-      time: "Sundays, 10:00 AM",
+      title: { en: "Chande Rhythms", kn: "ಚಂಡೆ ಲಯಗಳು" },
+      teacher: { en: "Chittani Subrahmanya", kn: "ಚಿಟ್ಟಾಣಿ ಸುಬ್ರಹ್ಮಣ್ಯ" },
+      time: { en: "Sundays, 10:00 AM", kn: "ಭಾನುವಾರ, ಬೆಳಗ್ಗೆ ೧೦:೦೦" },
       image: g5,
       status: "booking",
     },
     {
-      title: "Stree Vesha Abhinaya",
-      teacher: "Hegde Parameshwar",
-      time: "Wednesdays, 7:00 PM",
+      title: { en: "Stree Vesha Abhinaya", kn: "ಸ್ತ್ರೀ ವೇಷ ಅಭಿನಯ" },
+      teacher: { en: "Hegde Parameshwar", kn: "ಹೆಗ್ಡೆ ಪರಮೇಶ್ವರ್" },
+      time: { en: "Wednesdays, 7:00 PM", kn: "ಬುಧವಾರ, ಸಂಜೆ ೭:೦೦" },
       image: g4,
       status: "coming_soon",
     },
     {
-      title: "Rakshasa Vesha Makeup",
-      teacher: "Bannada Malinga",
-      time: "Fridays, 6:30 PM",
+      title: { en: "Rakshasa Vesha Makeup", kn: "ರಾಕ್ಷಸ ವೇಷ ಬಣ್ಣಗಾರಿಕೆ" },
+      teacher: { en: "Bannada Malinga", kn: "ಬಣ್ಣದ ಮಾಲಿಂಗ" },
+      time: { en: "Fridays, 6:30 PM", kn: "ಶುಕ್ರವಾರ, ಸಂಜೆ ೬:೩೦" },
       image: g1,
       status: "coming_soon",
     },
@@ -41,7 +44,9 @@ export function UpcomingEvents() {
   return (
     <section className="container mx-auto px-6 pb-24">
       <div className="text-center mb-12">
-        <h2 className="text-4xl md:text-5xl font-display mb-4 text-primary">Upcoming Events</h2>
+        <h2 className="text-4xl md:text-5xl font-display mb-4 text-primary">
+          {lang === "en" ? "Upcoming Events" : "ಮುಂಬರುವ ಕಾರ್ಯಕ್ರಮಗಳು"}
+        </h2>
         <div className="ornament-divider w-24 mx-auto" />
       </div>
 
@@ -58,28 +63,30 @@ export function UpcomingEvents() {
             <div className="relative aspect-[4/3] overflow-hidden">
               <img
                 src={ev.image}
-                alt={ev.title}
+                alt={ev.title[lang]}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
               {ev.badge && (
                 <span className="absolute top-4 right-4 bg-gold text-[#0a0a0a] text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-sm">
-                  {ev.badge}
+                  {ev.badge[lang]}
                 </span>
               )}
             </div>
 
             <div className="p-6 flex flex-col flex-grow">
-              <h3 className="font-display text-xl text-primary mb-4 leading-tight">{ev.title}</h3>
+              <h3 className="font-display text-xl text-primary mb-4 leading-tight">
+                {ev.title[lang]}
+              </h3>
 
               <div className="space-y-3 text-sm text-foreground/70 mb-8 flex-grow">
                 <div className="flex items-center gap-3">
                   <User size={14} className="text-gold shrink-0" />
-                  <span>{ev.teacher}</span>
+                  <span>{ev.teacher[lang]}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Clock size={14} className="text-gold shrink-0" />
-                  <span>{ev.time}</span>
+                  <span>{ev.time[lang]}</span>
                 </div>
               </div>
 
@@ -90,11 +97,11 @@ export function UpcomingEvents() {
                   rel="noopener noreferrer"
                   className="block w-full text-center py-3 px-4 border border-border/50 text-xs font-bold uppercase tracking-widest text-primary hover:border-gold/50 hover:bg-gold/5 transition-colors rounded-sm"
                 >
-                  BOOKING
+                  {lang === "en" ? "BOOKING" : "ಬುಕಿಂಗ್"}
                 </a>
               ) : (
                 <div className="block w-full text-center py-3 px-4 border border-border/30 text-xs font-bold uppercase tracking-widest text-foreground/40 bg-background/20 rounded-sm cursor-not-allowed">
-                  COMING SOON
+                  {lang === "en" ? "COMING SOON" : "ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ"}
                 </div>
               )}
             </div>
