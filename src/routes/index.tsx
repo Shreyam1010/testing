@@ -23,19 +23,16 @@ function Index() {
   const icons = [Drama, Sparkles, Music];
   const highlightOrder = [2, 0, 1]; // 2: Performances, 0: Classes, 1: Workshops
 
-  const [activeDetails, setActiveDetails] = useState(false);
+  const [activeDetails] = useState(true);
 
   const handleHighlightClick = (idx: number) => {
-    setActiveDetails(true);
-    setTimeout(() => {
-      const targetId =
-        idx === 2 ? "performances-details" : idx === 0 ? "classes-details" : "workshops-details";
-      const element = document.getElementById(targetId);
-      if (element) {
-        const y = element.getBoundingClientRect().top + window.scrollY - 100;
-        window.scrollTo({ top: y, behavior: "smooth" });
-      }
-    }, 100);
+    const targetId =
+      idx === 2 ? "performances-details" : idx === 0 ? "classes-details" : "workshops-details";
+    const element = document.getElementById(targetId);
+    if (element) {
+      const y = element.getBoundingClientRect().top + window.scrollY - 100;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
   };
 
   const galleryItems = [
