@@ -1,124 +1,217 @@
-import { useState } from "react";
-import { Save, Languages, Image as ImageIcon } from "lucide-react";
+import { useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
+import { ArrowRight, Camera } from "lucide-react";
+import heroImg from "@/assets/hero-yakshagana.jpg";
+import mandala from "@/assets/mandala.png";
 
-export function HeroEditor() {
-  const [formData, setFormData] = useState({
-    title_en: "The Living Art of Yakshagana",
-    title_kn: "ಯಕ್ಷಗಾನದ ಜೀವಂತ ಕಲೆ",
-    subtitle_en: "An immersive cultural sanctuary where traditional theatre, music, and dance unite.",
-    subtitle_kn: "ಸಾಂಪ್ರದಾಯಿಕ ರಂಗಭೂಮಿ, ಸಂಗೀತ ಮತ್ತು ನೃತ್ಯ ಒಂದಾಗುವ ತಾಣ.",
-  });
+interface HeroEditorProps {
+  isEditing: boolean;
+  lang: "en" | "kn";
+}
+
+/* tiny helper — a span that looks identical whether editing or not */
+function EditableText({
+  value,
+  onChange,
+  isEditing,
+  className = "",
+  tag: Tag = "span",
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  isEditing: boolean;
+  className?: string;
+  tag?: "span" | "p" | "div";
+}) {
+  const ref = useRef<HTMLElement>(null);
+
+  const handleBlur = useCallback(() => {
+    if (ref.current) onChange(ref.current.innerText);
+  }, [onChange]);
+
+  if (!isEditing) return <Tag className={className}>{value}</Tag>;
 
   return (
-    <div className="max-w-5xl space-y-12 pb-20">
-      <div className="flex items-center justify-between border-b border-border pb-8">
-        <div>
-          <h2 className="text-3xl font-display text-primary">Hero Section</h2>
-          <p className="text-sm text-muted-foreground mt-1">First impressions matter. Edit your landing experience here.</p>
-        </div>
-        <button className="flex items-center gap-3 px-8 py-4 bg-gold text-background rounded-full font-bold shadow-glow hover:scale-105 transition-all">
-          <Save className="w-5 h-5" />
-          Save Changes
-        </button>
+    <Tag
+      ref={ref as any}
+      contentEditable
+      suppressContentEditableWarning
+      onBlur={handleBlur}
+      className={`${className} outline-none cursor-text`}
+      style={{
+        caretColor: "var(--gold)",
+        borderBottom: "1px solid rgba(255,255,255,0.08)",
+      }}
+    >
+      {value}
+    </Tag>
+  );
+}
+
+export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
+  const [heroImage, setHeroImage] = useState(heroImg);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [data, setData] = useState({
+    en: {
+      tag: "Preserving a 400-year-old legacy",
+      title: "The Living Art of",
+      titleAccent: "Yakshagana",
+      subtitle:
+        "An immersive cultural sanctuary where traditional Kannada theatre, music, and dance breathe through every performance, class, and story.",
+      ctaPrimary: "Explore Classes",
+      ctaSecondary: "Watch Performances",
+    },
+    kn: {
+      tag: "೪೦೦ ವರ್ಷಗಳ ಪರಂಪರೆಯ ಸಂರಕ್ಷಣೆ",
+      title: "ಜೀವಂತ ಕಲೆ",
+      titleAccent: "ಯಕ್ಷಗಾನ",
+      subtitle:
+        "ಸಾಂಪ್ರದಾಯಿಕ ಕನ್ನಡ ರಂಗಭೂಮಿ, ಸಂಗೀತ ಮತ್ತು ನೃತ್ಯ — ಪ್ರತಿ ಪ್ರದರ್ಶನ, ತರಗತಿ ಮತ್ತು ಕಥೆಯಲ್ಲಿ ಉಸಿರಾಡುವ ಸಾಂಸ್ಕೃತಿಕ ತಾಣ.",
+      ctaPrimary: "ತರಗತಿಗಳನ್ನು ನೋಡಿ",
+      ctaSecondary: "ಪ್ರದರ್ಶನಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
+    },
+  });
+
+  const current = data[lang];
+
+  const update = (field: string) => (value: string) => {
+    setData((prev) => ({
+      ...prev,
+      [lang]: { ...prev[lang], [field]: value },
+    }));
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setHeroImage(url);
+    }
+  };
+
+  return (
+    <section className="relative min-h-[92vh] flex items-center overflow-hidden">
+      <div className="absolute inset-0 bg-hero" />
+      <img
+        src={mandala}
+        alt=""
+        aria-hidden
+        className="absolute -right-40 -top-40 w-[700px] opacity-10 animate-spin-slow pointer-events-none"
+      />
+      <img
+        src={mandala}
+        alt=""
+        aria-hidden
+        className="absolute -left-60 -bottom-60 w-[600px] opacity-5 animate-spin-slow pointer-events-none"
+        style={{ animationDirection: "reverse" }}
+      />
+
+      <div className="container mx-auto px-6 relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {/* Tag badge */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gold/40 bg-gold/5 text-xs uppercase tracking-[0.25em] text-primary mb-8"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
+            <EditableText
+              value={current.tag}
+              onChange={update("tag")}
+              isEditing={isEditing}
+            />
+          </motion.div>
+
+          {/* Heading — identical structure to index.tsx */}
+          <h1 className="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.05] mb-6">
+            <EditableText
+              value={current.title}
+              onChange={update("title")}
+              isEditing={isEditing}
+            />
+            <br />
+            <EditableText
+              value={current.titleAccent}
+              onChange={update("titleAccent")}
+              isEditing={isEditing}
+              className="text-gradient-gold glow-text"
+            />
+          </h1>
+
+          {/* Subtitle */}
+          <EditableText
+            tag="p"
+            value={current.subtitle}
+            onChange={update("subtitle")}
+            isEditing={isEditing}
+            className="text-lg text-muted-foreground max-w-xl leading-relaxed mb-10"
+          />
+
+          {/* CTA buttons */}
+          <div className="flex flex-wrap gap-4">
+            <div className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gold text-background font-medium shadow-glow">
+              <EditableText
+                value={current.ctaPrimary}
+                onChange={update("ctaPrimary")}
+                isEditing={isEditing}
+              />
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </div>
+            <div className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-border hover:border-gold text-foreground transition-colors">
+              <EditableText
+                value={current.ctaSecondary}
+                onChange={update("ctaSecondary")}
+                isEditing={isEditing}
+              />
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Hero image — identical to index.tsx */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          className="relative"
+        >
+          <div className="absolute inset-0 bg-ember rounded-full blur-3xl opacity-40 animate-float-slow" />
+          <div className="relative group">
+            <motion.img
+              src={heroImage}
+              alt="Yakshagana performer in traditional crown headdress"
+              width={1536}
+              height={1536}
+              className="relative rounded-2xl shadow-glow border border-gold/20 animate-float-slow"
+            />
+            {isEditing && (
+              <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all rounded-2xl cursor-pointer">
+                <button 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-2 px-6 py-3 bg-gold text-background rounded-full font-bold text-xs uppercase tracking-widest shadow-glow hover:scale-105 transition-all"
+                >
+                  <Camera className="w-4 h-4" />
+                  Replace Hero Image
+                </button>
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  className="hidden" 
+                  accept="image/*" 
+                  onChange={handleImageChange}
+                />
+              </div>
+            )}
+          </div>
+        </motion.div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-16">
-        {/* ENGLISH CONTENT */}
-        <div className="space-y-8">
-          <div className="flex items-center gap-3">
-            <span className="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-[10px] font-bold uppercase">EN</span>
-            <h4 className="text-sm font-bold uppercase tracking-widest text-foreground/50">English Version</h4>
-          </div>
-
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Main Heading</label>
-              <input 
-                type="text" 
-                value={formData.title_en}
-                onChange={(e) => setFormData({...formData, title_en: e.target.value})}
-                className="w-full bg-card/50 border border-border rounded-2xl px-6 py-4 focus:border-gold/50 outline-none transition-all font-display text-lg"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Sub-headline</label>
-              <textarea 
-                rows={4}
-                value={formData.subtitle_en}
-                onChange={(e) => setFormData({...formData, subtitle_en: e.target.value})}
-                className="w-full bg-card/50 border border-border rounded-2xl px-6 py-4 focus:border-gold/50 outline-none transition-all resize-none leading-relaxed"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* KANNADA CONTENT */}
-        <div className="space-y-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="w-8 h-8 rounded-full bg-gold/20 text-gold flex items-center justify-center text-[10px] font-bold uppercase">KN</span>
-              <h4 className="text-sm font-bold uppercase tracking-widest text-foreground/50">Kannada Version</h4>
-            </div>
-            <button className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gold hover:text-primary transition-all">
-              <Languages className="w-4 h-4" />
-              Auto-Translate
-            </button>
-          </div>
-
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Main Heading (KN)</label>
-              <input 
-                type="text" 
-                value={formData.title_kn}
-                onChange={(e) => setFormData({...formData, title_kn: e.target.value})}
-                className="w-full bg-card/50 border border-border rounded-2xl px-6 py-4 focus:border-gold/50 outline-none transition-all font-display text-lg"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Sub-headline (KN)</label>
-              <textarea 
-                rows={4}
-                value={formData.subtitle_kn}
-                onChange={(e) => setFormData({...formData, subtitle_kn: e.target.value})}
-                className="w-full bg-card/50 border border-border rounded-2xl px-6 py-4 focus:border-gold/50 outline-none transition-all resize-none leading-relaxed"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* MEDIA MANAGER */}
-      <div className="bg-card/30 border border-border rounded-3xl p-8 md:p-12">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="w-12 h-12 rounded-2xl bg-gold/10 flex items-center justify-center">
-            <ImageIcon className="text-gold w-6 h-6" />
-          </div>
-          <div>
-            <h4 className="text-xl font-display text-primary">Background Media</h4>
-            <p className="text-sm text-muted-foreground">Manage your high-resolution hero imagery.</p>
-          </div>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="relative aspect-video rounded-2xl overflow-hidden border-2 border-dashed border-border group">
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
-              <button className="px-6 py-2 bg-gold text-background rounded-full font-bold text-xs uppercase tracking-widest shadow-glow">Change Image</button>
-            </div>
-            <div className="w-full h-full bg-gold/5 flex items-center justify-center text-gold/30 italic text-sm">Hero Image Preview</div>
-          </div>
-          <div className="space-y-4 flex flex-col justify-center">
-            <div className="p-4 bg-background/50 border border-border rounded-xl">
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Recommended Specs</p>
-              <p className="text-sm text-foreground/80">1920x1080px • Aspect Ratio 16:9 • Under 2MB</p>
-            </div>
-            <button className="w-full py-4 border border-border rounded-xl text-sm font-bold text-foreground/60 hover:bg-white/5 transition-all">
-              Upload New Asset
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+      <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-b from-transparent to-background pointer-events-none" />
+    </section>
   );
 }

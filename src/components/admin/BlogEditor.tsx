@@ -1,99 +1,298 @@
-import { useState } from "react";
-import { Save, Languages, Plus, Trash2, Calendar, User } from "lucide-react";
-import { blogs } from "@/lib/data";
+import { useState, useRef, useCallback } from "react";
+import { motion } from "framer-motion";
+import { ArrowRight, Calendar, User, Camera } from "lucide-react";
+import g1 from "@/assets/gallery-1.jpg";
+import g2 from "@/assets/gallery-2.jpg";
+import g3 from "@/assets/gallery-3.jpg";
+import g4 from "@/assets/gallery-4.jpg";
+import g5 from "@/assets/gallery-5.jpg";
+import g6 from "@/assets/gallery-6.jpg";
 
-export function BlogEditor() {
-  const [isAdding, setIsAdding] = useState(false);
+interface BlogEditorProps {
+  isEditing: boolean;
+  lang: "en" | "kn";
+}
+
+const imgMap: Record<string, string> = { g1, g2, g3, g4, g5, g6 };
+
+function EditableText({
+  value,
+  onChange,
+  isEditing,
+  className = "",
+  tag: Tag = "span",
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  isEditing: boolean;
+  className?: string;
+  tag?: "span" | "h1" | "h3" | "p" | "div";
+}) {
+  const ref = useRef<HTMLElement>(null);
+
+  const handleBlur = useCallback(() => {
+    if (ref.current) onChange(ref.current.innerText);
+  }, [onChange]);
+
+  if (!isEditing) return <Tag className={className}>{value}</Tag>;
 
   return (
-    <div className="max-w-6xl space-y-12 pb-20">
-      <div className="flex items-center justify-between border-b border-border pb-8">
-        <div>
-          <h2 className="text-3xl font-display text-primary">Insights & Stories</h2>
-          <p className="text-sm text-muted-foreground mt-1">Manage your blog posts and cultural articles.</p>
-        </div>
-        <button 
-          onClick={() => setIsAdding(!isAdding)}
-          className="flex items-center gap-3 px-8 py-4 bg-gold text-background rounded-full font-bold shadow-glow hover:scale-105 transition-all"
-        >
-          {isAdding ? "Cancel Editing" : <><Plus className="w-5 h-5" /> New Article</>}
-        </button>
-      </div>
-
-      {isAdding ? (
-        <ArticleForm onSave={() => setIsAdding(false)} />
-      ) : (
-        <div className="grid gap-6">
-          {blogs.map((post) => (
-            <div key={post.id} className="group flex items-center justify-between p-6 bg-card/40 border border-border rounded-3xl hover:border-gold/30 transition-all shadow-xl">
-              <div className="flex items-center gap-8">
-                <div className="w-24 h-24 rounded-2xl bg-muted overflow-hidden">
-                  <div className="w-full h-full bg-gradient-to-br from-gold/20 to-gold/5 flex items-center justify-center text-gold/40 text-xs font-bold uppercase">Image</div>
-                </div>
-                <div>
-                  <div className="flex items-center gap-4 mb-2">
-                    <span className="px-3 py-1 bg-gold/10 text-gold text-[10px] font-bold rounded-full uppercase tracking-widest">{post.category.en}</span>
-                    <span className="text-[10px] text-muted-foreground flex items-center gap-1.5"><Calendar className="w-3 h-3" /> {post.date}</span>
-                  </div>
-                  <h3 className="text-xl font-display text-primary">{post.title.en}</h3>
-                  <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
-                    <User className="w-3.5 h-3.5 text-gold" /> {post.author.en}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-4">
-                <button className="px-6 py-2.5 rounded-xl border border-border hover:border-gold/50 text-gold text-xs font-bold transition-all">Edit Post</button>
-                <button className="p-2.5 rounded-xl border border-border hover:border-red-500/50 text-red-500 transition-all"><Trash2 className="w-4 h-4" /></button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+    <Tag
+      ref={ref as any}
+      contentEditable
+      suppressContentEditableWarning
+      onBlur={handleBlur}
+      className={`${className} outline-none cursor-text`}
+      style={{
+        caretColor: "var(--gold)",
+        borderBottom: "1px solid rgba(255,255,255,0.1)",
+      }}
+    >
+      {value}
+    </Tag>
   );
 }
 
-function ArticleForm({ onSave }: { onSave: () => void }) {
+export function BlogEditor({ isEditing, lang }: BlogEditorProps) {
+  const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const [data, setData] = useState({
+    en: {
+      title: "Latest Insights",
+      subtitle: "Stories, tutorials, and behind-the-scenes perspectives.",
+      readMore: "Read Article",
+      blogs: [
+        {
+          id: "b1",
+          title: "The Geometry of the Crown",
+          excerpt: "Discover the mathematical precision behind the iconic Yakshagana headgear.",
+          category: "Craftsmanship",
+          author: "Guru Raghavendra",
+          date: "Apr 20, 2025",
+          image: "g4"
+        },
+        {
+          id: "b2",
+          title: "Navarasa: The Nine Emotions",
+          excerpt: "A deep dive into the emotive landscape of Yakshagana abhinaya.",
+          category: "Artistry",
+          author: "Smt. Lakshmi",
+          date: "Mar 15, 2025",
+          image: "g2"
+        },
+        {
+          id: "b3",
+          title: "The Chande's Thunder",
+          excerpt: "How the high-pitched drum defines the energy of the Badagutittu style.",
+          category: "Music",
+          author: "Shankara Hegde",
+          date: "Feb 10, 2025",
+          image: "g5"
+        },
+        {
+          id: "b4",
+          title: "Ritual to Theatre",
+          excerpt: "Tracing the evolution of Yakshagana from temple rituals to the modern stage.",
+          category: "History",
+          author: "Kathe Gaararu",
+          date: "Jan 05, 2025",
+          image: "g1"
+        }
+      ]
+    },
+    kn: {
+      title: "ಇತ್ತೀಚಿನ ಒಳನೋಟಗಳು",
+      subtitle: "ಕಥೆಗಳು, ಟ್ಯುಟೋರಿಯಲ್ಗಳು ಮತ್ತು ತೆರೆಮರೆಯ ದೃಷ್ಟಿಕೋನಗಳು.",
+      readMore: "ಲೇಖನ ಓದಿ",
+      blogs: [
+        {
+          id: "b1",
+          title: "ಕಿರೀಟದ ರೇಖಾಗಣಿತ",
+          excerpt: "ಐಕಾನಿಕ್ ಯಕ್ಷಗಾನ ಕಿರೀಟದ ಹಿಂದಿರುವ ಗಣಿತದ ನಿಖರತೆಯನ್ನು ಅನ್ವೇಷಿಸಿ.",
+          category: "ಕರಕುಶಲತೆ",
+          author: "ಗುರು ರಾಘವೇಂದ್ರ",
+          date: "Apr 20, 2025",
+          image: "g4"
+        },
+        {
+          id: "b2",
+          title: "ನವರಸ: ಒಂಬತ್ತು ಭಾವನೆಗಳು",
+          excerpt: "ಯಕ್ಷಗಾನ ಅಭಿನಯದ ಭಾವನಾತ್ಮಕ ಲೋಕಕ್ಕೆ ಒಂದು ಆಳವಾದ ನೋಟ.",
+          category: "ಕಲೆಗಾರಿಕೆ",
+          author: "ಶ್ರೀಮತಿ ಲಕ್ಷ್ಮಿ",
+          date: "Mar 15, 2025",
+          image: "g2"
+        },
+        {
+          id: "b3",
+          title: "ಚಂಡೆಯ ಗುಡುಗು",
+          excerpt: "ಹೇಗೆ ಚಂಡೆಯ ಶಬ್ದವು ಬಡಗುತಿಟ್ಟು ಶೈಲಿಯ ಶಕ್ತಿಯನ್ನು ನಿರ್ಧರಿಸುತ್ತದೆ.",
+          category: "ಸಂಗೀತ",
+          author: "ಶಂಕರ ಹೆಗಡೆ",
+          date: "Feb 10, 2025",
+          image: "g5"
+        },
+        {
+          id: "b4",
+          title: "ಆಚರಣೆಯಿಂದ ರಂಗಭೂಮಿಗೆ",
+          excerpt: "ದೇವಸ್ಥಾನದ ಆಚರಣೆಗಳಿಂದ ಆಧುನಿಕ ರಂಗದವರೆಗೆ ಯಕ್ಷಗಾನದ ವಿಕಸನ.",
+          category: "ಇತಿಹಾಸ",
+          author: "ಕಥೆಗಾರರು",
+          date: "Jan 05, 2025",
+          image: "g1"
+        }
+      ]
+    }
+  });
+
+  const current = data[lang];
+
+  const update = (field: string, value: any) => {
+    setData((prev) => ({
+      ...prev,
+      [lang]: { ...prev[lang], [field]: value },
+    }));
+  };
+
+  const updateBlog = (index: number, field: string, value: string) => {
+    const newBlogs = [...current.blogs];
+    newBlogs[index] = { ...newBlogs[index], [field]: value };
+    update("blogs", newBlogs);
+  };
+
+  const handleImageChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      const newBlogs = [...current.blogs];
+      // We'll store the blob URL as the image path temporarily
+      newBlogs[index] = { ...newBlogs[index], image: url };
+      update("blogs", newBlogs);
+    }
+  };
+
   return (
-    <div className="grid lg:grid-cols-2 gap-16 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="space-y-8">
-        <div className="flex items-center gap-3">
-          <span className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-[10px] font-bold uppercase tracking-widest">English</span>
-          <h3 className="text-sm font-bold text-foreground/50 uppercase tracking-widest">Article Body</h3>
-        </div>
-        
-        <div className="space-y-6">
-          <input className="w-full bg-card/50 border border-border rounded-2xl px-6 py-4 focus:border-gold/50 outline-none transition-all font-display text-lg" placeholder="Article Title..." />
-          <textarea rows={12} className="w-full bg-card/50 border border-border rounded-2xl px-6 py-4 focus:border-gold/50 outline-none transition-all resize-none leading-relaxed" placeholder="Write your story here..." />
-        </div>
-      </div>
+    <section className="container mx-auto px-6 py-20 bg-[#050505]">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center max-w-2xl mx-auto mb-16"
+      >
+        <div className="ornament-divider w-24 mx-auto mb-6" />
+        <h1 className="text-5xl md:text-6xl font-display mb-4">
+          <EditableText
+            value={current.title}
+            onChange={(v) => update("title", v)}
+            isEditing={isEditing}
+            tag="h1"
+          />
+        </h1>
+        <p className="text-muted-foreground text-lg">
+          <EditableText
+            value={current.subtitle}
+            onChange={(v) => update("subtitle", v)}
+            isEditing={isEditing}
+          />
+        </p>
+      </motion.div>
 
-      <div className="space-y-8">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="px-3 py-1 bg-gold/20 text-gold rounded-full text-[10px] font-bold uppercase tracking-widest">Kannada</span>
-            <h3 className="text-sm font-bold text-foreground/50 uppercase tracking-widest">Translation</h3>
-          </div>
-          <button className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gold hover:text-primary transition-all">
-            <Languages className="w-4 h-4" />
-            Auto-Translate
-          </button>
-        </div>
-        
-        <div className="space-y-6">
-          <input className="w-full bg-card/50 border border-border rounded-2xl px-6 py-4 focus:border-gold/50 outline-none transition-all font-display text-lg" placeholder="ಶೀರ್ಷಿಕೆ ಬರೆಯಿರಿ..." />
-          <textarea rows={12} className="w-full bg-card/50 border border-border rounded-2xl px-6 py-4 focus:border-gold/50 outline-none transition-all resize-none leading-relaxed" placeholder="ಕಥೆಯನ್ನು ಇಲ್ಲಿ ಬರೆಯಿರಿ..." />
-        </div>
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {current.blogs.map((post, i) => (
+          <motion.div
+            key={post.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1, duration: 0.5 }}
+            className="group relative h-full flex flex-col bg-[#0a0a0a] border border-border rounded-2xl overflow-hidden hover:border-gold/50 transition-all shadow-xl"
+          >
+            <div className="relative h-48 overflow-hidden">
+              <img
+                src={imgMap[post.image] || post.image}
+                alt=""
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
 
-      <div className="lg:col-span-2 pt-12 border-t border-border flex justify-end gap-6">
-        <button onClick={onSave} className="px-8 py-4 border border-border rounded-full font-bold text-muted-foreground hover:bg-white/5 transition-all">Discard Draft</button>
-        <button onClick={onSave} className="flex items-center gap-3 px-12 py-4 bg-gold text-background rounded-full font-bold shadow-glow hover:scale-105 transition-all">
-          <Save className="w-5 h-5" />
-          Publish Story
-        </button>
+              <div className="absolute top-4 left-4">
+                <span className="px-3 py-1 bg-black/50 backdrop-blur-md border border-white/20 text-[10px] font-bold text-white uppercase tracking-wider rounded-full">
+                  <EditableText
+                    value={post.category}
+                    onChange={(v) => updateBlog(i, "category", v)}
+                    isEditing={isEditing}
+                  />
+                </span>
+              </div>
+
+              {isEditing && (
+                <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all cursor-pointer">
+                  <button 
+                    onClick={() => fileInputRefs.current[i]?.click()}
+                    className="flex items-center gap-2 px-4 py-2 bg-gold text-background rounded-full font-bold text-[10px] uppercase tracking-widest shadow-glow"
+                  >
+                    <Camera className="w-3 h-3" />
+                    Replace
+                  </button>
+                  <input 
+                    type="file" 
+                    ref={el => fileInputRefs.current[i] = el}
+                    className="hidden" 
+                    accept="image/*" 
+                    onChange={(e) => handleImageChange(i, e)}
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="flex-1 p-6 flex flex-col">
+              <div className="flex items-center justify-between mb-4 text-[11px] text-muted-foreground uppercase tracking-widest">
+                <div className="flex items-center gap-2">
+                  <User className="w-3 h-3 text-gold" />
+                  <EditableText
+                    value={post.author}
+                    onChange={(v) => updateBlog(i, "author", v)}
+                    isEditing={isEditing}
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-3 h-3 text-gold" />
+                  <EditableText
+                    value={post.date}
+                    onChange={(v) => updateBlog(i, "date", v)}
+                    isEditing={isEditing}
+                  />
+                </div>
+              </div>
+
+              <h3 className="font-display text-xl text-primary mb-3 leading-tight group-hover:text-gold transition-colors">
+                <EditableText
+                  value={post.title}
+                  onChange={(v) => updateBlog(i, "title", v)}
+                  isEditing={isEditing}
+                  tag="h3"
+                />
+              </h3>
+
+              <div className="text-sm text-muted-foreground mb-6 flex-1 leading-relaxed">
+                <EditableText
+                  tag="p"
+                  value={post.excerpt}
+                  onChange={(v) => updateBlog(i, "excerpt", v)}
+                  isEditing={isEditing}
+                />
+              </div>
+
+              <div className="flex items-center text-gold text-sm font-medium mt-auto">
+                <EditableText
+                  value={current.readMore}
+                  onChange={(v) => update("readMore", v)}
+                  isEditing={isEditing}
+                />
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </div>
+            </div>
+          </motion.div>
+        ))}
       </div>
-    </div>
+    </section>
   );
 }

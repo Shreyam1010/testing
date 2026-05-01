@@ -12,13 +12,18 @@ import {
 import { HeroEditor } from "@/components/admin/HeroEditor";
 import { AboutEditor } from "@/components/admin/AboutEditor";
 import { BlogEditor } from "@/components/admin/BlogEditor";
+import { EventsEditor } from "@/components/admin/EventsEditor";
+import { ClassesEditor } from "@/components/admin/ClassesEditor";
+import { ContactEditor } from "@/components/admin/ContactEditor";
 
 export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
 function AdminPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem("admin_auth") === "true";
+  });
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
   const [error, setError] = useState("");
@@ -26,11 +31,17 @@ function AdminPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (user === "admin" && pass === "admin") {
+      localStorage.setItem("admin_auth", "true");
       setIsAuthenticated(true);
       setError("");
     } else {
       setError("Invalid credentials. Try admin/admin");
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("admin_auth");
+    setIsAuthenticated(false);
   };
 
   if (!isAuthenticated) {
@@ -93,18 +104,19 @@ function AdminPage() {
     );
   }
 
-  return <Dashboard onLogout={() => setIsAuthenticated(false)} />;
+  return <Dashboard onLogout={handleLogout} />;
 }
 
 type Tab = "hero" | "about" | "events" | "classes" | "blog" | "contact";
 
 function Dashboard({ onLogout }: { onLogout: () => void }) {
   const [activeTab, setActiveTab] = useState<Tab>("hero");
-  const [view, setView] = useState<"edit" | "preview">("edit");
+  const [view, setView] = useState<"preview" | "edit">("preview");
+  const [editLang, setEditLang] = useState<"en" | "kn">("en");
 
-  const sidebarItems = [
-    { id: "hero", label: "Hero Section", icon: ImageIcon },
-    { id: "about", label: "Our Story", icon: Info },
+  const navItems = [
+    { id: "hero", label: "Hero", icon: ImageIcon },
+    { id: "about", label: "About", icon: Info },
     { id: "events", label: "Events", icon: Calendar },
     { id: "classes", label: "Classes", icon: BookOpen },
     { id: "blog", label: "Insights", icon: Edit3 },
@@ -112,140 +124,144 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   ];
 
   return (
-    <div className="min-h-screen bg-background flex">
-      {/* Sidebar */}
-      <aside className="w-72 border-r border-border bg-card/30 backdrop-blur-xl flex flex-col fixed inset-y-0">
-        <div className="p-8 border-b border-border flex items-center gap-4">
-          <div className="w-10 h-10 bg-gold rounded-full flex items-center justify-center font-display font-bold text-background">ಯ</div>
-          <div>
-            <h2 className="text-primary font-display">Kathe Gaararu</h2>
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Admin Suite</p>
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Top Navigation Bar */}
+      <header className="h-20 border-b border-border bg-card/50 backdrop-blur-xl flex items-center justify-between px-8 sticky top-0 z-50">
+        <div className="flex items-center gap-8">
+          <div className="flex items-center gap-3 pr-6 border-r border-border">
+            <div className="w-8 h-8 bg-gold rounded-full flex items-center justify-center font-display font-bold text-background text-sm">ಯ</div>
+            <span className="text-primary font-display text-sm tracking-widest uppercase hidden md:block">Kathe Gaararu</span>
           </div>
-        </div>
-
-        <nav className="flex-1 p-6 space-y-2">
-          {sidebarItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id as Tab)}
-              className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-sm font-medium transition-all ${
-                activeTab === item.id 
-                  ? "bg-gold text-background shadow-glow" 
-                  : "text-foreground/60 hover:bg-white/5 hover:text-foreground"
-              }`}
-            >
-              <item.icon className="w-4 h-4" />
-              {item.label}
-            </button>
-          ))}
-        </nav>
-
-        <div className="p-6 border-t border-border space-y-3">
-          <Link 
-            to="/"
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-gold/30 text-gold hover:bg-gold/10 transition-all text-sm font-bold"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Website
-          </Link>
-          <button 
-            onClick={onLogout}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-border text-red-500 hover:bg-red-500/10 transition-all text-sm font-bold"
-          >
-            <LogOut className="w-4 h-4" />
-            Logout
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 ml-72">
-        <header className="h-20 border-b border-border flex items-center justify-between px-10 bg-background/50 backdrop-blur-md sticky top-0 z-10">
-          <h2 className="text-xl font-display text-primary capitalize">{activeTab} Management</h2>
           
-          <div className="flex bg-card border border-border rounded-full p-1">
+          <nav className="flex items-center gap-1">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id as Tab)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
+                  activeTab === item.id 
+                    ? "bg-gold/10 text-gold" 
+                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                }`}
+              >
+                <item.icon className="w-3.5 h-3.5" />
+                <span className="hidden lg:inline">{item.label}</span>
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        <div className="flex items-center gap-6">
+          {/* Language Toggle */}
+          <div className="flex bg-background/50 border border-border rounded-full p-1">
             <button
-              onClick={() => setView("edit")}
-              className={`flex items-center gap-2 px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all ${
-                view === "edit" ? "bg-gold text-background shadow-glow" : "text-muted-foreground"
+              onClick={() => setEditLang("en")}
+              className={`px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all ${
+                editLang === "en" ? "bg-blue-500 text-white" : "text-muted-foreground"
               }`}
             >
-              <Edit3 className="w-3.5 h-3.5" />
-              Editor
+              EN
             </button>
+            <button
+              onClick={() => setEditLang("kn")}
+              className={`px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all ${
+                editLang === "kn" ? "bg-gold text-background" : "text-muted-foreground"
+              }`}
+            >
+              ಕನ್ನಡ
+            </button>
+          </div>
+
+          <div className="h-8 w-px bg-border" />
+
+          {/* View Toggle */}
+          <div className="flex bg-background/50 border border-border rounded-lg p-1">
             <button
               onClick={() => setView("preview")}
-              className={`flex items-center gap-2 px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all ${
-                view === "preview" ? "bg-gold text-background shadow-glow" : "text-muted-foreground"
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all ${
+                view === "preview" ? "bg-white/10 text-white" : "text-muted-foreground"
               }`}
             >
               <Eye className="w-3.5 h-3.5" />
-              Live Preview
+              Preview
+            </button>
+            <button
+              onClick={() => setView("edit")}
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all ${
+                view === "edit" ? "bg-gold text-background" : "text-muted-foreground"
+              }`}
+            >
+              <Edit3 className="w-3.5 h-3.5" />
+              Edit
             </button>
           </div>
-        </header>
 
-        <div className="p-10">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab + view}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
+          {view === "edit" && (
+            <button 
+              onClick={() => {
+                alert("Changes saved successfully! (Simulated)");
+                setView("preview");
+              }}
+              className="flex items-center gap-2 px-6 py-2 bg-primary text-background rounded-lg font-bold shadow-glow hover:scale-105 transition-all text-[9px] uppercase tracking-widest"
             >
-              {view === "edit" ? (
-                <EditorPanel section={activeTab} />
-              ) : (
-                <PreviewPanel section={activeTab} />
-              )}
-            </motion.div>
-          </AnimatePresence>
+              <Save className="w-3.5 h-3.5" />
+              Save
+            </button>
+          )}
+
+          <div className="h-8 w-px bg-border" />
+
+          <div className="flex items-center gap-3">
+            <Link to="/" className="p-2 text-muted-foreground hover:text-gold transition-colors" title="Back to Site">
+              <ArrowLeft className="w-5 h-5" />
+            </Link>
+            <button onClick={onLogout} className="p-2 text-muted-foreground hover:text-red-500 transition-colors" title="Logout">
+              <LogOut className="w-5 h-5" />
+            </button>
+          </div>
         </div>
+      </header>
+
+      {/* Main Canvas Area */}
+      <main className="flex-1 overflow-auto bg-[#050505] custom-scrollbar">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab + view + editLang}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="min-h-full"
+          >
+            <LiveContainer 
+              section={activeTab} 
+              isEditing={view === "edit"} 
+              lang={editLang} 
+            />
+          </motion.div>
+        </AnimatePresence>
       </main>
     </div>
   );
 }
 
-function EditorPanel({ section }: { section: Tab }) {
+function LiveContainer({ section, isEditing, lang }: { section: Tab; isEditing: boolean; lang: "en" | "kn" }) {
   switch (section) {
-    case "hero": return <HeroEditor />;
-    case "about": return <AboutEditor />;
-    case "blog": return <BlogEditor />;
+    case "hero": return <HeroEditor isEditing={isEditing} lang={lang} />;
+    case "about": return <AboutEditor isEditing={isEditing} lang={lang} />;
+    case "events": return <EventsEditor isEditing={isEditing} lang={lang} />;
+    case "classes": return <ClassesEditor isEditing={isEditing} lang={lang} />;
+    case "contact": return <ContactEditor isEditing={isEditing} lang={lang} />;
+    case "blog": return <BlogEditor isEditing={isEditing} lang={lang} />;
     default:
       return (
-        <div className="py-20 text-center">
-          <Sparkles className="w-12 h-12 text-gold/30 mx-auto mb-6" />
-          <h3 className="text-2xl font-display text-primary">Advanced Editor Coming Soon</h3>
-          <p className="text-muted-foreground">The {section} management module is currently being optimized.</p>
+        <div className="min-h-[80vh] flex flex-col items-center justify-center p-20 text-center">
+          <Sparkles className="w-16 h-16 text-gold/20 mb-8" />
+          <h3 className="text-3xl font-display text-primary mb-4">{section} Canvas</h3>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            The {section} interactive editor is being optimized for real-time visual updates.
+          </p>
         </div>
       );
   }
-}
-
-function PreviewPanel({ section }: { section: Tab }) {
-  return (
-    <div className="rounded-3xl border border-border bg-[#050505] overflow-hidden shadow-2xl relative">
-      <div className="absolute top-6 left-6 z-10 px-4 py-1.5 bg-black/50 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-[0.2em] text-gold border border-gold/20">
-        Simulated Device View
-      </div>
-      <div className="h-[750px] overflow-y-auto custom-scrollbar">
-        {/* Placeholder for actual component previews */}
-        <div className="min-h-full flex flex-col items-center justify-center p-20 text-center">
-          <div className="w-20 h-20 bg-gold/10 rounded-full flex items-center justify-center mb-8">
-            <Eye className="text-gold w-10 h-10" />
-          </div>
-          <h4 className="font-display text-4xl text-primary mb-4">Rendering {section}...</h4>
-          <p className="text-muted-foreground max-w-md mx-auto leading-relaxed">
-            This is where the actual {section} section from the live site will be rendered with your current draft changes.
-          </p>
-          <div className="mt-12 p-8 border border-border/50 rounded-2xl bg-card/20 backdrop-blur-xl max-w-2xl w-full">
-            <div className="w-full h-40 bg-gradient-to-br from-gold/20 to-transparent rounded-xl flex items-center justify-center">
-               <span className="text-xs font-bold uppercase tracking-widest text-gold/50">Section Visual Snapshot</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 }
