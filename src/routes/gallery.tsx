@@ -13,7 +13,11 @@ export const Route = createFileRoute("/gallery")({
   head: () => ({
     meta: [
       { title: "Gallery — Yakshagana Performances & Workshops" },
-      { name: "description", content: "A visual journey through Yakshagana performances, costumes, masks, and student workshops." },
+      {
+        name: "description",
+        content:
+          "A visual journey through Yakshagana performances, costumes, masks, and student workshops.",
+      },
       { property: "og:title", content: "Gallery" },
       { property: "og:description", content: "Moments from the stage and the studio." },
       { property: "og:image", content: g2 },
@@ -36,7 +40,11 @@ function Gallery() {
   return (
     <Layout>
       <section className="container mx-auto px-6 py-20">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-2xl mx-auto mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center max-w-2xl mx-auto mb-12"
+        >
           <div className="ornament-divider w-24 mx-auto mb-6" />
           <h1 className="text-5xl md:text-6xl font-display mb-4">{t.gallery.title}</h1>
           <p className="text-muted-foreground">{t.gallery.subtitle}</p>

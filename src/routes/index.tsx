@@ -3,6 +3,15 @@ import { motion } from "framer-motion";
 import { ArrowRight, Sparkles, Music, Drama } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { useLang } from "@/contexts/LanguageContext";
+import { ClassesSchedule } from "@/components/ClassesSchedule";
+import { UpcomingEvents } from "@/components/UpcomingEvents";
+import { useState } from "react";
+import g1 from "@/assets/gallery-1.jpg";
+import g2 from "@/assets/gallery-2.jpg";
+import g3 from "@/assets/gallery-3.jpg";
+import g4 from "@/assets/gallery-4.jpg";
+import g5 from "@/assets/gallery-5.jpg";
+import g6 from "@/assets/gallery-6.jpg";
 import heroImg from "@/assets/hero-yakshagana.jpg";
 import mandala from "@/assets/mandala.png";
 import aboutImg from "@/assets/about-performer.jpg";
@@ -12,7 +21,31 @@ export const Route = createFileRoute("/")({ component: Index });
 function Index() {
   const { t } = useLang();
   const icons = [Drama, Sparkles, Music];
-  const highlightOrder = [2, 0, 1];
+  const highlightOrder = [2, 0, 1]; // 2: Performances, 0: Classes, 1: Workshops
+
+  const [activeDetails, setActiveDetails] = useState(false);
+
+  const handleHighlightClick = (idx: number) => {
+    setActiveDetails(true);
+    setTimeout(() => {
+      const targetId =
+        idx === 2 ? "performances-details" : idx === 0 ? "classes-details" : "workshops-details";
+      const element = document.getElementById(targetId);
+      if (element) {
+        const y = element.getBoundingClientRect().top + window.scrollY - 100;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+    }, 100);
+  };
+
+  const galleryItems = [
+    { src: g1, label: "The Mask" },
+    { src: g2, label: "Stage Performance" },
+    { src: g4, label: "Crown Heritage" },
+    { src: g6, label: "The Warrior" },
+    { src: g5, label: "Chande Master" },
+    { src: g3, label: "Workshop" },
+  ];
 
   return (
     <Layout>
@@ -139,7 +172,7 @@ function Index() {
                 dangerouslySetInnerHTML={{
                   __html: paragraph.replace(
                     /Kathegaararu|ಕಥೆಗಾರರು/g,
-                    '<strong class="text-foreground font-semibold">$&</strong>'
+                    '<strong class="text-foreground font-semibold">$&</strong>',
                   ),
                 }}
               />
@@ -176,7 +209,8 @@ function Index() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: i * 0.15 }}
                 whileHover={{ y: -8 }}
-                className="group relative p-8 rounded-2xl bg-card/50 border border-border hover:border-gold/50 transition-all overflow-hidden"
+                onClick={() => handleHighlightClick(idx)}
+                className="group relative p-8 rounded-2xl bg-card/50 border border-border hover:border-gold/50 transition-all overflow-hidden cursor-pointer"
               >
                 <div className="absolute -top-20 -right-20 w-40 h-40 bg-gold/10 rounded-full blur-3xl group-hover:bg-gold/20 transition" />
                 <div className="relative">
@@ -192,29 +226,99 @@ function Index() {
         </div>
       </section>
 
-      {/* CTA STRIP */}
-      <section className="container mx-auto px-6 pb-24">
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="relative overflow-hidden rounded-3xl bg-ember p-12 md:p-16 text-center shadow-ember"
-        >
-          <img src={mandala} alt="" className="absolute -right-20 -bottom-20 w-80 opacity-20 animate-spin-slow" />
-          <h3 className="font-display text-3xl md:text-4xl mb-4 text-primary-foreground">
-            Step into the tradition
-          </h3>
-          <p className="text-primary-foreground/80 max-w-xl mx-auto mb-8">
-            Whether you are a curious beginner or a seasoned artist, our doors are open.
-          </p>
-          <Link
-            to="/contact"
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-gold text-background font-medium hover:scale-105 transition-transform shadow-glow"
-          >
-            {t.nav.contact} <ArrowRight className="w-4 h-4" />
-          </Link>
-        </motion.div>
-      </section>
+      {/* EXPANDED DETAILS */}
+      {activeDetails && (
+        <section className="container mx-auto px-6 py-12 flex flex-col gap-32">
+          {/* PERFORMANCES */}
+          <div id="performances-details" className="scroll-mt-32">
+            <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary">
+              {t.highlights.items[2].title}
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 grid-flow-dense">
+              {galleryItems.map((it, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: (i % 3) * 0.1 }}
+                  className={`group relative overflow-hidden rounded-2xl border border-border hover:border-gold/50 transition ${
+                    i === 0 || i === 4
+                      ? "md:row-span-2 aspect-[3/4] md:aspect-auto"
+                      : "aspect-square"
+                  }`}
+                >
+                  <img
+                    src={it.src}
+                    alt={it.label}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent opacity-0 group-hover:opacity-100 transition" />
+                  <div className="absolute bottom-0 inset-x-0 p-5 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition">
+                    <div className="font-display text-lg text-primary">{it.label}</div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* CLASSES */}
+          <div id="classes-details" className="scroll-mt-32">
+            <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary">
+              {t.highlights.items[0].title}
+            </h2>
+            <ClassesSchedule />
+          </div>
+
+          {/* WORKSHOPS */}
+          <div id="workshops-details" className="scroll-mt-32">
+            <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary">
+              {t.highlights.items[1].title}
+            </h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {t.classes.items.map((c, i) => (
+                <motion.article
+                  key={i}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: (i % 3) * 0.1 }}
+                  whileHover={{ y: -6 }}
+                  className="group relative p-7 rounded-2xl bg-card border border-border hover:border-gold/50 hover:shadow-glow transition-all"
+                >
+                  <div className="absolute top-0 left-7 w-12 h-1 bg-gold rounded-b-full" />
+                  <h3 className="font-display text-2xl text-primary mb-4">{c.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-6">{c.desc}</p>
+                  <div className="space-y-2.5 text-sm border-t border-border/50 pt-5">
+                    <div className="flex items-center gap-2.5 text-foreground/80">
+                      <span className="w-4 h-4 text-gold flex items-center justify-center">👤</span>{" "}
+                      {c.teacher}
+                    </div>
+                    <div className="flex items-center gap-2.5 text-foreground/80">
+                      <span className="w-4 h-4 text-gold flex items-center justify-center">🕒</span>{" "}
+                      {c.time}
+                    </div>
+                    <div className="flex items-center gap-2.5 text-foreground/80">
+                      <span className="w-4 h-4 text-gold flex items-center justify-center">📅</span>{" "}
+                      {c.duration}
+                    </div>
+                  </div>
+                  <Link
+                    to="/contact"
+                    className="mt-6 inline-flex w-full items-center justify-center px-4 py-2.5 rounded-full border border-gold/40 text-primary text-sm hover:bg-gold hover:text-background transition-colors"
+                  >
+                    {t.classes.enroll}
+                  </Link>
+                </motion.article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* UPCOMING EVENTS */}
+      <UpcomingEvents />
     </Layout>
   );
 }

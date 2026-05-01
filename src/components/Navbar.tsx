@@ -26,8 +26,12 @@ export function Navbar() {
             <span className="text-background font-display font-bold text-lg">ಯ</span>
           </div>
           <div className="leading-tight">
-            <div className="font-display text-lg text-gradient-gold tracking-wider">Kathe Gaararu</div>
-            <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Yakshagana Kala</div>
+            <div className="font-display text-lg text-gradient-gold tracking-wider">
+              Kathe Gaararu
+            </div>
+            <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+              Yakshagana Kala
+            </div>
           </div>
         </Link>
 

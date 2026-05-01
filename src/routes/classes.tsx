@@ -8,9 +8,16 @@ export const Route = createFileRoute("/classes")({
   head: () => ({
     meta: [
       { title: "Yakshagana Classes & Workshops — Kathe Gaararu" },
-      { name: "description", content: "Authentic Yakshagana training in dance, music, vocals, and costume from veteran gurus." },
+      {
+        name: "description",
+        content:
+          "Authentic Yakshagana training in dance, music, vocals, and costume from veteran gurus.",
+      },
       { property: "og:title", content: "Classes & Workshops" },
-      { property: "og:description", content: "Train under master gurus across vocals, drums, dance, and more." },
+      {
+        property: "og:description",
+        content: "Train under master gurus across vocals, drums, dance, and more.",
+      },
     ],
   }),
   component: Classes,
@@ -21,7 +28,11 @@ function Classes() {
   return (
     <Layout>
       <section className="container mx-auto px-6 py-20">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-2xl mx-auto mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center max-w-2xl mx-auto mb-16"
+        >
           <div className="ornament-divider w-24 mx-auto mb-6" />
           <h1 className="text-5xl md:text-6xl font-display mb-4">{t.classes.title}</h1>
           <p className="text-muted-foreground">{t.classes.subtitle}</p>

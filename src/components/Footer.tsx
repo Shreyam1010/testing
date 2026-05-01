@@ -20,9 +20,15 @@ export function Footer() {
         <div className="text-sm">
           <div className="text-foreground font-medium mb-3">Explore</div>
           <div className="flex flex-col gap-2 text-muted-foreground">
-            <Link to="/classes" className="hover:text-primary">{t.nav.classes}</Link>
-            <Link to="/gallery" className="hover:text-primary">{t.nav.gallery}</Link>
-            <Link to="/contact" className="hover:text-primary">{t.nav.contact}</Link>
+            <Link to="/classes" className="hover:text-primary">
+              {t.nav.classes}
+            </Link>
+            <Link to="/gallery" className="hover:text-primary">
+              {t.nav.gallery}
+            </Link>
+            <Link to="/contact" className="hover:text-primary">
+              {t.nav.contact}
+            </Link>
           </div>
         </div>
       </div>
