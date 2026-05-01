@@ -23,7 +23,7 @@ function Index() {
   const icons = [Drama, Sparkles, Music];
   const highlightOrder = [2, 0, 1]; // 2: Performances, 0: Classes, 1: Workshops
 
-  const [activeDetails] = useState(true);
+
 
   const handleHighlightClick = (idx: number) => {
     const targetId =
@@ -224,8 +224,7 @@ function Index() {
       </section>
 
       {/* EXPANDED DETAILS */}
-      {activeDetails && (
-        <section className="container mx-auto px-6 py-12 flex flex-col gap-32">
+      <section className="container mx-auto px-6 py-12 flex flex-col gap-32">
           {/* PERFORMANCES */}
           <div id="performances-details" className="scroll-mt-32">
             <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary">
@@ -312,7 +311,6 @@ function Index() {
             </div>
           </div>
         </section>
-      )}
 
       {/* UPCOMING EVENTS */}
       <UpcomingEvents />
