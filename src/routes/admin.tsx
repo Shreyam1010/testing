@@ -2,11 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/Layout";
-import { 
-  Lock, User, LogOut, LayoutDashboard, 
-  Image as ImageIcon, Info, Calendar, 
-  BookOpen, Camera, Mail, Eye, Edit3, Save, 
-  Languages, Sparkles, ArrowLeft 
+import {
+  Lock, User, LogOut, LayoutDashboard,
+  Image as ImageIcon, Info, Calendar,
+  BookOpen, Camera, Mail, Eye, Edit3, Save,
+  Languages, Sparkles, ArrowLeft
 } from "lucide-react";
 
 import { HeroEditor } from "@/components/admin/HeroEditor";
@@ -49,7 +49,7 @@ function AdminPage() {
     return (
       <Layout>
         <div className="min-h-screen flex items-center justify-center px-6">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className="w-full max-w-md bg-card border border-border p-10 rounded-3xl shadow-2xl backdrop-blur-xl"
@@ -67,8 +67,8 @@ function AdminPage() {
                 <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Username</label>
                 <div className="relative">
                   <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={user}
                     onChange={(e) => setUser(e.target.value)}
                     className="w-full bg-background/50 border border-border rounded-xl pl-12 pr-4 py-3.5 outline-none focus:border-gold/50 transition-all"
@@ -80,8 +80,8 @@ function AdminPage() {
                 <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Password</label>
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <input 
-                    type="password" 
+                  <input
+                    type="password"
                     value={pass}
                     onChange={(e) => setPass(e.target.value)}
                     className="w-full bg-background/50 border border-border rounded-xl pl-12 pr-4 py-3.5 outline-none focus:border-gold/50 transition-all"
@@ -92,7 +92,7 @@ function AdminPage() {
 
               {error && <p className="text-red-500 text-xs text-center font-medium">{error}</p>}
 
-              <button 
+              <button
                 type="submit"
                 className="w-full bg-gold text-background py-4 rounded-xl font-bold shadow-glow hover:scale-[1.02] active:scale-[0.98] transition-all"
               >
@@ -126,39 +126,42 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   ];
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Top Navigation Bar */}
-      <header className="h-20 border-b border-border bg-card/50 backdrop-blur-xl flex items-center justify-between px-8 sticky top-0 z-50">
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-3 pr-6 border-r border-border">
-            <div className="w-8 h-8 bg-gold rounded-full flex items-center justify-center font-display font-bold text-background text-sm">ಯ</div>
-            <span className="text-primary font-display text-sm tracking-widest uppercase hidden md:block">Kathe Gaararu</span>
-          </div>
-          
+    <div className="min-h-screen relative overflow-hidden">
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <header className="h-20 border-b border-border bg-card/50 backdrop-blur-xl flex items-center px-4 xl:px-8 sticky top-0 z-50 w-full gap-2 xl:gap-4">
+        {/* LEFT LOGO */}
+        <div className="flex items-center gap-3 pr-2 xl:pr-4 border-r border-border shrink-0">
+          <div className="w-8 h-8 bg-gold rounded-full flex items-center justify-center font-display font-bold text-background text-sm">ಯ</div>
+          <span className="text-primary font-display text-sm tracking-widest uppercase hidden md:block whitespace-nowrap">Kathe Gaararu</span>
+        </div>
+        
+        {/* MIDDLE NAV */}
+        <div className="flex-1 overflow-x-auto no-scrollbar flex items-center">
           <nav className="flex items-center gap-1">
             {navItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id as Tab)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${
                   activeTab === item.id 
                     ? "bg-gold/10 text-gold" 
                     : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
                 }`}
               >
-                <item.icon className="w-3.5 h-3.5" />
+                <item.icon className="w-3.5 h-3.5 shrink-0" />
                 <span className="hidden lg:inline">{item.label}</span>
               </button>
             ))}
           </nav>
         </div>
 
-        <div className="flex items-center gap-6">
+        {/* RIGHT CONTROLS */}
+        <div className="flex items-center gap-2 xl:gap-4 shrink-0">
           {/* Language Toggle */}
-          <div className="flex bg-background/50 border border-border rounded-full p-1">
+          <div className="flex bg-background/50 border border-border rounded-full p-1 shrink-0">
             <button
               onClick={() => setEditLang("en")}
-              className={`px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all ${
+              className={`px-2 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all ${
                 editLang === "en" ? "bg-blue-500 text-white" : "text-muted-foreground"
               }`}
             >
@@ -166,7 +169,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             </button>
             <button
               onClick={() => setEditLang("kn")}
-              className={`px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all ${
+              className={`px-2 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all ${
                 editLang === "kn" ? "bg-gold text-background" : "text-muted-foreground"
               }`}
             >
@@ -174,27 +177,27 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             </button>
           </div>
 
-          <div className="h-8 w-px bg-border" />
+          <div className="h-6 w-px bg-border shrink-0 hidden sm:block" />
 
           {/* View Toggle */}
-          <div className="flex bg-background/50 border border-border rounded-lg p-1">
+          <div className="flex bg-background/50 border border-border rounded-lg p-1 shrink-0">
             <button
               onClick={() => setView("preview")}
-              className={`flex items-center gap-2 px-4 py-1.5 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all ${
+              className={`flex items-center gap-1.5 px-2 xl:px-3 py-1.5 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all ${
                 view === "preview" ? "bg-white/10 text-white" : "text-muted-foreground"
               }`}
             >
               <Eye className="w-3.5 h-3.5" />
-              Preview
+              <span className="hidden sm:inline">Preview</span>
             </button>
             <button
               onClick={() => setView("edit")}
-              className={`flex items-center gap-2 px-4 py-1.5 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all ${
+              className={`flex items-center gap-1.5 px-2 xl:px-3 py-1.5 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all ${
                 view === "edit" ? "bg-gold text-background" : "text-muted-foreground"
               }`}
             >
               <Edit3 className="w-3.5 h-3.5" />
-              Edit
+              <span className="hidden sm:inline">Edit</span>
             </button>
           </div>
 
@@ -204,45 +207,46 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
                 alert("Changes saved successfully! (Simulated)");
                 setView("preview");
               }}
-              className="flex items-center gap-2 px-6 py-2 bg-primary text-background rounded-lg font-bold shadow-glow hover:scale-105 transition-all text-[9px] uppercase tracking-widest"
+              className="flex items-center gap-1.5 px-3 xl:px-4 py-2 bg-primary text-background rounded-lg font-bold shadow-glow hover:scale-105 transition-all text-[9px] uppercase tracking-widest shrink-0"
             >
               <Save className="w-3.5 h-3.5" />
-              Save
+              <span className="hidden sm:inline">Save</span>
             </button>
           )}
 
-          <div className="h-8 w-px bg-border" />
+          <div className="h-6 w-px bg-border shrink-0" />
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 shrink-0">
             <Link to="/" className="p-2 text-muted-foreground hover:text-gold transition-colors" title="Back to Site">
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4 h-4 xl:w-5 xl:h-5" />
             </Link>
             <button onClick={onLogout} className="p-2 text-muted-foreground hover:text-red-500 transition-colors" title="Logout">
-              <LogOut className="w-5 h-5" />
+              <LogOut className="w-4 h-4 xl:w-5 xl:h-5" />
             </button>
           </div>
         </div>
       </header>
 
-      {/* Main Canvas Area */}
-      <main className="flex-1 overflow-auto bg-[#050505] custom-scrollbar">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab + view + editLang}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="min-h-full"
-          >
-            <LiveContainer 
-              section={activeTab} 
-              isEditing={view === "edit"} 
-              lang={editLang} 
-            />
-          </motion.div>
-        </AnimatePresence>
-      </main>
+        {/* Main Canvas Area */}
+        <main className="flex-1 overflow-auto custom-scrollbar">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab + view + editLang}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="min-h-full"
+            >
+              <LiveContainer
+                section={activeTab}
+                isEditing={view === "edit"}
+                lang={editLang}
+              />
+            </motion.div>
+          </AnimatePresence>
+        </main>
+      </div>
     </div>
   );
 }

@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { User, Clock } from "lucide-react";
 import { useLang } from "@/contexts/LanguageContext";
 import g2 from "@/assets/gallery-2.jpg";
@@ -9,7 +10,7 @@ import g1 from "@/assets/gallery-1.jpg";
 export function UpcomingEvents() {
   const { lang } = useLang();
   
-  const events = [
+  const [events, setEvents] = useState<any[]>([
     {
       title: { en: "Bhagavata Padya (Vocal)", kn: "ಭಾಗವತ ಪದ್ಯ (ಗಾಯನ)" },
       teacher: { en: "Vid. Keremane Shivarama", kn: "ವಿದ್ವಾನ್ ಕೆರೆಮನೆ ಶಿವರಾಮ" },
@@ -39,7 +40,26 @@ export function UpcomingEvents() {
       image: g1,
       status: "coming_soon",
     },
-  ];
+  ]);
+
+  useEffect(() => {
+    fetch(`http://localhost:8787/api/content?lang=${lang}`)
+      .then((r) => r.json())
+      .then((result) => {
+        const evData = result.siteContent?.find((item: any) => item.section === "events");
+        if (evData && evData.content_value) {
+          try {
+            const parsed = JSON.parse(evData.content_value);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setEvents(parsed);
+            }
+          } catch (e) {}
+        }
+      })
+      .catch(() => {});
+  }, [lang]);
+
+  if (events.length === 0) return null;
 
   return (
     <section className="container mx-auto px-6 pb-24">
@@ -51,62 +71,66 @@ export function UpcomingEvents() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {events.map((ev, i) => (
-          <motion.article
-            key={i}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: i * 0.1 }}
-            className="group relative bg-[#0a0a0a] border border-border/50 rounded-lg overflow-hidden transition-all hover:border-gold/40 flex flex-col"
-          >
-            <div className="relative aspect-[4/3] overflow-hidden">
-              <img
-                src={ev.image}
-                alt={ev.title[lang]}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
-              {ev.badge && (
-                <span className="absolute top-4 right-4 bg-gold text-[#0a0a0a] text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-sm">
-                  {ev.badge[lang]}
-                </span>
-              )}
-            </div>
-
-            <div className="p-6 flex flex-col flex-grow">
-              <h3 className="font-display text-xl text-primary mb-4 leading-tight">
-                {ev.title[lang]}
-              </h3>
-
-              <div className="space-y-3 text-sm text-foreground/70 mb-8 flex-grow">
-                <div className="flex items-center gap-3">
-                  <User size={14} className="text-gold shrink-0" />
-                  <span>{ev.teacher[lang]}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Clock size={14} className="text-gold shrink-0" />
-                  <span>{ev.time[lang]}</span>
-                </div>
+        <AnimatePresence>
+          {events.map((ev, i) => (
+            <motion.article
+              key={i}
+              layout
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              className="group relative bg-[#0a0a0a] border border-border/50 rounded-lg overflow-hidden transition-all hover:border-gold/40 flex flex-col"
+            >
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <img
+                  src={ev.image}
+                  alt={ev.title?.[lang] || "Event Image"}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
+                {ev.badge?.[lang] && (
+                  <span className="absolute top-4 right-4 bg-gold text-[#0a0a0a] text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-sm">
+                    {ev.badge[lang]}
+                  </span>
+                )}
               </div>
 
-              {ev.status === "booking" ? (
-                <a
-                  href="https://wa.me/919876543210"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full text-center py-3 px-4 border border-border/50 text-xs font-bold uppercase tracking-widest text-primary hover:border-gold/50 hover:bg-gold/5 transition-colors rounded-sm"
-                >
-                  {lang === "en" ? "BOOKING" : "ಬುಕಿಂಗ್"}
-                </a>
-              ) : (
-                <div className="block w-full text-center py-3 px-4 border border-border/30 text-xs font-bold uppercase tracking-widest text-foreground/40 bg-background/20 rounded-sm cursor-not-allowed">
-                  {lang === "en" ? "COMING SOON" : "ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ"}
+              <div className="p-6 flex flex-col flex-grow">
+                <h3 className="font-display text-xl text-primary mb-4 leading-tight">
+                  {ev.title?.[lang]}
+                </h3>
+
+                <div className="space-y-3 text-sm text-foreground/70 mb-8 flex-grow">
+                  <div className="flex items-center gap-3">
+                    <User size={14} className="text-gold shrink-0" />
+                    <span>{ev.teacher?.[lang]}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Clock size={14} className="text-gold shrink-0" />
+                    <span>{ev.time?.[lang]}</span>
+                  </div>
                 </div>
-              )}
-            </div>
-          </motion.article>
-        ))}
+
+                {ev.status === "booking" ? (
+                  <a
+                    href="https://wa.me/919876543210"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full text-center py-3 px-4 border border-border/50 text-xs font-bold uppercase tracking-widest text-primary hover:border-gold/50 hover:bg-gold/5 transition-colors rounded-sm"
+                  >
+                    {lang === "en" ? "BOOKING" : "ಬುಕಿಂಗ್"}
+                  </a>
+                ) : (
+                  <div className="block w-full text-center py-3 px-4 border border-border/30 text-xs font-bold uppercase tracking-widest text-foreground/40 bg-background/20 rounded-sm cursor-not-allowed">
+                    {lang === "en" ? "COMING SOON" : "ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ"}
+                  </div>
+                )}
+              </div>
+            </motion.article>
+          ))}
+        </AnimatePresence>
       </div>
     </section>
   );

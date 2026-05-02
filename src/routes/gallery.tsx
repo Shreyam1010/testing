@@ -75,9 +75,8 @@ function GalleryItem({ it, i }: { it: any; i: number }) {
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: (i % 4) * 0.1 }}
-      className={`group relative overflow-hidden rounded-2xl border border-border hover:border-gold/50 transition ${
-        i === 0 || i === 3 ? "md:col-span-2 md:row-span-2 aspect-square md:aspect-auto" : "aspect-square"
-      }`}
+      className={`group relative overflow-hidden rounded-2xl border border-border hover:border-gold/50 transition ${i === 0 || i === 3 ? "md:col-span-2 md:row-span-2 aspect-square md:aspect-auto" : "aspect-square"
+        }`}
     >
       {it.type === "video" ? (
         <video

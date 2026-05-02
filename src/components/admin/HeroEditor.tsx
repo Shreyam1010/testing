@@ -1,6 +1,6 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Camera } from "lucide-react";
+import { ArrowRight, Loader2, Save, Check } from "lucide-react";
 import heroImg from "@/assets/hero-yakshagana.jpg";
 import mandala from "@/assets/mandala.png";
 
@@ -9,7 +9,7 @@ interface HeroEditorProps {
   lang: "en" | "kn";
 }
 
-/* tiny helper — a span that looks identical whether editing or not */
+/* Invisible editable wrapper — preserves original CSS */
 function EditableText({
   value,
   onChange,
@@ -21,10 +21,9 @@ function EditableText({
   onChange: (v: string) => void;
   isEditing: boolean;
   className?: string;
-  tag?: "span" | "p" | "div";
+  tag?: "span" | "p" | "div" | "h1";
 }) {
   const ref = useRef<HTMLElement>(null);
-
   const handleBlur = useCallback(() => {
     if (ref.current) onChange(ref.current.innerText);
   }, [onChange]);
@@ -38,10 +37,7 @@ function EditableText({
       suppressContentEditableWarning
       onBlur={handleBlur}
       className={`${className} outline-none cursor-text`}
-      style={{
-        caretColor: "var(--gold)",
-        borderBottom: "1px solid rgba(255,255,255,0.08)",
-      }}
+      style={{ caretColor: "var(--gold)" }}
     >
       {value}
     </Tag>
@@ -49,10 +45,12 @@ function EditableText({
 }
 
 export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
-  const [heroImage, setHeroImage] = useState(heroImg);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [loading, setLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
-  const [data, setData] = useState({
+  // Default text from i18n
+  const defaults = {
     en: {
       tag: "Preserving a 400-year-old legacy",
       title: "The Living Art of",
@@ -71,25 +69,52 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
       ctaPrimary: "ತರಗತಿಗಳನ್ನು ನೋಡಿ",
       ctaSecondary: "ಪ್ರದರ್ಶನಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
     },
-  });
-
-  const current = data[lang];
-
-  const update = (field: string) => (value: string) => {
-    setData((prev) => ({
-      ...prev,
-      [lang]: { ...prev[lang], [field]: value },
-    }));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setHeroImage(url);
+  const [data, setData] = useState(defaults[lang]);
+
+  useEffect(() => {
+    setData(defaults[lang]);
+    // Try fetching from DB
+    fetch(`http://localhost:8787/api/content?lang=${lang}`)
+      .then((r) => r.json())
+      .then((result) => {
+        const heroData: any = {};
+        result.siteContent?.forEach((item: any) => {
+          if (item.section === "hero") heroData[item.content_key] = item.content_value;
+        });
+        if (heroData.title) {
+          setData((prev) => ({
+            ...prev,
+            ...heroData,
+          }));
+        }
+      })
+      .catch(() => {});
+  }, [lang]);
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    setSaveSuccess(false);
+    try {
+      await fetch("http://localhost:8787/api/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ section: "hero", lang, data }),
+      });
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (err) {
+      console.error("Save failed:", err);
+    } finally {
+      setIsSaving(false);
     }
   };
 
+  const update = (field: string, value: string) =>
+    setData((prev) => ({ ...prev, [field]: value }));
+
+  /* ── Exact replica of index.tsx Hero ── */
   return (
     <section className="relative min-h-[92vh] flex items-center overflow-hidden">
       <div className="absolute inset-0 bg-hero" />
@@ -113,7 +138,6 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Tag badge */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -122,58 +146,56 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
           >
             <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
             <EditableText
-              value={current.tag}
-              onChange={update("tag")}
+              value={data.tag}
+              onChange={(v) => update("tag", v)}
               isEditing={isEditing}
             />
           </motion.div>
 
-          {/* Heading — identical structure to index.tsx */}
           <h1 className="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.05] mb-6">
             <EditableText
-              value={current.title}
-              onChange={update("title")}
+              value={data.title}
+              onChange={(v) => update("title", v)}
               isEditing={isEditing}
             />
             <br />
-            <EditableText
-              value={current.titleAccent}
-              onChange={update("titleAccent")}
-              isEditing={isEditing}
-              className="text-gradient-gold glow-text"
-            />
+            <span className="text-gradient-gold glow-text">
+              <EditableText
+                value={data.titleAccent}
+                onChange={(v) => update("titleAccent", v)}
+                isEditing={isEditing}
+              />
+            </span>
           </h1>
 
-          {/* Subtitle */}
-          <EditableText
-            tag="p"
-            value={current.subtitle}
-            onChange={update("subtitle")}
-            isEditing={isEditing}
-            className="text-lg text-muted-foreground max-w-xl leading-relaxed mb-10"
-          />
+          <p className="text-lg text-muted-foreground max-w-xl leading-relaxed mb-10">
+            <EditableText
+              value={data.subtitle}
+              onChange={(v) => update("subtitle", v)}
+              isEditing={isEditing}
+              tag="span"
+            />
+          </p>
 
-          {/* CTA buttons */}
           <div className="flex flex-wrap gap-4">
-            <div className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gold text-background font-medium shadow-glow">
+            <button className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gold text-background font-medium shadow-glow hover:scale-105 transition-transform">
               <EditableText
-                value={current.ctaPrimary}
-                onChange={update("ctaPrimary")}
+                value={data.ctaPrimary}
+                onChange={(v) => update("ctaPrimary", v)}
                 isEditing={isEditing}
               />
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
-            <div className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-border hover:border-gold text-foreground transition-colors">
+            </button>
+            <button className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-border hover:border-gold text-foreground transition-colors">
               <EditableText
-                value={current.ctaSecondary}
-                onChange={update("ctaSecondary")}
+                value={data.ctaSecondary}
+                onChange={(v) => update("ctaSecondary", v)}
                 isEditing={isEditing}
               />
-            </div>
+            </button>
           </div>
         </motion.div>
 
-        {/* Hero image — identical to index.tsx */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -181,37 +203,41 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
           className="relative"
         >
           <div className="absolute inset-0 bg-ember rounded-full blur-3xl opacity-40 animate-float-slow" />
-          <div className="relative group">
-            <motion.img
-              src={heroImage}
-              alt="Yakshagana performer in traditional crown headdress"
-              width={1536}
-              height={1536}
-              className="relative rounded-2xl shadow-glow border border-gold/20 animate-float-slow"
-            />
-            {isEditing && (
-              <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all rounded-2xl cursor-pointer">
-                <button 
-                  onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center gap-2 px-6 py-3 bg-gold text-background rounded-full font-bold text-xs uppercase tracking-widest shadow-glow hover:scale-105 transition-all"
-                >
-                  <Camera className="w-4 h-4" />
-                  Replace Hero Image
-                </button>
-                <input 
-                  type="file" 
-                  ref={fileInputRef} 
-                  className="hidden" 
-                  accept="image/*" 
-                  onChange={handleImageChange}
-                />
-              </div>
-            )}
-          </div>
+          <motion.img
+            src={heroImg}
+            alt="Yakshagana performer in traditional crown headdress"
+            width={1536}
+            height={1536}
+            className="relative rounded-2xl shadow-glow border border-gold/20 animate-float-slow"
+          />
         </motion.div>
       </div>
 
       <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-b from-transparent to-background pointer-events-none" />
+
+      {/* Save button — only visible in edit mode */}
+      {isEditing && (
+        <div className="fixed bottom-8 right-8 z-[100]">
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className={`flex items-center gap-2 px-8 py-4 rounded-full font-bold text-xs uppercase tracking-widest transition-all shadow-glow ${
+              saveSuccess
+                ? "bg-green-500 text-white"
+                : "bg-primary text-background hover:scale-105"
+            }`}
+          >
+            {isSaving ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : saveSuccess ? (
+              <Check className="w-4 h-4" />
+            ) : (
+              <Save className="w-4 h-4" />
+            )}
+            {isSaving ? "Saving..." : saveSuccess ? "Saved to D1!" : "Save Changes"}
+          </button>
+        </div>
+      )}
     </section>
   );
 }

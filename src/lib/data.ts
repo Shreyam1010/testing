@@ -194,6 +194,7 @@ export type BlogItem = {
   id: string;
   title: { en: string; kn: string };
   excerpt: { en: string; kn: string };
+  content: { en: string; kn: string };
   category: { en: string; kn: string };
   author: { en: string; kn: string };
   date: string;
@@ -209,6 +210,10 @@ export const blogs: BlogItem[] = [
       en: "Discover the mathematical precision behind the iconic Yakshagana headgear.",
       kn: "ಐಕಾನಿಕ್ ಯಕ್ಷಗಾನ ಕಿರೀಟದ ಹಿಂದಿರುವ ಗಣಿತದ ನಿಖರತೆಯನ್ನು ಅನ್ವೇಷಿಸಿ.",
     },
+    content: {
+      en: "Yakshagana headgear, known as Kedige Mundasu, is a marvel of traditional design. It is crafted with meticulous mathematical precision, ensuring both balance for the performer and a striking visual impact. The symmetry involves complex geometric patterns that have been passed down through generations of artisans. Every curve and angle is calculated to reflect light from the oil lamps on stage, creating the divine aura associated with the characters.",
+      kn: "ಯಕ್ಷಗಾನದ ಕಿರೀಟ ಅಥವಾ ಕೇದಿಗೆ ಮುಂಡಾಸು ಸಾಂಪ್ರದಾಯಿಕ ವಿನ್ಯಾಸದ ಒಂದು ಅದ್ಭುತ. ಇದನ್ನು ನಿಖರವಾದ ಗಣಿತದ ಅಳತೆಯೊಂದಿಗೆ ರಚಿಸಲಾಗಿದೆ. ಈ ಸಮಮಿತಿಯು ಸಂಕೀರ್ಣ ಜ್ಯಾಮಿತೀಯ ವಿನ್ಯಾಸಗಳನ್ನು ಒಳಗೊಂಡಿದ್ದು, ತಲೆಮಾರುಗಳಿಂದ ಬಂದಿದೆ. ಪ್ರತಿಯೊಂದು ರೇಖೆ ಮತ್ತು ಕೋನವು ವೇದಿಕೆಯ ಮೇಲಿನ ದೀಪದ ಬೆಳಕನ್ನು ಪ್ರತಿಬಿಂಬಿಸುವಂತೆ ಲೆಕ್ಕಾಚಾರ ಮಾಡಲಾಗಿದೆ, ಇದು ಪಾತ್ರಗಳಿಗೆ ದೈವಿಕ ಕಳೆಯನ್ನು ನೀಡುತ್ತದೆ.",
+    },
     category: { en: "Craftsmanship", kn: "ಕರಕುಶಲತೆ" },
     author: { en: "Guru Raghavendra", kn: "ಗುರು ರಾಘವೇಂದ್ರ" },
     date: "Apr 20, 2025",
@@ -221,6 +226,10 @@ export const blogs: BlogItem[] = [
     excerpt: {
       en: "A deep dive into the emotive landscape of Yakshagana abhinaya.",
       kn: "ಯಕ್ಷಗಾನ ಅಭಿನಯದ ಭಾವನಾತ್ಮಕ ಲೋಕಕ್ಕೆ ಒಂದು ಆಳವಾದ ನೋಟ.",
+    },
+    content: {
+      en: "Abhinaya in Yakshagana is fundamentally rooted in the concept of Navarasa — the nine primary emotions. From Shringara (love) to Raudra (fury), the actor must fluidly transition between emotional states. This article explores the facial exercises, eye movements, and body language required to master these expressions. A true artist doesn't just display the emotion; they evoke the corresponding 'bhava' within the audience, creating a shared spiritual experience.",
+      kn: "ಯಕ್ಷಗಾನದಲ್ಲಿ ಅಭಿನಯವು ಮೂಲತಃ ನವರಸಗಳ ಪರಿಕಲ್ಪನೆಯಲ್ಲಿ ಬೇರೂರಿದೆ. ಶೃಂಗಾರದಿಂದ ರೌದ್ರದವರೆಗೆ, ನಟನು ಭಾವನಾತ್ಮಕ ಸ್ಥಿತಿಗಳ ನಡುವೆ ಸುಲಲಿತವಾಗಿ ಬದಲಾಗಬೇಕು. ಈ ಲೇಖನವು ಈ ಅಭಿವ್ಯಕ್ತಿಗಳನ್ನು ಕರಗತ ಮಾಡಿಕೊಳ್ಳಲು ಅಗತ್ಯವಿರುವ ಮುಖದ ವ್ಯಾಯಾಮಗಳು, ಕಣ್ಣಿನ ಚಲನೆಗಳು ಮತ್ತು ದೇಹ ಭಾಷೆಯನ್ನು ಪರಿಶೋಧಿಸುತ್ತದೆ. ನಿಜವಾದ ಕಲಾವಿದ ಕೇವಲ ಭಾವನೆಯನ್ನು ಪ್ರದರ್ಶಿಸುವುದಿಲ್ಲ; ಅವರು ಪ್ರೇಕ್ಷಕರಲ್ಲಿ ಅನುಗುಣವಾದ 'ಭಾವ'ವನ್ನು ಉದ್ದೀಪಿಸುತ್ತಾರೆ.",
     },
     category: { en: "Artistry", kn: "ಕಲೆಗಾರಿಕೆ" },
     author: { en: "Smt. Lakshmi", kn: "ಶ್ರೀಮತಿ ಲಕ್ಷ್ಮಿ" },
@@ -235,6 +244,10 @@ export const blogs: BlogItem[] = [
       en: "How the high-pitched drum defines the energy of the Badagutittu style.",
       kn: "ಹೇಗೆ ಚಂಡೆಯ ಶಬ್ದವು ಬಡಗುತಿಟ್ಟು ಶೈಲಿಯ ಶಕ್ತಿಯನ್ನು ನಿರ್ಧರಿಸುತ್ತದೆ.",
     },
+    content: {
+      en: "The Chande is not merely an accompanying instrument; it is the heartbeat of the Badagutittu Yakshagana style. Its piercing, high-pitched resonance cuts through the night air, signaling the arrival of kings and demons alike. Playing the Chande requires immense physical stamina and an intricate understanding of rhythm. The drummer engages in a rhythmic dialogue with the dancer, often culminating in thrilling, high-energy crescendos that leave audiences spellbound.",
+      kn: "ಚಂಡೆಯು ಕೇವಲ ಒಂದು ಸಹವಾದ್ಯವಲ್ಲ; ಇದು ಬಡಗುತಿಟ್ಟು ಯಕ್ಷಗಾನ ಶೈಲಿಯ ಹೃದಯ ಬಡಿತ. ಇದರ ತೀಕ್ಷ್ಣವಾದ, ಉಚ್ಚ ಸ್ವರದ ನಾದವು ರಾತ್ರಿಯ ಗಾಳಿಯನ್ನು ಸೀಳಿಕೊಂಡು ರಾಜರು ಮತ್ತು ರಾಕ್ಷಸರ ಆಗಮನವನ್ನು ಸೂಚಿಸುತ್ತದೆ. ಚಂಡೆ ನುಡಿಸಲು ಅಪಾರ ದೈಹಿಕ ಶಕ್ತಿ ಮತ್ತು ಲಯದ ಸಂಕೀರ್ಣ ತಿಳುವಳಿಕೆ ಅಗತ್ಯವಿದೆ. ವಾದಕನು ನರ್ತಕನೊಂದಿಗೆ ಲಯಬದ್ಧ ಸಂವಾದದಲ್ಲಿ ತೊಡಗುತ್ತಾನೆ, ಇದು ಪ್ರೇಕ್ಷಕರನ್ನು ಮಂತ್ರಮುಗ್ಧರನ್ನಾಗಿಸುತ್ತದೆ.",
+    },
     category: { en: "Music", kn: "ಸಂಗೀತ" },
     author: { en: "Shankara Hegde", kn: "ಶಂಕರ ಹೆಗಡೆ" },
     date: "Feb 10, 2025",
@@ -247,6 +260,10 @@ export const blogs: BlogItem[] = [
     excerpt: {
       en: "Tracing the evolution of Yakshagana from temple rituals to the modern stage.",
       kn: "ದೇವಸ್ಥಾನದ ಆಚರಣೆಗಳಿಂದ ಆಧುನಿಕ ರಂಗದವರೆಗೆ ಯಕ್ಷಗಾನದ ವಿಕಸನ.",
+    },
+    content: {
+      en: "Yakshagana traces its origins to the Bhakti movement and coastal temple rituals. Initially performed as offerings to the deity within the temple precincts, the art form gradually moved outward, adopting more elaborate theatrical elements. This evolution brought about specialized costumes, intricate makeup, and complex musical compositions. Today, while it thrives on modern stages with advanced lighting, it retains its deep devotional core and mythological roots.",
+      kn: "ಯಕ್ಷಗಾನವು ಭಕ್ತಿ ಚಳುವಳಿ ಮತ್ತು ಕರಾವಳಿಯ ದೇವಾಲಯದ ಆಚರಣೆಗಳಲ್ಲಿ ತನ್ನ ಮೂಲವನ್ನು ಹೊಂದಿದೆ. ಆರಂಭದಲ್ಲಿ ದೇವಾಲಯದ ಆವರಣದಲ್ಲಿ ದೇವರಿಗೆ ಅರ್ಪಣೆಯಾಗಿ ಪ್ರದರ್ಶಿಸಲ್ಪಡುತ್ತಿದ್ದ ಈ ಕಲಾ ಪ್ರಕಾರವು ಕ್ರಮೇಣ ಹೊರಹೊಮ್ಮಿ, ಹೆಚ್ಚು ವಿಸ್ತಾರವಾದ ನಾಟಕೀಯ ಅಂಶಗಳನ್ನು ಅಳವಡಿಸಿಕೊಂಡಿತು. ಈ ವಿಕಸನವು ವಿಶೇಷ ವೇಷಭೂಷಣಗಳು, ಸಂಕೀರ್ಣ ಬಣ್ಣಗಾರಿಕೆ ಮತ್ತು ಸಂಗೀತ ಸಂಯೋಜನೆಗಳನ್ನು ತಂದಿತು. ಇಂದು ಆಧುನಿಕ ವೇದಿಕೆಗಳಲ್ಲಿ ಪ್ರವರ್ಧಮಾನಕ್ಕೆ ಬರುತ್ತಿದ್ದರೂ, ತನ್ನ ಭಕ್ತಿ ಮತ್ತು ಪೌರಾಣಿಕ ಬೇರುಗಳನ್ನು ಉಳಿಸಿಕೊಂಡಿದೆ.",
     },
     category: { en: "History", kn: "ಇತಿಹಾಸ" },
     author: { en: "Kathe Gaararu", kn: "ಕಥೆಗಾರರು" },

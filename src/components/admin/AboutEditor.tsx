@@ -1,6 +1,6 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Camera } from "lucide-react";
+import { Camera, Loader2, Save, Check } from "lucide-react";
 import aboutImg from "@/assets/about-performer.jpg";
 
 interface AboutEditorProps {
@@ -49,12 +49,14 @@ function EditableText({
 export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
   const [currentAboutImg, setCurrentAboutImg] = useState(aboutImg);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   const [data, setData] = useState({
     en: {
       label: "OUR STORY",
       title: "Our Story",
-      lead: "Kathe Gaararu was founded to safeguard and share the radiant heritage of Yakshagana — Karnataka’s monumental folk theatre tradition.",
+      lead: "Kathe Gaararu was founded to safeguard and share the radiant heritage of Yakshagana — Karnataka's monumental folk theatre tradition.",
       body: [
         "For over four centuries, Yakshagana has united dance, music, costume, and storytelling into a single transcendent art form. Our institution carries that flame forward — training new generations, hosting public performances, and collaborating with masters of the craft.",
         "We believe culture is not a museum piece. It is living, breathing, evolving — a conversation between the ancient and the present. Through immersive learning and stagecraft, we invite every seeker to step into that conversation."
@@ -82,6 +84,58 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
       ]
     }
   });
+
+  // --- FETCH FROM DATABASE ---
+  useEffect(() => {
+    fetch(`http://localhost:8787/api/content?lang=${lang}`)
+      .then((r) => r.json())
+      .then((result) => {
+        const aboutData: any = {};
+        result.siteContent?.forEach((item: any) => {
+          if (item.section === "about") aboutData[item.content_key] = item.content_value;
+        });
+        if (aboutData.label) {
+          setData((prev) => ({
+            ...prev,
+            [lang]: {
+              ...prev[lang],
+              label: aboutData.label || prev[lang].label,
+              title: aboutData.title || prev[lang].title,
+              lead: aboutData.lead || prev[lang].lead,
+            },
+          }));
+        }
+      })
+      .catch(() => {});
+  }, [lang]);
+
+  // --- SAVE TO DATABASE ---
+  const handleSave = async () => {
+    setIsSaving(true);
+    setSaveSuccess(false);
+    try {
+      const current = data[lang];
+      await fetch("http://localhost:8787/api/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          section: "about",
+          lang,
+          data: {
+            label: current.label,
+            title: current.title,
+            lead: current.lead,
+          },
+        }),
+      });
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (err) {
+      console.error("Save failed:", err);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const current = data[lang];
 
@@ -113,7 +167,7 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
   };
 
   return (
-    <section className="relative overflow-hidden bg-[#050505] min-h-[90vh]">
+    <section className="relative overflow-hidden min-h-[90vh]">
       <input 
         type="file" 
         ref={fileInputRef} 
@@ -228,6 +282,30 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
           </motion.div>
         </div>
       </div>
+
+      {/* Save button — only visible in edit mode */}
+      {isEditing && (
+        <div className="fixed bottom-8 right-8 z-[100]">
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className={`flex items-center gap-2 px-8 py-4 rounded-full font-bold text-xs uppercase tracking-widest transition-all shadow-glow ${
+              saveSuccess
+                ? "bg-green-500 text-white"
+                : "bg-primary text-background hover:scale-105"
+            }`}
+          >
+            {isSaving ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : saveSuccess ? (
+              <Check className="w-4 h-4" />
+            ) : (
+              <Save className="w-4 h-4" />
+            )}
+            {isSaving ? "Saving..." : saveSuccess ? "Saved to D1!" : "Save Changes"}
+          </button>
+        </div>
+      )}
     </section>
   );
 }

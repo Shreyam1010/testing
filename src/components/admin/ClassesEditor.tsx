@@ -1,6 +1,6 @@
-import { useState, useRef, useCallback, useMemo } from "react";
-import { motion } from "framer-motion";
-import { Camera, User, Clock, BookOpen } from "lucide-react";
+import { useState, useRef, useCallback, useMemo, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Camera, User, Clock, BookOpen, Loader2, Save, Check, Plus, Trash2, Edit2, X } from "lucide-react";
 import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
 import g3 from "@/assets/gallery-3.jpg";
@@ -52,6 +52,10 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [teacherFilter, setTeacherFilter] = useState<string>("all");
   const [dayFilter, setDayFilter] = useState<string>("all");
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [editingTeacherIndex, setEditingTeacherIndex] = useState<number | null>(null);
 
   const [data, setData] = useState({
     en: {
@@ -130,6 +134,57 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
     }
   });
 
+  // --- FETCH FROM DATABASE ---
+  useEffect(() => {
+    async function loadData() {
+      setLoading(true);
+      try {
+        const res = await fetch(`http://localhost:8787/api/content?lang=${lang}`);
+        const result = await res.json();
+        
+        // Update teachers and classes if found in DB
+        if (result.teachers?.length > 0 || result.classes?.length > 0) {
+           setData(prev => ({
+             ...prev,
+             [lang]: {
+               ...prev[lang],
+               teachers: result.teachers.length > 0 ? result.teachers : prev[lang].teachers,
+               classes: result.classes.length > 0 ? result.classes : prev[lang].classes
+             }
+           }));
+        }
+      } catch (err) {
+        console.error("Failed to load classes content:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, [lang]);
+
+  // --- SAVE TO DATABASE ---
+  const handleSave = async () => {
+    setIsSaving(true);
+    setSaveSuccess(false);
+    try {
+      await fetch("http://localhost:8787/api/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          section: "classes_full", // Custom identifier for complex sync
+          lang: lang,
+          data: data[lang]
+        })
+      });
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (err) {
+      console.error("Save failed:", err);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const current = data[lang];
 
   const update = (field: string, value: any) => {
@@ -145,6 +200,46 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
     update("classes", newClasses);
   };
 
+  const handleAddClass = () => {
+    const newClasses = [...current.classes];
+    newClasses.unshift({
+      id: "c" + Date.now(),
+      topic: lang === "en" ? "New Class" : "ಹೊಸ ತರಗತಿ",
+      teacherId: current.teachers[0]?.id || "",
+      day: lang === "en" ? "Monday" : "ಸೋಮವಾರ",
+      level: lang === "en" ? "Beginner" : "ಪ್ರಾರಂಭಿಕ",
+      time: "10:00 AM"
+    });
+    update("classes", newClasses);
+  };
+
+  const handleDeleteClass = (id: string) => {
+    const newClasses = current.classes.filter(c => c.id !== id);
+    update("classes", newClasses);
+  };
+
+  const handleAddTeacher = () => {
+    const newTeachers = [...current.teachers];
+    newTeachers.push({
+      id: "t" + Date.now(),
+      name: lang === "en" ? "New Guru" : "ಹೊಸ ಗುರು",
+      expertise: lang === "en" ? "Expertise" : "ಪರಿಣತಿ",
+      bio: lang === "en" ? "Enter biography..." : "ಜೀವನ ಚರಿತ್ರೆ...",
+      image: g1
+    });
+    update("teachers", newTeachers);
+  };
+
+  const handleDeleteTeacher = (index: number) => {
+    const newTeachers = [...current.teachers];
+    const removedTeacher = newTeachers.splice(index, 1)[0];
+    update("teachers", newTeachers);
+    
+    // Also remove any classes this teacher had
+    const newClasses = current.classes.filter(c => c.teacherId !== removedTeacher.id);
+    update("classes", newClasses);
+  };
+
   const filteredClasses = useMemo(() => {
     return current.classes.filter(c => {
       if (teacherFilter !== "all" && c.teacherId !== teacherFilter) return false;
@@ -155,11 +250,30 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
 
   const days = useMemo(() => {
     const set = new Set(current.classes.map(c => c.day));
-    return Array.from(set);
-  }, [current.classes]);
+    const dayOrder = lang === "en" 
+      ? ["Tomorrow", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+      : ["ನಾಳೆ", "ಸೋಮವಾರ", "ಮಂಗಳವಾರ", "ಬುಧವಾರ", "ಗುರುವಾರ", "ಶುಕ್ರವಾರ", "ಶನಿವಾರ", "ಭಾನುವಾರ"];
+      
+    return Array.from(set).sort((a, b) => {
+      const idxA = dayOrder.indexOf(a);
+      const idxB = dayOrder.indexOf(b);
+      if (idxA === -1 && idxB === -1) return a.localeCompare(b);
+      if (idxA === -1) return 1;
+      if (idxB === -1) return -1;
+      return idxA - idxB;
+    });
+  }, [current.classes, lang]);
+
+  if (loading) {
+    return (
+      <div className="h-[80vh] flex items-center justify-center bg-[#050505]">
+        <Loader2 className="w-8 h-8 animate-spin text-gold" />
+      </div>
+    );
+  }
 
   return (
-    <section className="container mx-auto px-6 py-20 bg-[#050505]">
+    <div className="container mx-auto px-6 py-20 relative z-10">
       {/* Intro Section */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-5xl mx-auto mb-20">
         <div className="ornament-divider w-24 mx-auto mb-6" />
@@ -189,6 +303,17 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
 
       {/* Schedule Filters */}
       <div className="w-full mb-12">
+        {isEditing && (
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={handleAddClass}
+              className="flex items-center gap-2 px-4 py-2 bg-gold/10 text-gold rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold/20 transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              Add Class
+            </button>
+          </div>
+        )}
         <div className="flex flex-wrap items-end justify-center gap-8 mb-14 pb-8 border-b border-border/40">
           <div className="text-center">
             <span className="block text-xs uppercase tracking-[0.25em] text-gold/80 mb-3">
@@ -196,9 +321,29 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
             </span>
             <div className="flex flex-wrap gap-2 justify-center">
               <button onClick={() => setTeacherFilter("all")} className={`px-4 py-1.5 text-sm rounded-sm border ${teacherFilter === "all" ? "bg-gold text-background border-gold" : "border-border/60 text-foreground/75"}`}>{current.all}</button>
-              {current.teachers.map(tch => (
-                <button key={tch.id} onClick={() => setTeacherFilter(tch.id)} className={`px-4 py-1.5 text-sm rounded-sm border ${teacherFilter === tch.id ? "bg-gold text-background border-gold" : "border-border/60 text-foreground/75"}`}>{tch.name.split(" ").pop()}</button>
-              ))}
+              {current.teachers.map(tch => {
+                // Determine if they should be deleted if they have no classes
+                const hasClasses = current.classes.some(c => c.teacherId === tch.id);
+                return (
+                  <div key={tch.id} className="relative flex items-center">
+                    <button onClick={() => setTeacherFilter(tch.id)} className={`px-4 py-1.5 text-sm rounded-sm border ${teacherFilter === tch.id ? "bg-gold text-background border-gold" : "border-border/60 text-foreground/75"}`}>
+                      {tch.name.split(" ").pop()}
+                    </button>
+                    {isEditing && !hasClasses && (
+                      <button 
+                        onClick={() => {
+                          const idx = current.teachers.findIndex(t => t.id === tch.id);
+                          handleDeleteTeacher(idx);
+                        }}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 shadow-md hover:bg-red-600 transition-all z-10"
+                        title="Teacher has no classes. Delete?"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
           <div className="text-center">
@@ -216,41 +361,128 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
 
         {/* Schedule Cards - FULL SYNC (12 Classes) */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredClasses.map((c, i) => {
-            const teacher = current.teachers.find(t => t.id === c.teacherId);
-            const originalIndex = current.classes.findIndex(cls => cls.id === c.id);
-            return (
-              <motion.article key={c.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="h-full group relative bg-[#0a0a0a] border border-border/50 p-7 rounded-2xl transition-all hover:border-gold/40 flex flex-col">
-                <div className="flex items-center gap-2 text-[10px] text-gold/80 uppercase tracking-[0.2em] mb-4">
-                  <EditableText value={c.day} onChange={(v) => updateClass(originalIndex, "day", v)} isEditing={isEditing} />
-                  <span className="text-border">•</span>
-                  <EditableText value={c.level} onChange={(v) => updateClass(originalIndex, "level", v)} isEditing={isEditing} />
-                </div>
-                <h3 className="font-display text-xl text-primary leading-tight mb-5">
-                  <EditableText value={c.topic} onChange={(v) => updateClass(originalIndex, "topic", v)} isEditing={isEditing} tag="h3" />
-                </h3>
-                <div className="space-y-3 text-sm text-foreground/70 flex-grow">
-                  <div className="flex items-center gap-3">
-                    <User size={14} className="text-gold shrink-0" />
-                    <span>{lang === "en" ? "with" : "ಜೊತೆಗೆ"} {teacher?.name}</span>
+          <AnimatePresence>
+            {filteredClasses.map((c, i) => {
+              const teacher = current.teachers.find(t => t.id === c.teacherId);
+              const originalIndex = current.classes.findIndex(cls => cls.id === c.id);
+              return (
+                <motion.article layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} key={c.id} className="h-full group relative bg-card/40 border border-border/50 p-7 rounded-2xl transition-all hover:border-gold/40 flex flex-col">
+                  {isEditing && (
+                    <button
+                      onClick={() => handleDeleteClass(c.id)}
+                      className="absolute top-2 right-2 z-10 p-2 bg-red-500/80 text-white rounded-full hover:bg-red-500 transition-all"
+                      title="Remove Class"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                  <div className="flex items-center gap-2 text-[10px] text-gold/80 uppercase tracking-[0.2em] mb-4 mt-2">
+                    {isEditing ? (
+                      <>
+                        <select
+                          value={c.day}
+                          onChange={(e) => updateClass(originalIndex, "day", e.target.value)}
+                          className="bg-black/40 border border-border/50 rounded px-2 py-1 outline-none focus:border-gold"
+                        >
+                          {lang === "en" ? (
+                            <>
+                              <option value="Monday">Monday</option>
+                              <option value="Tuesday">Tuesday</option>
+                              <option value="Wednesday">Wednesday</option>
+                              <option value="Thursday">Thursday</option>
+                              <option value="Friday">Friday</option>
+                              <option value="Saturday">Saturday</option>
+                              <option value="Sunday">Sunday</option>
+                              <option value="Tomorrow">Tomorrow</option>
+                            </>
+                          ) : (
+                            <>
+                              <option value="ಸೋಮವಾರ">ಸೋಮವಾರ</option>
+                              <option value="ಮಂಗಳವಾರ">ಮಂಗಳವಾರ</option>
+                              <option value="ಬುಧವಾರ">ಬುಧವಾರ</option>
+                              <option value="ಗುರುವಾರ">ಗುರುವಾರ</option>
+                              <option value="ಶುಕ್ರವಾರ">ಶುಕ್ರವಾರ</option>
+                              <option value="ಶನಿವಾರ">ಶನಿವಾರ</option>
+                              <option value="ಭಾನುವಾರ">ಭಾನುವಾರ</option>
+                              <option value="ನಾಳೆ">ನಾಳೆ</option>
+                            </>
+                          )}
+                        </select>
+                        <span className="text-border">•</span>
+                        <select
+                          value={c.level || "None"}
+                          onChange={(e) => updateClass(originalIndex, "level", e.target.value)}
+                          className="bg-black/40 border border-border/50 rounded px-2 py-1 outline-none focus:border-gold"
+                        >
+                          {lang === "en" ? (
+                            <>
+                              <option value="None">None</option>
+                              <option value="Beginner">Beginner</option>
+                              <option value="Intermediate">Intermediate</option>
+                              <option value="Advanced">Advanced</option>
+                              <option value="All Levels">All Levels</option>
+                            </>
+                          ) : (
+                            <>
+                              <option value="ಯಾವುದು ಇಲ್ಲ">ಯಾವುದು ಇಲ್ಲ</option>
+                              <option value="ಪ್ರಾರಂಭಿಕ">ಪ್ರಾರಂಭಿಕ</option>
+                              <option value="ಮಧ್ಯಮ">ಮಧ್ಯಮ</option>
+                              <option value="ಉನ್ನತ">ಉನ್ನತ</option>
+                              <option value="ಎಲ್ಲ ಹಂತ">ಎಲ್ಲ ಹಂತ</option>
+                            </>
+                          )}
+                        </select>
+                      </>
+                    ) : (
+                      <>
+                        <span>{c.day}</span>
+                        {c.level && c.level !== "None" && c.level !== "ಯಾವುದು ಇಲ್ಲ" && (
+                          <>
+                            <span className="text-border">•</span>
+                            <span>{c.level}</span>
+                          </>
+                        )}
+                      </>
+                    )}
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Clock size={14} className="text-gold shrink-0" />
-                    <EditableText value={c.time} onChange={(v) => updateClass(originalIndex, "time", v)} isEditing={isEditing} />
+                  <h3 className="font-display text-xl text-primary leading-tight mb-5">
+                    <EditableText value={c.topic} onChange={(v) => updateClass(originalIndex, "topic", v)} isEditing={isEditing} tag="h3" />
+                  </h3>
+                  <div className="space-y-3 text-sm text-foreground/70 flex-grow">
+                    <div className="flex items-center gap-3">
+                      <User size={14} className="text-gold shrink-0" />
+                      {isEditing ? (
+                         <select 
+                           value={c.teacherId}
+                           onChange={(e) => updateClass(originalIndex, "teacherId", e.target.value)}
+                           className="bg-black/40 border border-border/50 rounded px-2 py-1 outline-none focus:border-gold"
+                         >
+                           {current.teachers.map(t => (
+                             <option key={t.id} value={t.id}>{t.name}</option>
+                           ))}
+                         </select>
+                      ) : (
+                         <span>{lang === "en" ? "with" : "ಜೊತೆಗೆ"} {teacher?.name}</span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Clock size={14} className="text-gold shrink-0" />
+                      <EditableText value={c.time} onChange={(v) => updateClass(originalIndex, "time", v)} isEditing={isEditing} />
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <BookOpen size={14} className="text-gold shrink-0" />
+                      <span>{teacher?.expertise}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <BookOpen size={14} className="text-gold shrink-0" />
-                    <span>{teacher?.expertise}</span>
-                  </div>
-                </div>
-              </motion.article>
-            );
-          })}
+                </motion.article>
+              );
+            })}
+          </AnimatePresence>
         </div>
       </div>
 
       {/* Gurus Section */}
-      <section className="mt-40">
+      <section className="mt-40 relative">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-display mb-4 text-primary">
             <EditableText value={current.gurusTitle} onChange={(v) => update("gurusTitle", v)} isEditing={isEditing} tag="h2" />
@@ -259,57 +491,171 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
             <EditableText value={current.gurusSubtitle} onChange={(v) => update("gurusSubtitle", v)} isEditing={isEditing} />
           </p>
         </div>
+        
+        {isEditing && (
+          <button
+            onClick={handleAddTeacher}
+            className="absolute right-0 top-0 flex items-center gap-2 px-4 py-2 bg-gold/10 text-gold rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold/20 transition-all"
+          >
+            <Plus className="w-4 h-4" />
+            Add Guru
+          </button>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {current.teachers.map((teacher, i) => (
-            <motion.div key={teacher.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className="group relative aspect-[3/4] rounded-2xl overflow-hidden border border-border/50 bg-[#0a0a0a]">
-              <img src={teacher.image} alt="" className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
-              <div className="absolute bottom-0 inset-x-0 p-8">
-                <span className="text-[10px] uppercase tracking-[0.2em] text-gold font-bold mb-1 block">
-                  <EditableText value={teacher.expertise} onChange={(v) => {
-                    const newTeachers = [...current.teachers];
-                    newTeachers[i] = { ...newTeachers[i], expertise: v };
-                    update("teachers", newTeachers);
-                  }} isEditing={isEditing} />
-                </span>
-                <h3 className="font-display text-2xl text-primary group-hover:text-gold transition-colors">
-                  <EditableText value={teacher.name} onChange={(v) => {
-                    const newTeachers = [...current.teachers];
-                    newTeachers[i] = { ...newTeachers[i], name: v };
-                    update("teachers", newTeachers);
-                  }} isEditing={isEditing} tag="h3" />
-                </h3>
+          <AnimatePresence>
+            {current.teachers.map((teacher, i) => (
+              <motion.div layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} key={teacher.id} className="group relative aspect-[3/4] rounded-2xl overflow-hidden border border-border/50 bg-card/40">
                 {isEditing && (
-                   <div className="mt-4 p-3 bg-black/40 backdrop-blur-sm rounded-lg border border-white/10">
-                     <EditableText tag="p" value={teacher.bio} onChange={(v) => {
-                        const newTeachers = [...current.teachers];
-                        newTeachers[i] = { ...newTeachers[i], bio: v };
-                        update("teachers", newTeachers);
-                     }} isEditing={isEditing} className="text-xs text-foreground/80 leading-relaxed italic" />
-                   </div>
+                  <>
+                    <button
+                      onClick={() => setEditingTeacherIndex(i)}
+                      className="absolute top-4 left-4 z-10 p-3 bg-blue-500/80 text-white rounded-full hover:bg-blue-500 transition-all"
+                      title="Edit Guru"
+                    >
+                      <Edit2 className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteTeacher(i)}
+                      className="absolute top-4 right-4 z-10 p-3 bg-red-500/80 text-white rounded-full hover:bg-red-500 transition-all"
+                      title="Delete Guru"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </>
                 )}
-              </div>
-              {isEditing && (
+                <img src={teacher.image} alt="" className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+                <div className="absolute bottom-0 inset-x-0 p-8 pointer-events-none">
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-gold font-bold mb-1 block">
+                    {teacher.expertise}
+                  </span>
+                  <h3 className="font-display text-2xl text-primary group-hover:text-gold transition-colors">
+                    {teacher.name}
+                  </h3>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      </section>
+
+      {/* Editing Teacher Modal */}
+      <AnimatePresence>
+        {editingTeacherIndex !== null && current.teachers[editingTeacherIndex] && (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-10">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setEditingTeacherIndex(null)}
+              className="absolute inset-0 bg-background/95 backdrop-blur-sm"
+            />
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-5xl bg-card border border-border rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row z-10"
+            >
+              <button
+                onClick={() => setEditingTeacherIndex(null)}
+                className="absolute top-6 right-6 z-10 p-2 rounded-full bg-background/50 hover:bg-gold hover:text-background transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="md:w-2/5 aspect-[3/4] md:aspect-auto relative group">
+                <img
+                  src={current.teachers[editingTeacherIndex].image}
+                  alt={current.teachers[editingTeacherIndex].name}
+                  className="w-full h-full object-cover"
+                />
                 <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all cursor-pointer">
-                  <button onClick={() => fileInputRefs.current[i]?.click()} className="flex items-center gap-2 px-6 py-3 bg-gold text-background rounded-full font-bold text-xs uppercase tracking-widest shadow-glow">
+                  <button onClick={() => fileInputRefs.current[editingTeacherIndex]?.click()} className="flex items-center gap-2 px-6 py-3 bg-gold text-background rounded-full font-bold text-xs uppercase tracking-widest shadow-glow">
                     <Camera className="w-4 h-4" /> Replace Photo
                   </button>
-                  <input type="file" ref={el => fileInputRefs.current[i] = el} className="hidden" accept="image/*" onChange={(e) => {
+                  <input type="file" ref={el => fileInputRefs.current[editingTeacherIndex] = el} className="hidden" accept="image/*" onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file) {
                       const url = URL.createObjectURL(file);
                       const newTeachers = [...current.teachers];
-                      newTeachers[i] = { ...newTeachers[i], image: url };
+                      newTeachers[editingTeacherIndex] = { ...newTeachers[editingTeacherIndex], image: url };
                       update("teachers", newTeachers);
                     }
                   }} />
                 </div>
-              )}
+              </div>
+
+              <div className="md:w-3/5 p-8 md:p-14 flex flex-col justify-center">
+                <span className="text-xs uppercase tracking-[0.3em] text-gold font-bold mb-4 block">
+                  <EditableText value={current.teachers[editingTeacherIndex].expertise} onChange={(v) => {
+                    const newTeachers = [...current.teachers];
+                    newTeachers[editingTeacherIndex] = { ...newTeachers[editingTeacherIndex], expertise: v };
+                    update("teachers", newTeachers);
+                  }} isEditing={true} />
+                </span>
+                <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-primary mb-8 leading-tight">
+                  <EditableText value={current.teachers[editingTeacherIndex].name} onChange={(v) => {
+                    const newTeachers = [...current.teachers];
+                    newTeachers[editingTeacherIndex] = { ...newTeachers[editingTeacherIndex], name: v };
+                    update("teachers", newTeachers);
+                  }} isEditing={true} />
+                </h2>
+                <div className="h-1 w-20 bg-gold mb-8 rounded-full" />
+                <div className="text-lg md:text-xl text-muted-foreground leading-relaxed italic">
+                  "<EditableText tag="span" value={current.teachers[editingTeacherIndex].bio} onChange={(v) => {
+                    const newTeachers = [...current.teachers];
+                    newTeachers[editingTeacherIndex] = { ...newTeachers[editingTeacherIndex], bio: v };
+                    update("teachers", newTeachers);
+                  }} isEditing={true} />"
+                </div>
+                
+                <div className="mt-12 flex flex-wrap gap-4">
+                  <div className="px-6 py-3 rounded-full border border-gold/30 text-gold text-xs font-bold uppercase tracking-widest">
+                    <EditableText 
+                      value={current.teachers[editingTeacherIndex].badge1 || (lang === 'en' ? 'Expert Guru' : 'ನುರಿತ ಗುರುಗಳು')}
+                      onChange={(v) => {
+                        const newTeachers = [...current.teachers];
+                        newTeachers[editingTeacherIndex] = { ...newTeachers[editingTeacherIndex], badge1: v };
+                        update("teachers", newTeachers);
+                      }}
+                      isEditing={true} 
+                    />
+                  </div>
+                  <div className="px-6 py-3 rounded-full border border-gold/30 text-gold text-xs font-bold uppercase tracking-widest">
+                    <EditableText 
+                      value={current.teachers[editingTeacherIndex].badge2 || (lang === 'en' ? '20+ Years Exp' : '೨೦+ ವರ್ಷಗಳ ಅನುಭವ')}
+                      onChange={(v) => {
+                        const newTeachers = [...current.teachers];
+                        newTeachers[editingTeacherIndex] = { ...newTeachers[editingTeacherIndex], badge2: v };
+                        update("teachers", newTeachers);
+                      }}
+                      isEditing={true} 
+                    />
+                  </div>
+                </div>
+              </div>
             </motion.div>
-          ))}
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Save Button */}
+      {isEditing && (
+        <div className="fixed bottom-10 right-10 z-[100]">
+           <button 
+            onClick={handleSave}
+            disabled={isSaving}
+            className={`flex items-center gap-2 px-8 py-4 rounded-full font-bold text-xs uppercase tracking-widest transition-all shadow-glow ${
+              saveSuccess ? "bg-green-500 text-white" : "bg-primary text-background hover:scale-105"
+            }`}
+          >
+            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : saveSuccess ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
+            {isSaving ? "Saving..." : saveSuccess ? "Saved to D1!" : "Save Changes"}
+          </button>
         </div>
-      </section>
-    </section>
+      )}
+    </div>
   );
 }
