@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { useLang } from "@/contexts/LanguageContext";
-import { initialPerformanceItems, initialWorkshopItems } from "@/lib/galleryData";
+import { initialPerformanceItems, initialWorkshopItems, initialGurukulItems } from "@/lib/galleryData";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
@@ -22,6 +22,7 @@ export const Route = createFileRoute("/gallery")({
 });
 
 const performanceItems = initialPerformanceItems;
+const gurukulItems = initialGurukulItems;
 const workshopItems = initialWorkshopItems;
 
 
@@ -47,6 +48,18 @@ function Gallery() {
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 grid-flow-dense">
             {performanceItems.map((it, i) => (
+              <GalleryItem key={i} it={it} i={i} />
+            ))}
+          </div>
+        </div>
+        
+        {/* GURUKUL (CLASSES) */}
+        <div className="mb-24">
+          <h2 className="text-3xl font-display mb-10 text-primary border-l-4 border-gold pl-4">
+            {lang === "en" ? "Gurukul" : "ಗುರುಕುಲ"}
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 grid-flow-dense">
+            {gurukulItems.map((it, i) => (
               <GalleryItem key={i} it={it} i={i} />
             ))}
           </div>

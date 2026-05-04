@@ -32,13 +32,13 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "A cultural sanctuary preserving and teaching Yakshagana — Karnataka's monumental folk theatre tradition through classes, workshops, and performances.",
+          "A cultural sanctuary preserving and teaching Yakshagana — Karnataka's monumental folk theatre tradition through gurukul, workshops, and performances.",
       },
       { property: "og:title", content: "Kathe Gaararu — The Living Art of Yakshagana" },
       {
         property: "og:description",
         content:
-          "A cultural sanctuary preserving and teaching Yakshagana — Karnataka's monumental folk theatre tradition through classes, workshops, and performances.",
+          "A cultural sanctuary preserving and teaching Yakshagana — Karnataka's monumental folk theatre tradition through gurukul, workshops, and performances.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -46,7 +46,7 @@ export const Route = createRootRoute({
       {
         name: "twitter:description",
         content:
-          "A cultural sanctuary preserving and teaching Yakshagana — Karnataka's monumental folk theatre tradition through classes, workshops, and performances.",
+          "A cultural sanctuary preserving and teaching Yakshagana — Karnataka's monumental folk theatre tradition through gurukul, workshops, and performances.",
       },
       {
         property: "og:image",

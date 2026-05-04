@@ -70,8 +70,8 @@ export function ClassesSchedule() {
       {filtered.length === 0 && (
         <p className="text-center text-muted-foreground py-20">
           {lang === "en"
-            ? "No classes match these filters."
-            : "ಈ ಫಿಲ್ಟರ್‌ಗಳಿಗೆ ಯಾವುದೇ ತರಗತಿಗಳು ಹೊಂದಾಣಿಕೆಯಾಗುತ್ತಿಲ್ಲ."}
+            ? "No sessions match these filters."
+            : "ಈ ಫಿಲ್ಟರ್‌ಗಳಿಗೆ ಯಾವುದೇ ಗುರುಕುಲ ಪಾಠಗಳು ಹೊಂದಾಣಿಕೆಯಾಗುತ್ತಿಲ್ಲ."}
         </p>
       )}
     </div>

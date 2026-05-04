@@ -24,3 +24,10 @@ export const initialWorkshopItems: GalleryItemType[] = [
   { src: g4, label: "Makeup Session", type: "image" },
   { src: g2, label: "Step Basics", type: "image" },
 ];
+
+export const initialGurukulItems: GalleryItemType[] = [
+  { src: g1, label: "Mudra Practice", type: "image" },
+  { src: g3, label: "Vocal Training", type: "image" },
+  { src: g5, label: "Rhythm Class", type: "image" },
+  { src: g6, label: "Traditional Dance", type: "image" },
+];

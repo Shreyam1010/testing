@@ -5,7 +5,7 @@ export const translations = {
     nav: {
       home: "Home",
       about: "About",
-      classes: "Classes",
+      classes: "Gurukul",
       services: "Services",
       schedule: "Schedule",
       gallery: "Gallery",
@@ -19,14 +19,14 @@ export const translations = {
       subtitle:
         "An immersive cultural sanctuary where traditional Kannada theatre, music, and dance breathe through every performance, class, and story.",
       ctaPrimary: "Watch Performances",
-      ctaSecondary: "Explore Classes",
+      ctaSecondary: "Explore Gurukul",
     },
     highlights: {
       title: "Where Tradition Awakens",
       subtitle: "Three pillars of our cultural mission",
       items: [
         {
-          title: "Classes",
+          title: "Gurukul",
           desc: "Authentic training in dance, music, and dialogue from veteran gurus.",
         },
         {
@@ -63,7 +63,7 @@ export const translations = {
       ],
     },
     classes: {
-      title: "Classes & Workshops",
+      title: "Gurukul & Workshops",
       subtitle: "Train under masters of the tradition",
       items: [
         {
@@ -121,7 +121,7 @@ export const translations = {
         buttonText: "Host the Show"
       },
       classes: {
-        title: "Classes",
+        title: "Gurukul",
         desc: "Step into the sacred circle of learning with our authentic training programs. We offer comprehensive, gurukula-style instruction in traditional dance, intricate footwork, classical music (Bhagavatike), and powerful dialogue delivery, guided by highly experienced veteran gurus. Whether you are an absolute beginner looking to connect with your cultural roots or an advanced practitioner striving to refine your skills, our meticulously structured classes provide deep, unparalleled insights into every nuance of this majestic art form.",
         buttonText: "Book Demo"
       },
@@ -131,7 +131,7 @@ export const translations = {
         buttonText: "Book the Show"
       },
       social: {
-        title: "Connect With Us",
+        title: "Echoes of Yakshagana Awaits",
         subtitle: "Follow our journey on social media",
         facebook: {
           title: "Facebook",
@@ -176,7 +176,7 @@ export const translations = {
     nav: {
       home: "ಮುಖಪುಟ",
       about: "ನಮ್ಮ ಬಗ್ಗೆ",
-      classes: "ತರಗತಿಗಳು",
+      classes: "ಗುರುಕುಲ",
       services: "ಸೇವೆಗಳು",
       schedule: "ವೇಳಾಪಟ್ಟಿ",
       gallery: "ಗ್ಯಾಲರಿ",
@@ -189,14 +189,14 @@ export const translations = {
       titleAccent: "ಯಕ್ಷಗಾನ",
       subtitle:
         "ಸಾಂಪ್ರದಾಯಿಕ ಕನ್ನಡ ರಂಗಭೂಮಿ, ಸಂಗೀತ ಮತ್ತು ನೃತ್ಯ — ಪ್ರತಿ ಪ್ರದರ್ಶನ, ತರಗತಿ ಮತ್ತು ಕಥೆಯಲ್ಲಿ ಉಸಿರಾಡುವ ಸಾಂಸ್ಕೃತಿಕ ತಾಣ.",
-      ctaPrimary: "ತರಗತಿಗಳನ್ನು ನೋಡಿ",
+      ctaPrimary: "ಗುರುಕುಲವನ್ನು ನೋಡಿ",
       ctaSecondary: "ಪ್ರದರ್ಶನಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
     },
     highlights: {
       title: "ಪರಂಪರೆ ಎಚ್ಚರಗೊಳ್ಳುವಲ್ಲಿ",
       subtitle: "ನಮ್ಮ ಸಾಂಸ್ಕೃತಿಕ ಧ್ಯೇಯದ ಮೂರು ಸ್ತಂಭಗಳು",
       items: [
-        { title: "ತರಗತಿಗಳು", desc: "ಅನುಭವಿ ಗುರುಗಳಿಂದ ನೃತ್ಯ, ಸಂಗೀತ ಮತ್ತು ಸಂಭಾಷಣೆಯ ತರಬೇತಿ." },
+        { title: "ಗುರುಕುಲ", desc: "ಅನುಭವಿ ಗುರುಗಳಿಂದ ನೃತ್ಯ, ಸಂಗೀತ ಮತ್ತು ಸಂಭಾಷಣೆಯ ತರಬೇತಿ." },
         { title: "ಕಾರ್ಯಾಗಾರಗಳು", desc: "ಕಲಾವಿದರು ಮತ್ತು ವಿದ್ಯಾರ್ಥಿಗಳಿಗಾಗಿ ಆಳವಾದ ಋತುಮಾನದ ಶಿಬಿರಗಳು." },
         { title: "ಪ್ರದರ್ಶನಗಳು", desc: "ವರ್ಷವಿಡೀ ಯಕ್ಷಗಾನ ರಂಗ ಪ್ರದರ್ಶನಗಳ ಆಚರಣೆ." },
       ],
@@ -225,7 +225,7 @@ export const translations = {
       ],
     },
     classes: {
-      title: "ತರಗತಿಗಳು ಮತ್ತು ಕಾರ್ಯಾಗಾರಗಳು",
+      title: "ಗುರುಕುಲ ಮತ್ತು ಕಾರ್ಯಾಗಾರಗಳು",
       subtitle: "ಪರಂಪರೆಯ ಗುರುಗಳ ಬಳಿ ಅಭ್ಯಾಸ ಮಾಡಿ",
       items: [
         {
@@ -283,7 +283,7 @@ export const translations = {
         buttonText: "ಪ್ರದರ್ಶನ ಆಯೋಜಿಸಿ"
       },
       classes: {
-        title: "ತರಗತಿಗಳು",
+        title: "ಗುರುಕುಲ",
         desc: "ನಮ್ಮ ಅಧಿಕೃತ ತರಬೇತಿ ಕಾರ್ಯಕ್ರಮಗಳೊಂದಿಗೆ ಕಲಿಕೆಯ ಪವಿತ್ರ ವಲಯವನ್ನು ಪ್ರವೇಶಿಸಿ. ಸಾಂಪ್ರದಾಯಿಕ ನೃತ್ಯ, ಸಂಕೀರ್ಣ ಪಾದಭಂಗಿ, ಶಾಸ್ತ್ರೀಯ ಸಂಗೀತ (ಭಾಗವತಿಕೆ) ಮತ್ತು ಶಕ್ತಿಯುತ ಸಂಭಾಷಣೆಗಳಲ್ಲಿ ನಾವು ಸಮಗ್ರವಾದ, ಗುರುಕುಲ ಶೈಲಿಯ ಶಿಕ್ಷಣವನ್ನು ನೀಡುತ್ತೇವೆ. ನೀವು ಸಾಂಸ್ಕೃತಿಕ ಬೇರುಗಳೊಂದಿಗೆ ಸಂಪರ್ಕ ಹೊಂದಲು ಬಯಸುವ ಹರಿಕಾರರಾಗಿರಲಿ ಅಥವಾ ಕೌಶಲ್ಯಗಳನ್ನು ಪರಿಷ್ಕರಿಸಲು ಶ್ರಮಿಸುತ್ತಿರುವ ಮುಂದುವರಿದ ಕಲಿಯುವವರಾಗಿರಲಿ, ನಮ್ಮ ತರಗತಿಗಳು ಈ ಭವ್ಯ ಕಲಾ ಪ್ರಕಾರದ ಪ್ರತಿಯೊಂದು ಸೂಕ್ಷ್ಮತೆಯ ಬಗ್ಗೆ ಆಳವಾದ ಒಳನೋಟಗಳನ್ನು ಒದಗಿಸುತ್ತವೆ.",
         buttonText: "ಡೆಮೊ ಬುಕ್ ಮಾಡಿ"
       },
@@ -293,7 +293,7 @@ export const translations = {
         buttonText: "ಪ್ರದರ್ಶನ ಬುಕ್ ಮಾಡಿ"
       },
       social: {
-        title: "ನಮ್ಮೊಂದಿಗೆ ಸಂಪರ್ಕದಲ್ಲಿರಿ",
+        title: "ಯಕ್ಷಗಾನದ ಪ್ರತಿಧ್ವನಿಗಳು ಕಾದಿವೆ",
         subtitle: "ಸಾಮಾಜಿಕ ಜಾಲತಾಣಗಳಲ್ಲಿ ನಮ್ಮ ಪ್ರಯಾಣವನ್ನು ಅನುಸರಿಸಿ",
         facebook: {
           title: "ಫೇಸ್ಬುಕ್",

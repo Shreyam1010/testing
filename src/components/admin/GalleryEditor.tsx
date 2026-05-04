@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Trash2, Image as ImageIcon, Video, Camera, Upload, X, Check, Edit2 } from "lucide-react";
-import { initialPerformanceItems, initialWorkshopItems, type GalleryItemType } from "@/lib/galleryData";
+import { initialPerformanceItems, initialWorkshopItems, initialGurukulItems, type GalleryItemType } from "@/lib/galleryData";
 
 interface GalleryEditorProps {
   isEditing: boolean;
@@ -10,14 +10,17 @@ interface GalleryEditorProps {
 
 export function GalleryEditor({ isEditing, lang }: GalleryEditorProps) {
   const [performances, setPerformances] = useState<GalleryItemType[]>(initialPerformanceItems);
+  const [gurukul, setGurukul] = useState<GalleryItemType[]>(initialGurukulItems);
   const [workshops, setWorkshops] = useState<GalleryItemType[]>(initialWorkshopItems);
   
-  const [addingDialog, setAddingDialog] = useState<"performance" | "workshop" | null>(null);
-  const [editingDialog, setEditingDialog] = useState<{ category: "performance" | "workshop", index: number, item: GalleryItemType } | null>(null);
+  const [addingDialog, setAddingDialog] = useState<"performance" | "gurukul" | "workshop" | null>(null);
+  const [editingDialog, setEditingDialog] = useState<{ category: "performance" | "gurukul" | "workshop", index: number, item: GalleryItemType } | null>(null);
 
-  const handleDelete = (category: "performance" | "workshop", index: number) => {
+  const handleDelete = (category: "performance" | "gurukul" | "workshop", index: number) => {
     if (category === "performance") {
       setPerformances((prev) => prev.filter((_, i) => i !== index));
+    } else if (category === "gurukul") {
+      setGurukul((prev) => prev.filter((_, i) => i !== index));
     } else {
       setWorkshops((prev) => prev.filter((_, i) => i !== index));
     }
@@ -26,6 +29,8 @@ export function GalleryEditor({ isEditing, lang }: GalleryEditorProps) {
   const handleSaveAdd = (item: GalleryItemType) => {
     if (addingDialog === "performance") {
       setPerformances(prev => [...prev, item]);
+    } else if (addingDialog === "gurukul") {
+      setGurukul(prev => [...prev, item]);
     } else if (addingDialog === "workshop") {
       setWorkshops(prev => [...prev, item]);
     }
@@ -36,6 +41,8 @@ export function GalleryEditor({ isEditing, lang }: GalleryEditorProps) {
     if (!editingDialog) return;
     if (editingDialog.category === "performance") {
       setPerformances(prev => prev.map((p, i) => i === editingDialog.index ? item : p));
+    } else if (editingDialog.category === "gurukul") {
+      setGurukul(prev => prev.map((g, i) => i === editingDialog.index ? item : g));
     } else {
       setWorkshops(prev => prev.map((w, i) => i === editingDialog.index ? item : w));
     }
@@ -78,6 +85,38 @@ export function GalleryEditor({ isEditing, lang }: GalleryEditorProps) {
               isEditing={isEditing}
               onEdit={() => setEditingDialog({ category: "performance", index: i, item })}
               onDelete={() => handleDelete("performance", i)}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* GURUKUL */}
+      <section className="mb-20">
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="text-2xl font-display text-primary border-l-4 border-gold pl-4">
+            {lang === "en" ? "Gurukul" : "ಗುರುಕುಲ"}
+          </h3>
+          {isEditing && (
+            <button
+              onClick={() => setAddingDialog("gurukul")}
+              className="flex items-center gap-2 px-4 py-2 bg-gold/10 text-gold rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold/20 transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              Add Item
+            </button>
+          )}
+        </div>
+
+        {/* MASONRY / CARD LAYOUT */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 grid-flow-dense">
+          {gurukul.map((item, i) => (
+            <EditorItem
+              key={i}
+              item={item}
+              index={i}
+              isEditing={isEditing}
+              onEdit={() => setEditingDialog({ category: "gurukul", index: i, item })}
+              onDelete={() => handleDelete("gurukul", i)}
             />
           ))}
         </div>

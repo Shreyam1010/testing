@@ -1,13 +1,12 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "kathe-gaararu-backend",
-  "main": "src/worker.ts",
+  "name": "yakshagana-app",
+  "main": "dist/server/server.js",
   "compatibility_date": "2025-05-01",
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "kathe-gaararu-db",
-      "database_id": "3bd194c0-bc74-485f-8885-e0208fd54337"
-    }
-  ]
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": "dist/client"
+  }
 }
