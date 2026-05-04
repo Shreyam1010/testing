@@ -6,6 +6,7 @@ export const translations = {
       home: "Home",
       about: "About",
       classes: "Classes",
+      services: "Services",
       schedule: "Schedule",
       gallery: "Gallery",
       contact: "Contact",
@@ -17,8 +18,8 @@ export const translations = {
       titleAccent: "Yakshagana",
       subtitle:
         "An immersive cultural sanctuary where traditional Kannada theatre, music, and dance breathe through every performance, class, and story.",
-      ctaPrimary: "Explore Classes",
-      ctaSecondary: "Watch Performances",
+      ctaPrimary: "Watch Performances",
+      ctaSecondary: "Explore Classes",
     },
     highlights: {
       title: "Where Tradition Awakens",
@@ -110,6 +111,45 @@ export const translations = {
       ],
       enroll: "Enquire to Enroll",
     },
+    services: {
+      title: "Our Services",
+      subtitle: "Discover what we offer",
+      bookDemo: "Book a Demo",
+      performance: {
+        title: "Performances",
+        desc: "Experience the awe-inspiring magic of Yakshagana with our year-round stage events. We celebrate ancient epics through powerful storytelling, bringing the rich, vibrant heritage of coastal Karnataka directly to your venue. Every performance is a complete cultural immersion featuring authentic, elaborately crafted costumes, mesmerizing live traditional music, and seasoned veteran artists who breathe life into mythological legends. Whether it's a corporate event, cultural festival, or private gathering, our troupe promises a truly unforgettable, visually stunning theatrical experience.",
+        buttonText: "Host the Show"
+      },
+      classes: {
+        title: "Classes",
+        desc: "Step into the sacred circle of learning with our authentic training programs. We offer comprehensive, gurukula-style instruction in traditional dance, intricate footwork, classical music (Bhagavatike), and powerful dialogue delivery, guided by highly experienced veteran gurus. Whether you are an absolute beginner looking to connect with your cultural roots or an advanced practitioner striving to refine your skills, our meticulously structured classes provide deep, unparalleled insights into every nuance of this majestic art form.",
+        buttonText: "Book Demo"
+      },
+      workshops: {
+        title: "Workshops",
+        desc: "Dive deep into the world of Yakshagana with our intensive, seasonal workshops designed for performers, dedicated students, and passionate enthusiasts. Join our weekend crash courses or immersive week-long retreats to learn the subtle, complex nuances of traditional face-painting (Bannagarike), rhythmic drumming (Chande and Maddale), and commanding stage presence. These workshops are highly interactive and offer a rare, behind-the-scenes perspective into the rigorous discipline of the art.",
+        buttonText: "Book the Show"
+      },
+      social: {
+        title: "Connect With Us",
+        subtitle: "Follow our journey on social media",
+        facebook: {
+          title: "Facebook",
+          desc: "Join our community and stay updated with our latest events and performances.",
+          buttonText: "Follow on Facebook"
+        },
+        instagram: {
+          title: "Instagram",
+          desc: "Experience the visual splendor of Yakshagana through our daily photo stories.",
+          buttonText: "Follow on Instagram"
+        },
+        twitter: {
+          title: "Twitter",
+          desc: "Get real-time updates, news, and insights into our cultural preservation efforts.",
+          buttonText: "Follow on Twitter"
+        }
+      }
+    },
     schedule: {
       title: "Weekly Schedule",
       subtitle: "Plan your week with our gurus",
@@ -137,6 +177,7 @@ export const translations = {
       home: "ಮುಖಪುಟ",
       about: "ನಮ್ಮ ಬಗ್ಗೆ",
       classes: "ತರಗತಿಗಳು",
+      services: "ಸೇವೆಗಳು",
       schedule: "ವೇಳಾಪಟ್ಟಿ",
       gallery: "ಗ್ಯಾಲರಿ",
       contact: "ಸಂಪರ್ಕ",
@@ -231,6 +272,45 @@ export const translations = {
         },
       ],
       enroll: "ದಾಖಲಾತಿಗೆ ವಿಚಾರಿಸಿ",
+    },
+    services: {
+      title: "ನಮ್ಮ ಸೇವೆಗಳು",
+      subtitle: "ನಾವು ನೀಡುವ ಸೇವೆಗಳು",
+      bookDemo: "ಡೆಮೊ ಬುಕ್ ಮಾಡಿ",
+      performance: {
+        title: "ಪ್ರದರ್ಶನಗಳು",
+        desc: "ನಮ್ಮ ವರ್ಷವಿಡೀ ನಡೆಯುವ ರಂಗ ಪ್ರದರ್ಶನಗಳ ಮೂಲಕ ಯಕ್ಷಗಾನದ ಅದ್ಭುತ ಜಗತ್ತನ್ನು ಅನುಭವಿಸಿ. ಪ್ರಾಚೀನ ಮಹಾಕಾವ್ಯಗಳನ್ನು ಶಕ್ತಿಯುತ ಕಥನಗಳ ಮೂಲಕ ಆಚರಿಸುವ ನಾವು, ಕರಾವಳಿ ಕರ್ನಾಟಕದ ಶ್ರೀಮಂತ ಮತ್ತು ರೋಮಾಂಚಕ ಪರಂಪರೆಯನ್ನು ನೇರವಾಗಿ ನಿಮ್ಮ ಸ್ಥಳಕ್ಕೆ ತರುತ್ತೇವೆ. ಪ್ರತಿಯೊಂದು ಪ್ರದರ್ಶನವು ಸಾಂಪ್ರದಾಯಿಕ ಮತ್ತು ಸುಂದರವಾಗಿ ರಚಿಸಲಾದ ವೇಷಭೂಷಣಗಳು, ಮಂತ್ರಮುಗ್ಧಗೊಳಿಸುವ ಲೈವ್ ಸಂಗೀತ, ಮತ್ತು ಪೌರಾಣಿಕ ಕಥೆಗಳಿಗೆ ಜೀವ ತುಂಬುವ ಹಿರಿಯ ಕಲಾವಿದರನ್ನು ಒಳಗೊಂಡಿರುತ್ತದೆ. ಇದು ಕಾರ್ಪೊರೇಟ್ ಸಮಾರಂಭವಿರಲಿ, ಸಾಂಸ್ಕೃತಿಕ ಉತ್ಸವವಿರಲಿ ಅಥವಾ ಖಾಸಗಿ ಕಾರ್ಯಕ್ರಮವಿರಲಿ, ನಮ್ಮ ತಂಡವು ಅವಿಸ್ಮರಣೀಯ ರಂಗಭೂಮಿ ಅನುಭವವನ್ನು ನೀಡುತ್ತದೆ.",
+        buttonText: "ಪ್ರದರ್ಶನ ಆಯೋಜಿಸಿ"
+      },
+      classes: {
+        title: "ತರಗತಿಗಳು",
+        desc: "ನಮ್ಮ ಅಧಿಕೃತ ತರಬೇತಿ ಕಾರ್ಯಕ್ರಮಗಳೊಂದಿಗೆ ಕಲಿಕೆಯ ಪವಿತ್ರ ವಲಯವನ್ನು ಪ್ರವೇಶಿಸಿ. ಸಾಂಪ್ರದಾಯಿಕ ನೃತ್ಯ, ಸಂಕೀರ್ಣ ಪಾದಭಂಗಿ, ಶಾಸ್ತ್ರೀಯ ಸಂಗೀತ (ಭಾಗವತಿಕೆ) ಮತ್ತು ಶಕ್ತಿಯುತ ಸಂಭಾಷಣೆಗಳಲ್ಲಿ ನಾವು ಸಮಗ್ರವಾದ, ಗುರುಕುಲ ಶೈಲಿಯ ಶಿಕ್ಷಣವನ್ನು ನೀಡುತ್ತೇವೆ. ನೀವು ಸಾಂಸ್ಕೃತಿಕ ಬೇರುಗಳೊಂದಿಗೆ ಸಂಪರ್ಕ ಹೊಂದಲು ಬಯಸುವ ಹರಿಕಾರರಾಗಿರಲಿ ಅಥವಾ ಕೌಶಲ್ಯಗಳನ್ನು ಪರಿಷ್ಕರಿಸಲು ಶ್ರಮಿಸುತ್ತಿರುವ ಮುಂದುವರಿದ ಕಲಿಯುವವರಾಗಿರಲಿ, ನಮ್ಮ ತರಗತಿಗಳು ಈ ಭವ್ಯ ಕಲಾ ಪ್ರಕಾರದ ಪ್ರತಿಯೊಂದು ಸೂಕ್ಷ್ಮತೆಯ ಬಗ್ಗೆ ಆಳವಾದ ಒಳನೋಟಗಳನ್ನು ಒದಗಿಸುತ್ತವೆ.",
+        buttonText: "ಡೆಮೊ ಬುಕ್ ಮಾಡಿ"
+      },
+      workshops: {
+        title: "ಕಾರ್ಯಾಗಾರಗಳು",
+        desc: "ಕಲಾವಿದರು, ಸಮರ್ಪಿತ ವಿದ್ಯಾರ್ಥಿಗಳು ಮತ್ತು ಉತ್ಸಾಹಿಗಳಿಗಾಗಿ ವಿನ್ಯಾಸಗೊಳಿಸಲಾದ ನಮ್ಮ ತೀವ್ರವಾದ ಕಾರ್ಯಾಗಾರಗಳೊಂದಿಗೆ ಯಕ್ಷಗಾನದ ಜಗತ್ತಿಗೆ ಆಳವಾಗಿ ಧುಮುಕಿ. ಸಾಂಪ್ರದಾಯಿಕ ಬಣ್ಣಗಾರಿಕೆ, ಚಂಡೆ ಮತ್ತು ಮದ್ದಲೆ, ಹಾಗೂ ರಂಗ ಪ್ರವೇಶದ ಸೂಕ್ಷ್ಮತೆಗಳನ್ನು ಕಲಿಯಲು ನಮ್ಮ ವಾರಾಂತ್ಯದ ಅಥವಾ ವಾರದ ಶಿಬಿರಗಳಿಗೆ ಸೇರಿ. ಈ ಕಾರ್ಯಾಗಾರಗಳು ಅತ್ಯಂತ ಸಂವಾದಾತ್ಮಕವಾಗಿವೆ ಮತ್ತು ವೇದಿಕೆಯ ಮೇಲಿನ ಸಾಮಾನ್ಯ ವ್ಯಕ್ತಿಯನ್ನು ದೈವಿಕ ಪಾತ್ರವನ್ನಾಗಿ ಪರಿವರ್ತಿಸಲು ಬೇಕಾದ ಕಠಿಣ ಶಿಸ್ತು ಮತ್ತು ಆಧ್ಯಾತ್ಮಿಕ ಭಕ್ತಿಯ ಬಗ್ಗೆ ಅಪರೂಪದ ಒಳನೋಟವನ್ನು ನೀಡುತ್ತವೆ.",
+        buttonText: "ಪ್ರದರ್ಶನ ಬುಕ್ ಮಾಡಿ"
+      },
+      social: {
+        title: "ನಮ್ಮೊಂದಿಗೆ ಸಂಪರ್ಕದಲ್ಲಿರಿ",
+        subtitle: "ಸಾಮಾಜಿಕ ಜಾಲತಾಣಗಳಲ್ಲಿ ನಮ್ಮ ಪ್ರಯಾಣವನ್ನು ಅನುಸರಿಸಿ",
+        facebook: {
+          title: "ಫೇಸ್ಬುಕ್",
+          desc: "ನಮ್ಮ ಸಮುದಾಯಕ್ಕೆ ಸೇರಿ ಮತ್ತು ನಮ್ಮ ಇತ್ತೀಚಿನ ಕಾರ್ಯಕ್ರಮಗಳ ಮಾಹಿತಿಯನ್ನು ಪಡೆಯಿರಿ.",
+          buttonText: "ಫೇಸ್ಬುಕ್‌ನಲ್ಲಿ ಅನುಸರಿಸಿ"
+        },
+        instagram: {
+          title: "ಇನ್‌ಸ್ಟಾಗ್ರಾಮ್",
+          desc: "ನಮ್ಮ ದೈನಂದಿನ ಚಿತ್ರಗಳ ಮೂಲಕ ಯಕ್ಷಗಾನದ ದೃಶ್ಯ ವೈಭವವನ್ನು ಅನುಭವಿಸಿ.",
+          buttonText: "ಇನ್‌ಸ್ಟಾಗ್ರಾಮ್‌ನಲ್ಲಿ ಅನುಸರಿಸಿ"
+        },
+        twitter: {
+          title: "ಟ್ವಿಟರ್",
+          desc: "ನಮ್ಮ ಸಾಂಸ್ಕೃತಿಕ ಸಂರಕ್ಷಣಾ ಪ್ರಯತ್ನಗಳ ಬಗ್ಗೆ ನೈಜ-ಸಮಯದ ನವೀಕರಣಗಳನ್ನು ಪಡೆಯಿರಿ.",
+          buttonText: "ಟ್ವಿಟರ್‌ನಲ್ಲಿ ಅನುಸರಿಸಿ"
+        }
+      }
     },
     schedule: {
       title: "ಸಾಪ್ತಾಹಿಕ ವೇಳಾಪಟ್ಟಿ",

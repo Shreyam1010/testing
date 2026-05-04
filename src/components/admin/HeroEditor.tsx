@@ -57,7 +57,7 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
       titleAccent: "Yakshagana",
       subtitle:
         "An immersive cultural sanctuary where traditional Kannada theatre, music, and dance breathe through every performance, class, and story.",
-      ctaPrimary: "Explore Classes",
+      ctaPrimary: "Explore ClassesWatch Performances",
       ctaSecondary: "Watch Performances",
     },
     kn: {

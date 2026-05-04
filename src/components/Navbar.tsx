@@ -12,9 +12,9 @@ export function Navbar() {
   const links = [
     { to: "/", label: t.nav.home },
     { to: "/about", label: t.nav.about },
+    { to: "/services", label: t.nav.services },
     { to: "/classes", label: t.nav.classes },
     { to: "/blog", label: lang === "en" ? "Blog" : "ಬ್ಲಾಗ್" },
-    { to: "/gallery", label: t.nav.gallery },
     { to: "/admin", label: t.nav.admin },
     { to: "/contact", label: t.nav.contact },
   ] as const;

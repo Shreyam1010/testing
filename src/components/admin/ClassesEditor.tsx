@@ -251,8 +251,8 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
   const days = useMemo(() => {
     const set = new Set(current.classes.map(c => c.day));
     const dayOrder = lang === "en" 
-      ? ["Tomorrow", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-      : ["ನಾಳೆ", "ಸೋಮವಾರ", "ಮಂಗಳವಾರ", "ಬುಧವಾರ", "ಗುರುವಾರ", "ಶುಕ್ರವಾರ", "ಶನಿವಾರ", "ಭಾನುವಾರ"];
+      ? ["All Days", "Tomorrow", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+      : ["ಎಲ್ಲ ದಿನಗಳು", "ನಾಳೆ", "ಸೋಮವಾರ", "ಮಂಗಳವಾರ", "ಬುಧವಾರ", "ಗುರುವಾರ", "ಶುಕ್ರವಾರ", "ಶನಿವಾರ", "ಭಾನುವಾರ"];
       
     return Array.from(set).sort((a, b) => {
       const idxA = dayOrder.indexOf(a);
@@ -274,32 +274,55 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
 
   return (
     <div className="container mx-auto px-6 py-20 relative z-10">
-      {/* Intro Section */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-5xl mx-auto mb-20">
-        <div className="ornament-divider w-24 mx-auto mb-6" />
-        <h1 className="text-5xl md:text-6xl font-display mb-4">
-          <EditableText value={current.title} onChange={(v) => update("title", v)} isEditing={isEditing} tag="h1" />
-        </h1>
-        <p className="text-muted-foreground mb-12">
-          <EditableText value={current.subtitle} onChange={(v) => update("subtitle", v)} isEditing={isEditing} />
-        </p>
+      {/* Immersive Hero Section */}
+      <div className="relative h-[85vh] w-full overflow-hidden rounded-b-[4rem] mb-24 -mt-10 border-x border-b border-white/5">
+        <motion.img 
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.5 }}
+          src={current.heroImage || g3} 
+          alt="Classes Hero" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/10 to-transparent" />
+        <div className="absolute inset-0 bg-black/20" />
+        
+        {isEditing && (
+          <div className="absolute top-10 left-10 z-20">
+            <button 
+              onClick={() => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = (e) => {
+                  const file = (e.target as any).files?.[0];
+                  if (file) {
+                    const url = URL.createObjectURL(file);
+                    update("heroImage", url);
+                  }
+                };
+                input.click();
+              }}
+              className="flex items-center gap-3 px-6 py-3 bg-black/60 backdrop-blur-xl border border-white/10 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold hover:text-background transition-all shadow-2xl"
+            >
+              <Camera className="w-4 h-4" /> Change Hero Image
+            </button>
+          </div>
+        )}
 
-        <div className="text-center bg-gold/5 border border-gold/10 p-10 md:p-14 rounded-3xl mb-16 shadow-2xl">
-          <EditableText tag="p" value={current.intro} onChange={(v) => update("intro", v)} isEditing={isEditing} className="text-xl leading-relaxed text-foreground/80 mb-10 max-w-4xl mx-auto" />
-          <ul className="grid md:grid-cols-2 gap-x-10 gap-y-6 max-w-4xl mx-auto">
-            {current.points.map((point, i) => (
-              <li key={i} className="flex items-center gap-4 text-foreground/70 text-lg">
-                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center text-gold text-sm font-bold">ಯ</span>
-                <EditableText value={point} onChange={(v) => {
-                  const newPoints = [...current.points];
-                  newPoints[i] = v;
-                  update("points", newPoints);
-                }} isEditing={isEditing} />
-              </li>
-            ))}
-          </ul>
+        <div className="absolute bottom-[10%] left-0 w-full text-center px-6 z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.3 }}
+          >
+            <h1 className="text-7xl md:text-[10rem] font-display text-primary tracking-[0.2em] uppercase leading-none mb-6 drop-shadow-2xl">
+              <EditableText value={current.title} onChange={(v) => update("title", v)} isEditing={isEditing} tag="span" />
+            </h1>
+            <div className="h-2 w-32 md:w-80 bg-gold mx-auto rounded-full shadow-glow" />
+          </motion.div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Schedule Filters */}
       <div className="w-full mb-12">
@@ -386,6 +409,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                         >
                           {lang === "en" ? (
                             <>
+                              <option value="All Days">All Days</option>
                               <option value="Monday">Monday</option>
                               <option value="Tuesday">Tuesday</option>
                               <option value="Wednesday">Wednesday</option>
@@ -397,6 +421,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                             </>
                           ) : (
                             <>
+                              <option value="ಎಲ್ಲ ದಿನಗಳು">ಎಲ್ಲ ದಿನಗಳು</option>
                               <option value="ಸೋಮವಾರ">ಸೋಮವಾರ</option>
                               <option value="ಮಂಗಳವಾರ">ಮಂಗಳವಾರ</option>
                               <option value="ಬುಧವಾರ">ಬುಧವಾರ</option>
@@ -467,11 +492,43 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                     </div>
                     <div className="flex items-center gap-3">
                       <Clock size={14} className="text-gold shrink-0" />
-                      <EditableText value={c.time} onChange={(v) => updateClass(originalIndex, "time", v)} isEditing={isEditing} />
+                      {isEditing ? (
+                        <select
+                          value={c.time}
+                          onChange={(e) => updateClass(originalIndex, "time", e.target.value)}
+                          className="bg-black/40 border border-border/50 rounded px-2 py-1 outline-none focus:border-gold text-xs"
+                        >
+                          {Array.from({ length: 48 }).map((_, i) => {
+                            const h = Math.floor(i / 2);
+                            const m = i % 2 === 0 ? "00" : "30";
+                            const hh = h % 12 || 12;
+                            const ampm = h < 12 ? "AM" : "PM";
+                            const timeStr = `${hh}:${m} ${ampm}`;
+                            return <option key={timeStr} value={timeStr}>{timeStr}</option>;
+                          })}
+                        </select>
+                      ) : (
+                        <span>{c.time}</span>
+                      )}
                     </div>
                     <div className="flex items-center gap-3">
                       <BookOpen size={14} className="text-gold shrink-0" />
-                      <span>{teacher?.expertise}</span>
+                      {isEditing ? (
+                        <EditableText 
+                          value={teacher?.expertise || ""} 
+                          onChange={(v) => {
+                            const newTeachers = [...current.teachers];
+                            const tIdx = newTeachers.findIndex(t => t.id === c.teacherId);
+                            if (tIdx !== -1) {
+                              newTeachers[tIdx] = { ...newTeachers[tIdx], expertise: v };
+                              update("teachers", newTeachers);
+                            }
+                          }} 
+                          isEditing={true} 
+                        />
+                      ) : (
+                        <span>{teacher?.expertise}</span>
+                      )}
                     </div>
                   </div>
                 </motion.article>

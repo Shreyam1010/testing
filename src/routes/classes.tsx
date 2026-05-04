@@ -1,8 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { useLang } from "@/contexts/LanguageContext";
 import { ClassesSchedule } from "@/components/ClassesSchedule";
+import { teachers, Teacher } from "@/lib/data";
+import { useState, useRef } from "react";
+import { X } from "lucide-react";
+import g1 from "@/assets/gallery-1.jpg";
+import g2 from "@/assets/gallery-2.jpg";
+import g3 from "@/assets/gallery-3.jpg";
+import classHero from "@/assets/testing1.png.jpeg";
 
 export const Route = createFileRoute("/classes")({
   head: () => ({
@@ -24,90 +31,101 @@ export const Route = createFileRoute("/classes")({
 });
 
 function Classes() {
-  const { t, lang } = useLang();
+  const { lang } = useLang();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+
+  const opacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.4], [1, 1.05]);
+  const blur = useTransform(scrollYProgress, [0, 0.4], ["0px", "8px"]);
+
   return (
     <Layout>
-      <section className="container mx-auto px-6 py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center max-w-5xl mx-auto mb-20"
-        >
-          <div className="ornament-divider w-24 mx-auto mb-6" />
-          <h1 className="text-5xl md:text-6xl font-display mb-4">
-            {lang === "en" ? "Classes" : "ತರಗತಿಗಳು"}
-          </h1>
-          <p className="text-muted-foreground mb-12">{t.classes.subtitle}</p>
+      <div ref={containerRef} className="relative min-h-screen">
+        {/* Sticky Hero Image Background */}
+        <div className="fixed inset-0 w-full h-screen z-0 pointer-events-none">
+          <motion.div 
+            style={{ opacity, scale, filter: `blur(${blur})` }}
+            className="relative w-full h-full"
+          >
+            <img 
+              src={classHero} 
+              alt="Classes Hero" 
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+            <div className="absolute inset-0 bg-black/40" />
+          </motion.div>
+        </div>
 
-          <div className="text-center bg-gold/5 border border-gold/10 p-10 md:p-14 rounded-3xl mb-16 shadow-2xl">
-            <p className="text-xl leading-relaxed text-foreground/80 mb-10 max-w-4xl mx-auto">
-              {lang === "en"
-                ? "Step into the sacred circle of learning where tradition meets discipline. Our classes are designed to provide a comprehensive understanding of Yakshagana, from the foundational rhythms to the complex expressions of the epics. Beyond the physical movements, we delve into the literary and musical heritage, ensuring each student becomes a custodian of the art's soul. Join us in this journey of rhythm, expression, and divinity."
-                : "ಪರಂಪರೆ ಮತ್ತು ಶಿಸ್ತು ಸಂಗಮಿಸುವ ಈ ಕಲಿಕಾ ವಲಯಕ್ಕೆ ಹೆಜ್ಜೆ ಇಡಿ. ಯಕ್ಷಗಾನದ ಮೂಲ ಲಯಗಳಿಂದ ಹಿಡಿದು ಪುರಾಣಗಳ ಸಂಕೀರ್ಣ ಅಭಿವ್ಯಕ್ತಿಗಳವರೆಗೆ ಸಮಗ್ರ ತಿಳುವಳಿಕೆಯನ್ನು ನೀಡಲು ನಮ್ಮ ತರಗತಿಗಳನ್ನು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ. ದೈಹಿಕ ಚಲನೆಗಳ ಹೊರತಾಗಿ, ನಾವು ಸಾಹಿತ್ಯ ಮತ್ತು ಸಂಗೀತದ ಪರಂಪರೆಯನ್ನು ಆಳವಾಗಿ ಅಧ್ಯಯನ ಮಾಡುತ್ತೇವೆ, ಪ್ರತಿ ವಿದ್ಯಾರ್ಥಿಯು ಈ ಕಲೆಯ ಆತ್ಮದ ಸಂರಕ್ಷಕನಾಗುವುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳುತ್ತೇವೆ. ಲಯ, ಅಭಿವ್ಯಕ್ತಿ ಮತ್ತು ದೈವಿಕತೆಯ ಈ ಪ್ರಯಾಣದಲ್ಲಿ ನಮ್ಮೊಂದಿಗೆ ಸೇರಿ."}
-            </p>
-            <ul className="grid md:grid-cols-2 gap-x-10 gap-y-6 max-w-4xl mx-auto">
-              {[
-                lang === "en"
-                  ? "Authentic Gurukula style training"
-                  : "ಅಪ್ಪಟ ಗುರುಕುಲ ಶೈಲಿಯ ತರಬೇತಿ",
-                lang === "en"
-                  ? "Focus on both theory and practice"
-                  : "ಸೈದ್ಧಾಂತಿಕ ಮತ್ತು ಪ್ರಾಯೋಗಿಕ ಕಲಿಕೆಗೆ ಒತ್ತು",
-                lang === "en"
-                  ? "Personalized attention from veteran gurus"
-                  : "ಅನುಭವಿ ಗುರುಗಳಿಂದ ವೈಯಕ್ತಿಕ ಗಮನ",
-                lang === "en"
-                  ? "Opportunities for stage performances"
-                  : "ರಂಗ ಪ್ರದರ್ಶನಗಳಿಗೆ ಅವಕಾಶಗಳು",
-                lang === "en"
-                  ? "Comprehensive curriculum for all levels"
-                  : "ಎಲ್ಲಾ ಹಂತದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಸಮಗ್ರ ಪಠ್ಯಕ್ರಮ",
-                lang === "en"
-                  ? "In-depth study of Bhagavata literature and music"
-                  : "ಭಾಗವತ ಸಾಹಿತ್ಯ ಮತ್ತು ಸಂಗೀತದ ಆಳವಾದ ಅಧ್ಯಯನ",
-              ].map((point, i) => (
-                <li key={i} className="flex items-center gap-4 text-foreground/70 text-lg">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center text-gold text-sm font-bold">
-                    ಯ
-                  </span>
-                  <span className="text-left">{point}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </motion.div>
+        {/* Scrolling Content */}
+        <div className="relative z-10">
+          {/* Spacer to allow hero image visibility */}
+          <div className="h-[65vh]" />
 
-        <ClassesSchedule />
+          <section className="relative bg-background/95 backdrop-blur-[32px] pt-24 pb-32 shadow-[0_-50px_150px_rgba(0,0,0,1)]">
+            {/* Superior Blend Gradient */}
+            <div className="absolute inset-x-0 top-0 h-64 -translate-y-full bg-gradient-to-t from-background/95 via-background/60 to-transparent pointer-events-none" />
+            
+            <div className="container mx-auto px-6">
+              {/* Integrated Title Section */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
+                className="text-center mb-20"
+              >
+                <h1 className="text-4xl md:text-5xl font-display text-primary tracking-[0.25em] uppercase leading-none mb-6">
+                  {lang === "en" ? "Classes" : "ತರಗತಿಗಳು"}
+                </h1>
+                <div className="h-0.5 w-16 md:w-24 bg-gold/50 mx-auto rounded-full shadow-glow" />
+              </motion.div>
 
-        {/* TEACHERS / GURUS SECTION */}
-        <section className="mt-40">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-display mb-4 text-primary">
-              {lang === "en" ? "Our Gurus" : "ನಮ್ಮ ಗುರುಗಳು"}
-            </h2>
-            <p className="text-muted-foreground">
-              {lang === "en" ? "Masters of the craft with decades of stage experience." : "ದಶಕಗಳ ರಂಗಾನುಭವ ಹೊಂದಿರುವ ಕಲೆಯ ಧೀಮಂತರು."}
-            </p>
-          </div>
+              {/* Classes Schedule Section */}
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 1, delay: 0.2 }}
+                className="mb-48"
+              >
+                <ClassesSchedule />
+              </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {teachers.map((teacher, i) => (
-              <TeacherCard key={teacher.id} teacher={teacher} index={i} />
-            ))}
-          </div>
-        </section>
-      </section>
+              {/* TEACHERS / GURUS SECTION */}
+              <motion.section 
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 1, delay: 0.2 }}
+                className="pb-20"
+              >
+                <div className="text-center mb-16">
+                  <h2 className="text-4xl md:text-5xl font-display mb-4 text-primary">
+                    {lang === "en" ? "Our Gurus" : "ನಮ್ಮ ಗುರುಗಳು"}
+                  </h2>
+                  <p className="text-muted-foreground">
+                    {lang === "en" ? "Masters of the craft with decades of stage experience." : "ದಶಕಗಳ ರಂಗಾನುಭವ ಹೊಂದಿರುವ ಕಲೆಯ ಧೀಮಂತರು."}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {teachers.map((teacher, i) => (
+                    <TeacherCard key={teacher.id} teacher={teacher} index={i} />
+                  ))}
+                </div>
+              </motion.section>
+            </div>
+          </section>
+        </div>
+      </div>
     </Layout>
   );
 }
-
-import { teachers, Teacher } from "@/lib/data";
-import { useState } from "react";
-import { X } from "lucide-react";
-import { AnimatePresence } from "framer-motion";
-import g1 from "@/assets/gallery-1.jpg";
-import g2 from "@/assets/gallery-2.jpg";
-import g3 from "@/assets/gallery-3.jpg";
 
 const teacherImages: Record<string, string> = {
   raghavendra: g2,

@@ -4,7 +4,7 @@ import { useLang } from "@/contexts/LanguageContext";
 export function Footer() {
   const { t } = useLang();
   return (
-    <footer className="relative mt-32 border-t border-border/40 bg-card/30">
+    <footer className="relative border-t border-white/10 bg-background/60 backdrop-blur-2xl">
       <div className="ornament-divider" />
       <div className="container mx-auto px-6 py-12 grid md:grid-cols-3 gap-8">
         <div>

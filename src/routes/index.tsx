@@ -14,7 +14,7 @@ import g5 from "@/assets/gallery-5.jpg";
 import g6 from "@/assets/gallery-6.jpg";
 
 import heroImg from "@/assets/hero-yakshagana.jpg";
-import mandala from "@/assets/mandala.png";
+import mandala from "@/assets/gallery-1.jpg";
 import aboutImg from "@/assets/about-performer.jpg";
 
 const imgMap: Record<string, string> = { g1, g2, g3, g4, g5, g6 };
@@ -266,10 +266,29 @@ function Index() {
             <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary">
               {t.highlights.items[0].title}
             </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-              {classes.slice(0, 4).map((c) => (
-                <ClassCard key={c.id} item={c} href="/classes" />
-              ))}
+            <div className="grid md:grid-cols-2 gap-8 mb-12">
+              <Link to="/classes" className="group relative rounded-3xl overflow-hidden border border-border bg-card/40 p-8 md:p-12 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[450px]">
+                <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent z-10" />
+                <img src={imgMap.g4} alt="Singing Classes" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div className="relative z-20">
+                   <h3 className="text-4xl md:text-5xl font-display text-primary mb-4">{lang === "en" ? "Singing" : "ಗಾಯನ"}</h3>
+                   <p className="text-muted-foreground text-lg mb-8 leading-relaxed">{lang === "en" ? "Master the authentic narrative singing tradition (Bhagavatike) that anchors every Yakshagana performance." : "ಯಕ್ಷಗಾನ ಪ್ರದರ್ಶನದ ಆಧಾರಸ್ತಂಭವಾದ ಕಥನ ಗಾಯನ (ಭಾಗವತಿಕೆ) ಪರಂಪರೆಯನ್ನು ಕಲಿಯಿರಿ."}</p>
+                   <span className="inline-flex items-center gap-2 text-gold font-bold uppercase tracking-widest text-sm bg-black/40 px-6 py-3 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-gold group-hover:text-background transition-colors">
+                      {lang === "en" ? "Learn More" : "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                   </span>
+                </div>
+              </Link>
+              <Link to="/classes" className="group relative rounded-3xl overflow-hidden border border-border bg-card/40 p-8 md:p-12 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[450px]">
+                <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent z-10" />
+                <img src={imgMap.g1} alt="Dancing Classes" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div className="relative z-20">
+                   <h3 className="text-4xl md:text-5xl font-display text-primary mb-4">{lang === "en" ? "Dancing" : "ನೃತ್ಯ"}</h3>
+                   <p className="text-muted-foreground text-lg mb-8 leading-relaxed">{lang === "en" ? "Immerse yourself in the vigorous footwork, intricate expressions, and graceful choreography of Yakshagana." : "ಯಕ್ಷಗಾನದ ಶಕ್ತಿಯುತ ಪಾದಭಂಗಿ, ಸಂಕೀರ್ಣ ಭಾವಾಭಿನಯ ಮತ್ತು ಸುಂದರ ನೃತ್ಯ ಸಂಯೋಜನೆಯಲ್ಲಿ ಮುಳುಗಿರಿ."}</p>
+                   <span className="inline-flex items-center gap-2 text-gold font-bold uppercase tracking-widest text-sm bg-black/40 px-6 py-3 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-gold group-hover:text-background transition-colors">
+                      {lang === "en" ? "Learn More" : "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                   </span>
+                </div>
+              </Link>
             </div>
             <div className="flex justify-center">
               <Link
