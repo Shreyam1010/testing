@@ -16,6 +16,7 @@ import g6 from "@/assets/gallery-6.jpg";
 import heroImg from "@/assets/hero-yakshagana.jpg";
 import mandala from "@/assets/gallery-1.jpg";
 import aboutImg from "@/assets/about-performer.jpg";
+import logoImg from "@/assets/logo-transparent.png";
 
 const imgMap: Record<string, string> = { g1, g2, g3, g4, g5, g6 };
 
@@ -71,6 +72,15 @@ function Index() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
+            <motion.img 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1, duration: 0.8 }}
+              src={logoImg} 
+              alt="Kathe Gaararu Logo" 
+              className="h-32 md:h-48 lg:h-56 w-auto object-contain mb-8 drop-shadow-2xl"
+            />
+            
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
