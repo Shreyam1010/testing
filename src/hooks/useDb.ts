@@ -1,0 +1,93 @@
+import { useState, useEffect } from "react";
+import { useLang } from "@/contexts/LanguageContext";
+
+export function useDbContent() {
+  const { lang } = useLang();
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<any>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchData() {
+      try {
+        console.log(`[useDbContent] Fetching for lang: ${lang}...`);
+        setLoading(true);
+        const res = await fetch(`http://127.0.0.1:5667/api/content?lang=${lang}`);
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const raw = await res.json();
+        
+        if (!isMounted) return;
+
+        console.log("[useDbContent] Data received:", raw);
+
+        // Transform data to match frontend expectations
+        const transformed: any = {
+          siteContent: {},
+          teachers: raw.teachers?.map((t: any) => ({
+            id: t.id,
+            name: { en: t.name_en, kn: t.name_kn },
+            expertise: { en: t.expertise_en, kn: t.expertise_kn },
+            bio: { en: t.bio_en, kn: t.bio_kn },
+            image: t.image_url
+          })) || [],
+          classes: raw.classes?.map((c: any) => ({
+            id: c.id,
+            topic: { en: c.topic_en, kn: c.topic_kn },
+            teacherId: c.teacher_id,
+            day: { en: c.day_en, kn: c.day_kn },
+            time: c.time,
+            level: { en: c.level_en, kn: c.level_kn }
+          })) || [],
+          events: raw.events?.map((e: any) => ({
+            id: e.id,
+            title: { en: e.title_en, kn: e.title_kn },
+            teacher: { en: e.teacher_en, kn: e.teacher_kn },
+            time: { en: e.time_en, kn: e.time_kn },
+            badge: { en: e.badge_en, kn: e.badge_kn },
+            status: e.status,
+            image: e.image_url,
+            date: e.date
+          })) || [],
+          blogs: raw.blogs?.map((b: any) => ({
+            id: b.id,
+            title: { en: b.title_en, kn: b.title_kn },
+            excerpt: { en: b.excerpt_en, kn: b.excerpt_kn },
+            content: { en: b.content_en, kn: b.content_kn },
+            category: { en: b.category_en, kn: b.category_kn },
+            author: { en: b.author_en, kn: b.author_kn },
+            date: b.date,
+            image: b.image,
+            slug: b.slug
+          })) || [],
+          workshops: raw.workshops?.map((w: any) => ({
+            id: w.id,
+            title: { en: w.title_en, kn: w.title_kn },
+            timestamp: { en: w.timestamp_en, kn: w.timestamp_kn },
+            image: w.image
+          })) || []
+        };
+
+        // Site content transformation
+        raw.siteContent?.forEach((item: any) => {
+          if (!transformed.siteContent[item.section]) transformed.siteContent[item.section] = {};
+          transformed.siteContent[item.section][item.content_key] = item.content_value;
+        });
+
+        setData(transformed);
+      } catch (err) {
+        console.error("[useDbContent] Fetch failed:", err);
+        setError(err);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+          console.log("[useDbContent] Loading finished.");
+        }
+      }
+    }
+    fetchData();
+    return () => { isMounted = false; };
+  }, [lang]);
+
+  return { data, loading, error };
+}
