@@ -17,6 +17,11 @@ import heroImg from "@/assets/hero-yakshagana.jpg";
 import mandala from "@/assets/gallery-1.jpg";
 import aboutImg from "@/assets/about-performer.jpg";
 import logoImg from "@/assets/logo-transparent.png";
+import sticker0 from "@/assets/stickers/sticker_0.png";
+import sticker1 from "@/assets/stickers/sticker_1.png";
+import sticker2 from "@/assets/stickers/sticker_2.png";
+import sticker3 from "@/assets/stickers/sticker_3.png";
+import sticker4 from "@/assets/stickers/sticker_4.png";
 
 const imgMap: Record<string, string> = { g1, g2, g3, g4, g5, g6 };
 
@@ -171,7 +176,8 @@ function Index() {
             <span className="text-xs uppercase tracking-[0.3em] text-crimson font-medium mb-4">
               {t.about.homeSection.label}
             </span>
-            <h2 className="font-display text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.1] mb-8 text-foreground">
+            <h2 className="font-display text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.1] mb-8 text-foreground flex items-center gap-4">
+              <img src={sticker0} alt="" className="w-12 h-12 md:w-16 md:h-16 object-contain" />
               {t.about.homeSection.title}
             </h2>
             {t.about.homeSection.body.map((paragraph, i) => (
@@ -202,7 +208,10 @@ function Index() {
           className="text-center max-w-2xl mx-auto mb-16"
         >
           <div className="ornament-divider w-24 mx-auto mb-6" />
-          <h2 className="text-4xl md:text-5xl font-display mb-4">{t.highlights.title}</h2>
+          <h2 className="text-4xl md:text-5xl font-display mb-4 flex items-center justify-center gap-4">
+            <img src={sticker1} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
+            {t.highlights.title}
+          </h2>
           <p className="text-muted-foreground">{t.highlights.subtitle}</p>
         </motion.div>
 
@@ -239,7 +248,8 @@ function Index() {
       <section className="container mx-auto px-6 py-12 flex flex-col gap-32">
           {/* PERFORMANCES */}
           <div id="performances-details" className="scroll-mt-32">
-            <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary">
+            <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
+              <img src={sticker2} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
               {t.highlights.items[2].title}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 grid-flow-dense">
@@ -273,7 +283,8 @@ function Index() {
 
           {/* CLASSES */}
           <div id="classes-details" className="scroll-mt-32">
-            <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary">
+            <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
+              <img src={sticker3} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
               {t.highlights.items[0].title}
             </h2>
             <div className="grid md:grid-cols-2 gap-8 mb-12">
@@ -313,7 +324,8 @@ function Index() {
 
           {/* WORKSHOPS */}
           <div id="workshops-details" className="scroll-mt-32">
-            <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary">
+            <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
+              <img src={sticker4} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
               {t.highlights.items[1].title}
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -344,7 +356,8 @@ function Index() {
           {/* BLOG PREVIEW */}
           <div id="blog-preview" className="scroll-mt-32">
             <div className="flex items-center justify-between mb-12">
-              <h2 className="text-4xl md:text-5xl font-display text-primary">
+              <h2 className="text-4xl md:text-5xl font-display text-primary flex items-center gap-4">
+                <img src={sticker0} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                 {lang === "en" ? "Latest Insights" : "ಇತ್ತೀಚಿನ ಒಳನೋಟಗಳು"}
               </h2>
               <Link

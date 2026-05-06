@@ -10,6 +10,7 @@ import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
 import g3 from "@/assets/gallery-3.jpg";
 import classHero from "@/assets/testing1.png.jpeg";
+import sticker1 from "@/assets/stickers/sticker_1.png";
 
 export const Route = createFileRoute("/classes")({
   head: () => ({
@@ -106,7 +107,8 @@ function Classes() {
                 className="pb-20"
               >
                 <div className="text-center mb-16">
-                  <h2 className="text-4xl md:text-5xl font-display mb-4 text-primary">
+                  <h2 className="text-4xl md:text-5xl font-display mb-4 text-primary flex items-center justify-center gap-4">
+                    <img src={sticker1} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                     {lang === "en" ? "Our Gurus" : "ನಮ್ಮ ಗುರುಗಳು"}
                   </h2>
                   <p className="text-muted-foreground">

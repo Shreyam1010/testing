@@ -9,6 +9,8 @@ import g3 from "@/assets/gallery-3.jpg";
 import g4 from "@/assets/gallery-4.jpg";
 import g5 from "@/assets/gallery-5.jpg";
 import g6 from "@/assets/gallery-6.jpg";
+import sticker0 from "@/assets/stickers/sticker_0.png";
+import sticker5 from "@/assets/stickers/sticker_5.png";
 
 export const Route = createFileRoute("/services")({
   head: () => ({
@@ -74,7 +76,8 @@ function Services() {
               className="flex flex-col gap-12"
             >
               <div className="text-center max-w-4xl mx-auto">
-                <h2 className="text-4xl md:text-5xl font-display text-primary mb-6">
+                <h2 className="text-4xl md:text-5xl font-display text-primary mb-6 flex items-center justify-center gap-4">
+                  <img src={sticker5} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                   {section.title}
                 </h2>
                 <p className="text-xl text-muted-foreground leading-relaxed">
@@ -149,7 +152,8 @@ function Services() {
             className="pt-20"
           >
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <h2 className="text-4xl md:text-5xl font-display text-primary mb-6">
+              <h2 className="text-4xl md:text-5xl font-display text-primary mb-6 flex items-center justify-center gap-4">
+                <img src={sticker0} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                 {t.services.social.title}
               </h2>
               <p className="text-xl text-muted-foreground">
