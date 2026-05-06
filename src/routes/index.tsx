@@ -41,8 +41,6 @@ function Index() {
   const dbWorkshops = data?.workshops || [];
   const dbBlogs = data?.blogs || [];
 
-
-
   const galleryItems = [
     { src: imgMap.g1, label: "The Mask" },
     { src: imgMap.g2, label: "Stage Performance" },
@@ -204,54 +202,6 @@ function Index() {
             <div className="h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
           </section>
 
-            <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
-              <img src={sticker3} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
-              {t.highlights.items[0].title}
-            </h2>
-            <div className="grid md:grid-cols-2 gap-8 mb-12">
-              <Link to="/classes" className="group relative rounded-3xl overflow-hidden border border-border bg-card/40 p-8 md:p-12 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[450px]">
-                <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent z-10" />
-                <img src={imgMap.g4} alt="Singing Gurukul" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                <div className="relative z-20">
-                   <h3 className="text-4xl md:text-5xl font-display text-primary mb-4">{lang === "en" ? "Singing" : "ಗಾಯನ"}</h3>
-                   <p className="text-muted-foreground text-lg mb-8 leading-relaxed">{lang === "en" ? "Master the authentic narrative singing tradition (Bhagavatike) that anchors every Yakshagana performance." : "ಯಕ್ಷಗಾನ ಪ್ರದರ್ಶನದ ಆಧಾರಸ್ತಂಭವಾದ ಕಥನ ಗಾಯನ (ಭಾಗವತಿಕೆ) ಪರಂಪರೆಯನ್ನು ಕಲಿಯಿರಿ."}</p>
-                   <span className="inline-flex items-center gap-2 text-gold font-bold uppercase tracking-widest text-sm bg-black/40 px-6 py-3 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-gold group-hover:text-background transition-colors">
-                      {lang === "en" ? "Learn More" : "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                   </span>
-                </div>
-              </Link>
-              <Link to="/classes" className="group relative rounded-3xl overflow-hidden border border-border bg-card/40 p-8 md:p-12 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[450px]">
-                <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent z-10" />
-                <img src={imgMap.g1} alt="Dancing Gurukul" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                <div className="relative z-20">
-                   <h3 className="text-4xl md:text-5xl font-display text-primary mb-4">{lang === "en" ? "Dancing" : "ನೃತ್ಯ"}</h3>
-                   <p className="text-muted-foreground text-lg mb-8 leading-relaxed">{lang === "en" ? "Immerse yourself in the vigorous footwork, intricate expressions, and graceful choreography of Yakshagana." : "ಯಕ್ಷಗಾನದ ಶಕ್ತಿಯುತ ಪಾದಭಂಗಿ, ಸಂಕೀರ್ಣ ಭಾವಾಭಿನಯ ಮತ್ತು ಸುಂದರ ನೃತ್ಯ ಸಂಯೋಜನೆಯಲ್ಲಿ ಮುಳುಗಿರಿ."}</p>
-                   <span className="inline-flex items-center gap-2 text-gold font-bold uppercase tracking-widest text-sm bg-black/40 px-6 py-3 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-gold group-hover:text-background transition-colors">
-                      {lang === "en" ? "Learn More" : "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                   </span>
-                </div>
-              </Link>
-            </div>
-            <div className="flex justify-center">
-              <Link
-                to="/classes"
-                className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gold/10 border border-gold/30 text-primary hover:bg-gold hover:text-background transition-all font-display text-lg"
-              >
-                {lang === "en" ? "Explore All Gurukul" : "ಗುರುಕುಲವನ್ನು ಅನ್ವೇಷಿಸಿ"}
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-          </div>
-
-          {/* WORKSHOPS */}
-          <div id="workshops-details" className="scroll-mt-32">
-            <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
-              <img src={sticker4} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
-              {t.highlights.items[1].title}
-            </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {workshops.map((w) => {
-=======
           {/* HIGHLIGHTS */}
           <section className="container mx-auto px-6 py-24">
             <motion.div
@@ -262,7 +212,10 @@ function Index() {
               className="text-center max-w-2xl mx-auto mb-16"
             >
               <div className="ornament-divider w-24 mx-auto mb-6" />
-              <h2 className="text-4xl md:text-5xl font-display mb-4">{t.highlights.title}</h2>
+              <h2 className="text-4xl md:text-5xl font-display mb-4 flex items-center justify-center gap-4">
+                <img src={sticker1} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
+                {t.highlights.title}
+              </h2>
               <p className="text-muted-foreground">{t.highlights.subtitle}</p>
             </motion.div>
 
@@ -270,7 +223,6 @@ function Index() {
               {highlightOrder.map((idx, i) => {
                 const item = t.highlights.items[idx];
                 const Icon = icons[idx];
->>>>>>> Stashed changes
                 return (
                   <Link
                     key={i}
@@ -299,24 +251,15 @@ function Index() {
                 );
               })}
             </div>
-<<<<<<< Updated upstream
-          </div>
-          {/* BLOG PREVIEW */}
-          <div id="blog-preview" className="scroll-mt-32">
-            <div className="flex items-center justify-between mb-12">
-              <h2 className="text-4xl md:text-5xl font-display text-primary flex items-center gap-4">
-                <img src={sticker0} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
-                {lang === "en" ? "Latest Insights" : "ಇತ್ತೀಚಿನ ಒಳನೋಟಗಳು"}
-=======
           </section>
 
           {/* EXPANDED DETAILS */}
           <section className="container mx-auto px-6 py-12 flex flex-col gap-32">
             {/* PERFORMANCES */}
             <div id="performances-details" className="scroll-mt-32">
-              <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary">
+              <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
+                <img src={sticker2} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                 {t.highlights.items[2].title}
->>>>>>> Stashed changes
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 grid-flow-dense">
                 {galleryItems.map((it, i) => (
@@ -348,7 +291,8 @@ function Index() {
 
             {/* CLASSES */}
             <div id="classes-details" className="scroll-mt-32">
-              <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary">
+              <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
+                <img src={sticker3} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                 {t.highlights.items[0].title}
               </h2>
               <div className="grid md:grid-cols-2 gap-8 mb-12">
@@ -388,7 +332,8 @@ function Index() {
 
             {/* WORKSHOPS */}
             <div id="workshops-details" className="scroll-mt-32">
-              <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary">
+              <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
+                <img src={sticker4} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                 {t.highlights.items[1].title}
               </h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -417,10 +362,12 @@ function Index() {
                 })}
               </div>
             </div>
+
             {/* BLOG PREVIEW */}
             <div id="blog-preview" className="scroll-mt-32">
               <div className="flex items-center justify-between mb-12">
-                <h2 className="text-4xl md:text-5xl font-display text-primary">
+                <h2 className="text-4xl md:text-5xl font-display text-primary flex items-center gap-4">
+                  <img src={sticker0} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                   {lang === "en" ? "Latest Insights" : "ಇತ್ತೀಚಿನ ಒಳನೋಟಗಳು"}
                 </h2>
                 <Link
