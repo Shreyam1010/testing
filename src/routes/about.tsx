@@ -64,7 +64,7 @@ function About() {
               <span className="text-xs uppercase tracking-[0.3em] text-crimson font-medium mb-4 block">
                 OUR STORY
               </span>
-              <h1 className="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-10 text-foreground flex items-center gap-4 md:gap-6">
+              <h1 className="font-display text-3xl sm:text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-10 text-foreground flex items-center gap-4 md:gap-6">
                 <img src={sticker1} alt="" className="w-12 h-12 md:w-16 md:h-16 object-contain drop-shadow-md" />
                 {aboutData.title}
               </h1>

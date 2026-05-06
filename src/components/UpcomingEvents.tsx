@@ -22,7 +22,7 @@ export function UpcomingEvents() {
   return (
     <section className="container mx-auto px-6 pb-24">
       <div className="text-center mb-12">
-        <h2 className="text-4xl md:text-5xl font-display mb-4 text-primary">
+        <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-4 text-primary">
           {lang === "en" ? "Upcoming Events" : "ಮುಂಬರುವ ಕಾರ್ಯಕ್ರಮಗಳು"}
         </h2>
         <div className="ornament-divider w-24 mx-auto" />

@@ -67,7 +67,7 @@ function BlogPage() {
           className="text-center max-w-2xl mx-auto mb-16"
         >
           <div className="ornament-divider w-24 mx-auto mb-6" />
-          <h1 className="text-5xl md:text-6xl font-display mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-display mb-4">
             {lang === "en" ? "Latest Insights" : "ಇತ್ತೀಚಿನ ಒಳನೋಟಗಳು"}
           </h1>
           <p className="text-muted-foreground text-lg">
@@ -129,7 +129,7 @@ function BlogPage() {
                       </div>
                     </div>
 
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-display text-primary mb-8 leading-tight">
+                    <h2 className="text-3xl sm:text-[26px] sm:text-3xl md:text-5xl font-display text-primary mb-8 leading-tight">
                       {selectedBlog.title[lang]}
                     </h2>
 

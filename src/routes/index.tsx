@@ -100,7 +100,7 @@ function Index() {
                   {heroData.tag}
                 </motion.div>
 
-                <h1 className="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.05] mb-6">
+                <h1 className="font-display text-[32px] sm:text-4xl md:text-6xl lg:text-7xl leading-[1.05] mb-6">
                   {heroData.title}
                   <br />
                   <span className="text-gradient-gold glow-text">{heroData.titleAccent}</span>
@@ -180,7 +180,7 @@ function Index() {
                 <span className="text-xs uppercase tracking-[0.3em] text-crimson font-medium mb-4">
                   {aboutData.label}
                 </span>
-                <h2 className="font-display text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.1] mb-8 text-foreground flex items-center gap-4">
+                <h2 className="font-display text-[28px] sm:text-3xl md:text-5xl lg:text-[3.5rem] leading-[1.1] mb-8 text-foreground flex items-center gap-4">
                   <img src={sticker0} alt="" className="w-12 h-12 md:w-16 md:h-16 object-contain" />
                   {aboutData.title}
                 </h2>
@@ -212,7 +212,7 @@ function Index() {
               className="text-center max-w-2xl mx-auto mb-16"
             >
               <div className="ornament-divider w-24 mx-auto mb-6" />
-              <h2 className="text-4xl md:text-5xl font-display mb-4 flex items-center justify-center gap-4">
+              <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-4 flex items-center justify-center gap-4">
                 <img src={sticker1} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                 {t.highlights.title}
               </h2>
@@ -257,11 +257,11 @@ function Index() {
           <section className="container mx-auto px-6 py-12 flex flex-col gap-32">
             {/* PERFORMANCES */}
             <div id="performances-details" className="scroll-mt-32">
-              <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
+              <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
                 <img src={sticker2} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                 {t.highlights.items[2].title}
               </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 grid-flow-dense">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3 md:gap-6 grid-flow-dense">
                 {galleryItems.map((it, i) => (
                   <motion.div
                     key={i}
@@ -291,30 +291,30 @@ function Index() {
 
             {/* CLASSES */}
             <div id="classes-details" className="scroll-mt-32">
-              <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
+              <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
                 <img src={sticker3} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                 {t.highlights.items[0].title}
               </h2>
-              <div className="grid md:grid-cols-2 gap-8 mb-12">
-                <Link to="/classes" className="group relative rounded-3xl overflow-hidden border border-border bg-card/40 p-8 md:p-12 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[450px]">
+              <div className="grid grid-cols-2 gap-3 md:gap-8 mb-12">
+                <Link to="/classes" className="group relative rounded-2xl md:rounded-3xl overflow-hidden border border-border bg-card/40 p-4 sm:p-8 md:p-12 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[250px] sm:min-h-[350px] md:min-h-[450px]">
                   <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent z-10" />
                   <img src={imgMap.g4} alt="Singing Gurukul" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="relative z-20">
-                    <h3 className="text-4xl md:text-5xl font-display text-primary mb-4">{lang === "en" ? "Singing" : "ಗಾಯನ"}</h3>
-                    <p className="text-muted-foreground text-lg mb-8 leading-relaxed">{lang === "en" ? "Master the authentic narrative singing tradition (Bhagavatike) that anchors every Yakshagana performance." : "ಯಕ್ಷಗಾನ ಪ್ರದರ್ಶನದ ಆಧಾರಸ್ತಂಭವಾದ ಕಥನ ಗಾಯನ (ಭಾಗವತಿಕೆ) ಪರಂಪರೆಯನ್ನು ಕಲಿಯಿರಿ."}</p>
-                    <span className="inline-flex items-center gap-2 text-gold font-bold uppercase tracking-widest text-sm bg-black/40 px-6 py-3 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-gold group-hover:text-background transition-colors">
-                      {lang === "en" ? "Learn More" : "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <h3 className="text-xl sm:text-3xl md:text-5xl font-display text-primary mb-2 md:mb-4">{lang === "en" ? "Singing" : "ಗಾಯನ"}</h3>
+                    <p className="text-muted-foreground text-[10px] sm:text-sm md:text-lg mb-4 md:mb-8 leading-relaxed line-clamp-3 md:line-clamp-none">{lang === "en" ? "Master the authentic narrative singing tradition (Bhagavatike) that anchors every Yakshagana performance." : "ಯಕ್ಷಗಾನ ಪ್ರದರ್ಶನದ ಆಧಾರಸ್ತಂಭವಾದ ಕಥನ ಗಾಯನ (ಭಾಗವತಿಕೆ) ಪರಂಪರೆಯನ್ನು ಕಲಿಯಿರಿ."}</p>
+                    <span className="inline-flex items-center gap-1 md:gap-2 text-gold font-bold uppercase tracking-widest text-[8px] sm:text-[10px] md:text-sm bg-black/40 px-3 py-2 md:px-6 md:py-3 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-gold group-hover:text-background transition-colors">
+                      {lang === "en" ? "Learn More" : "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"} <ArrowRight className="w-3 h-3 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
                     </span>
                   </div>
                 </Link>
-                <Link to="/classes" className="group relative rounded-3xl overflow-hidden border border-border bg-card/40 p-8 md:p-12 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[450px]">
+                <Link to="/classes" className="group relative rounded-2xl md:rounded-3xl overflow-hidden border border-border bg-card/40 p-4 sm:p-8 md:p-12 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[250px] sm:min-h-[350px] md:min-h-[450px]">
                   <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent z-10" />
                   <img src={imgMap.g1} alt="Dancing Gurukul" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="relative z-20">
-                    <h3 className="text-4xl md:text-5xl font-display text-primary mb-4">{lang === "en" ? "Dancing" : "ನೃತ್ಯ"}</h3>
-                    <p className="text-muted-foreground text-lg mb-8 leading-relaxed">{lang === "en" ? "Immerse yourself in the vigorous footwork, intricate expressions, and graceful choreography of Yakshagana." : "ಯಕ್ಷಗಾನದ ಶಕ್ತಿಯುತ ಪಾದಭಂಗಿ, ಸಂಕೀರ್ಣ ಭಾವಾಭಿನಯ ಮತ್ತು ಸುಂದರ ನೃತ್ಯ ಸಂಯೋಜನೆಯಲ್ಲಿ ಮುಳುಗಿರಿ."}</p>
-                    <span className="inline-flex items-center gap-2 text-gold font-bold uppercase tracking-widest text-sm bg-black/40 px-6 py-3 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-gold group-hover:text-background transition-colors">
-                      {lang === "en" ? "Learn More" : "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <h3 className="text-xl sm:text-3xl md:text-5xl font-display text-primary mb-2 md:mb-4">{lang === "en" ? "Dancing" : "ನೃತ್ಯ"}</h3>
+                    <p className="text-muted-foreground text-[10px] sm:text-sm md:text-lg mb-4 md:mb-8 leading-relaxed line-clamp-3 md:line-clamp-none">{lang === "en" ? "Immerse yourself in the vigorous footwork, intricate expressions, and graceful choreography of Yakshagana." : "ಯಕ್ಷಗಾನದ ಶಕ್ತಿಯುತ ಪಾದಭಂಗಿ, ಸಂಕೀರ್ಣ ಭಾವಾಭಿನಯ ಮತ್ತು ಸುಂದರ ನೃತ್ಯ ಸಂಯೋಜನೆಯಲ್ಲಿ ಮುಳುಗಿರಿ."}</p>
+                    <span className="inline-flex items-center gap-1 md:gap-2 text-gold font-bold uppercase tracking-widest text-[8px] sm:text-[10px] md:text-sm bg-black/40 px-3 py-2 md:px-6 md:py-3 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-gold group-hover:text-background transition-colors">
+                      {lang === "en" ? "Learn More" : "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"} <ArrowRight className="w-3 h-3 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
                     </span>
                   </div>
                 </Link>
@@ -332,11 +332,11 @@ function Index() {
 
             {/* WORKSHOPS */}
             <div id="workshops-details" className="scroll-mt-32">
-              <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
+              <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
                 <img src={sticker4} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                 {t.highlights.items[1].title}
               </h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
                 {dbWorkshops.map((w: any) => {
                   const displayImage = w.image.startsWith('g') ? imgMap[w.image] : w.image;
                   return (
@@ -353,9 +353,9 @@ function Index() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
                       </div>
-                      <div className="p-6">
-                        <h3 className="font-display text-xl text-primary mb-2">{w.title[lang]}</h3>
-                        <p className="text-sm text-gold/80 font-medium">{w.timestamp[lang]}</p>
+                      <div className="p-4 md:p-6 flex flex-col justify-between flex-1">
+                        <h3 className="font-display text-[15px] sm:text-lg md:text-xl text-primary mb-1 md:mb-2 leading-tight break-words hyphens-auto">{w.title[lang]}</h3>
+                        <p className="text-[10px] sm:text-xs md:text-sm text-gold/80 font-medium mt-auto">{w.timestamp[lang]}</p>
                       </div>
                     </Link>
                   );
@@ -366,7 +366,7 @@ function Index() {
             {/* BLOG PREVIEW */}
             <div id="blog-preview" className="scroll-mt-32">
               <div className="flex items-center justify-between mb-12">
-                <h2 className="text-4xl md:text-5xl font-display text-primary flex items-center gap-4">
+                <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display text-primary flex items-center gap-4">
                   <img src={sticker0} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                   {lang === "en" ? "Latest Insights" : "ಇತ್ತೀಚಿನ ಒಳನೋಟಗಳು"}
                 </h2>
@@ -379,38 +379,38 @@ function Index() {
                 </Link>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
                 {dbBlogs.slice(0, 4).map((post: any, index: number) => {
                   const displayImage = post.image.startsWith('g') ? imgMap[post.image] : post.image;
                   return (
                     <Link
                       key={post.id}
                       to="/blog"
-                      className="group relative bg-card/40 border border-border rounded-2xl overflow-hidden hover:border-gold/50 transition-all flex flex-col"
+                      className="group relative bg-card/40 border border-border rounded-xl md:rounded-2xl overflow-hidden hover:border-gold/50 transition-all flex flex-col"
                     >
-                      <div className="relative h-48 overflow-hidden">
+                      <div className="relative h-24 sm:h-32 md:h-48 overflow-hidden">
                         <img
                           src={displayImage}
                           alt={post.title[lang]}
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
-                        <div className="absolute top-4 left-4">
-                          <span className="px-3 py-1 bg-black/40 backdrop-blur-md border border-white/10 text-[9px] font-bold text-white uppercase tracking-wider rounded-full">
+                        <div className="absolute top-2 left-2 md:top-4 md:left-4">
+                          <span className="px-2 py-0.5 md:px-3 md:py-1 bg-black/40 backdrop-blur-md border border-white/10 text-[7px] md:text-[9px] font-bold text-white uppercase tracking-wider rounded-full">
                             {post.category[lang]}
                           </span>
                         </div>
                       </div>
-                      <div className="p-6 flex flex-col flex-1">
-                        <h3 className="font-display text-lg text-primary mb-3 line-clamp-2 leading-tight group-hover:text-gold transition-colors">
+                      <div className="p-3 md:p-6 flex flex-col flex-1">
+                        <h3 className="font-display text-xs sm:text-sm md:text-lg text-primary mb-1 md:mb-3 line-clamp-2 leading-tight group-hover:text-gold transition-colors">
                           {post.title[lang]}
                         </h3>
-                        <p className="text-xs text-muted-foreground line-clamp-2 mb-4 flex-1">
+                        <p className="hidden md:-webkit-box text-xs text-muted-foreground line-clamp-2 mb-4 flex-1">
                           {post.excerpt[lang]}
                         </p>
-                        <div className="flex items-center text-gold text-[10px] font-bold uppercase tracking-widest mt-auto">
+                        <div className="flex items-center text-gold text-[8px] md:text-[10px] font-bold uppercase tracking-widest mt-auto pt-1 md:pt-0">
                           {lang === "en" ? "Read Article" : "ಲೇಖನ ಓದಿ"}
-                          <ArrowRight className="w-3 h-3 ml-2 transition-transform group-hover:translate-x-1" />
+                          <ArrowRight className="w-2 h-2 md:w-3 md:h-3 ml-1 md:ml-2 transition-transform group-hover:translate-x-1" />
                         </div>
                       </div>
                     </Link>

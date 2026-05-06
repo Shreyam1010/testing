@@ -80,7 +80,7 @@ export function BlogEditor({ isEditing, lang }: BlogEditorProps) {
   return (
     <section className="container mx-auto px-6 py-24 relative">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
-        <h2 className="text-4xl md:text-5xl font-display text-primary">
+        <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display text-primary">
           {lang === "en" ? "Latest Insights" : "ಇತ್ತೀಚಿನ ಒಳನೋಟಗಳು"}
         </h2>
         {isEditing && (
@@ -223,7 +223,7 @@ export function BlogEditor({ isEditing, lang }: BlogEditorProps) {
                   <textarea 
                     value={editorData.title[lang]}
                     onChange={e => setEditorData({...editorData, title: {...editorData.title, [lang]: e.target.value}})}
-                    className="w-full text-3xl sm:text-4xl md:text-5xl font-display text-primary mb-8 bg-transparent outline-none resize-none overflow-hidden"
+                    className="w-full text-3xl sm:text-[26px] sm:text-3xl md:text-5xl font-display text-primary mb-8 bg-transparent outline-none resize-none overflow-hidden"
                     placeholder="Blog Title..."
                     rows={2}
                   />

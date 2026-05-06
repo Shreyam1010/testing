@@ -48,7 +48,7 @@ function Schedule() {
           className="text-center max-w-2xl mx-auto mb-12"
         >
           <div className="ornament-divider w-24 mx-auto mb-6" />
-          <h1 className="text-5xl md:text-6xl font-display mb-4">{t.schedule.title}</h1>
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-display mb-4">{t.schedule.title}</h1>
           <p className="text-muted-foreground">{t.schedule.subtitle}</p>
         </motion.div>
 

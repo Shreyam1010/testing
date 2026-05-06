@@ -111,7 +111,7 @@ export function ContactEditor({ isEditing, lang }: ContactEditorProps) {
         className="text-center max-w-2xl mx-auto mb-16"
       >
         <div className="ornament-divider w-24 mx-auto mb-6" />
-        <h1 className="text-5xl md:text-6xl font-display mb-4">
+        <h1 className="text-3xl sm:text-4xl md:text-6xl font-display mb-4">
           <EditableText
             value={data.title}
             onChange={(v) => update("title", v)}

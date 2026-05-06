@@ -91,7 +91,7 @@ function Classes() {
                 transition={{ duration: 1.2, ease: "easeOut" }}
                 className="text-center mb-20"
               >
-                <h1 className="text-4xl md:text-5xl font-display text-primary tracking-[0.25em] uppercase leading-none mb-6">
+                <h1 className="text-[26px] sm:text-3xl md:text-5xl font-display text-primary tracking-[0.25em] uppercase leading-none mb-6">
                   {classesData.title || (lang === "en" ? "Gurukul" : "ಗುರುಕುಲ")}
                 </h1>
                 <div className="h-0.5 w-16 md:w-24 bg-gold/50 mx-auto rounded-full shadow-glow" />
@@ -117,7 +117,7 @@ function Classes() {
                 className="pb-20"
               >
                 <div className="text-center mb-16">
-                  <h2 className="text-4xl md:text-5xl font-display mb-4 text-primary flex items-center justify-center gap-4">
+                  <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-4 text-primary flex items-center justify-center gap-4">
                     <img src={sticker1} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                     {lang === "en" ? "Our Gurus" : "ನಮ್ಮ ಗುರುಗಳು"}
                   </h2>

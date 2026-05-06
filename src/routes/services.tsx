@@ -57,7 +57,7 @@ function Services() {
           className="text-center max-w-2xl mx-auto mb-24"
         >
           <div className="ornament-divider w-24 mx-auto mb-6" />
-          <h1 className="text-5xl md:text-6xl font-display mb-4 text-primary">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-display mb-4 text-primary">
             {t.services.title}
           </h1>
           <p className="text-muted-foreground text-lg">
@@ -77,7 +77,7 @@ function Services() {
               transition={{ duration: 0.7 }}
             >
               <div className="text-center max-w-4xl mx-auto">
-                <h2 className="text-4xl md:text-5xl font-display text-primary mb-6 flex items-center justify-center gap-4">
+                <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display text-primary mb-6 flex items-center justify-center gap-4">
                   <img src={sticker5} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                   {section.title}
                 </h2>
@@ -91,8 +91,8 @@ function Services() {
                 <div className="flex flex-nowrap gap-4 lg:gap-6 overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                   {section.images.map((img, imgIdx) => {
                     const isLast = imgIdx === 4;
-                    // Calculate exact widths to fit 4.5 items on lg, 2.5 on md, 1.5 on default
-                    const cardClasses = "shrink-0 w-[calc((100%-1rem)/1.5)] md:w-[calc((100%-2rem)/2.5)] lg:w-[calc((100%-6rem)/4.5)] relative aspect-[4/5] rounded-2xl overflow-hidden border border-border shadow-xl group snap-start";
+                    // Calculate exact widths to fit 4.5 items on lg, 3.5 on md, 2.5 on default
+                    const cardClasses = "shrink-0 w-[calc((100%-1rem)/2.5)] sm:w-[calc((100%-2rem)/3.5)] lg:w-[calc((100%-6rem)/4.5)] relative aspect-[4/5] rounded-2xl overflow-hidden border border-border shadow-xl group snap-start";
                     
                     return isLast ? (
                       <Link 
@@ -153,7 +153,7 @@ function Services() {
             className="pt-20"
           >
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <h2 className="text-4xl md:text-5xl font-display text-primary mb-6 flex items-center justify-center gap-4">
+              <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display text-primary mb-6 flex items-center justify-center gap-4">
                 <img src={sticker0} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                 {t.services.social.title}
               </h2>

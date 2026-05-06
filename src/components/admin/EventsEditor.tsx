@@ -454,7 +454,7 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
         onChange={handleFileChange}
       />
       <div className="flex flex-col items-center mb-12 relative">
-        <h2 className="text-4xl md:text-5xl font-display mb-4 text-primary">
+        <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-4 text-primary">
           <EditableText
             value={lang === "en" ? "Upcoming Events" : "ಮುಂಬರುವ ಕಾರ್ಯಕ್ರಮಗಳು"}
             onChange={() => {}}

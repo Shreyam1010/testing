@@ -40,7 +40,7 @@ function Gallery() {
           className="text-center max-w-2xl mx-auto mb-20"
         >
           <div className="ornament-divider w-24 mx-auto mb-6" />
-          <h1 className="text-5xl md:text-6xl font-display mb-4">{t.gallery.title}</h1>
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-display mb-4">{t.gallery.title}</h1>
           <p className="text-muted-foreground">{t.gallery.subtitle}</p>
         </motion.div>
 
@@ -50,7 +50,7 @@ function Gallery() {
             <img src={sticker2} alt="" className="w-10 h-10 object-contain drop-shadow-md" />
             {lang === "en" ? "Performances" : "ಪ್ರದರ್ಶನಗಳು"}
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 grid-flow-dense">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 grid-flow-dense">
             {performanceItems.map((it, i) => (
               <GalleryItem key={i} it={it} i={i} />
             ))}
@@ -63,7 +63,7 @@ function Gallery() {
             <img src={sticker3} alt="" className="w-10 h-10 object-contain drop-shadow-md" />
             {lang === "en" ? "Gurukul" : "ಗುರುಕುಲ"}
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 grid-flow-dense">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 grid-flow-dense">
             {gurukulItems.map((it, i) => (
               <GalleryItem key={i} it={it} i={i} />
             ))}
@@ -76,7 +76,7 @@ function Gallery() {
             <img src={sticker4} alt="" className="w-10 h-10 object-contain drop-shadow-md" />
             {lang === "en" ? "Workshops" : "ಕಾರ್ಯಾಗಾರಗಳು"}
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 grid-flow-dense">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 grid-flow-dense">
             {workshopItems.map((it, i) => (
               <GalleryItem key={i} it={it} i={i} />
             ))}

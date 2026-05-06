@@ -220,7 +220,7 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
               />
             </div>
             
-            <h1 className="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-10 text-foreground">
+            <h1 className="font-display text-3xl sm:text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-10 text-foreground">
               <EditableText
                 value={current.title}
                 onChange={(v) => update("title", v)}

@@ -152,7 +152,7 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
             />
           </motion.div>
 
-          <h1 className="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.05] mb-6">
+          <h1 className="font-display text-3xl sm:text-4xl md:text-6xl lg:text-7xl leading-[1.05] mb-6">
             <EditableText
               value={data.title}
               onChange={(v) => update("title", v)}

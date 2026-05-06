@@ -541,7 +541,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
       {/* Gurus Section */}
       <section className="mt-40 relative">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-display mb-4 text-primary">
+          <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-4 text-primary">
             <EditableText value={current.gurusTitle} onChange={(v) => update("gurusTitle", v)} isEditing={isEditing} tag="h2" />
           </h2>
           <p className="text-muted-foreground">
@@ -652,7 +652,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                     update("teachers", newTeachers);
                   }} isEditing={true} />
                 </span>
-                <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-primary mb-8 leading-tight">
+                <h2 className="font-display text-[26px] sm:text-3xl md:text-5xl lg:text-6xl text-primary mb-8 leading-tight">
                   <EditableText value={current.teachers[editingTeacherIndex].name} onChange={(v) => {
                     const newTeachers = [...current.teachers];
                     newTeachers[editingTeacherIndex] = { ...newTeachers[editingTeacherIndex], name: v };
