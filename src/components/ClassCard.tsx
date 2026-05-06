@@ -1,20 +1,31 @@
 import { Link } from "@tanstack/react-router";
 import { Clock, User, BookOpen } from "lucide-react";
 import { useLang } from "@/contexts/LanguageContext";
-import { teacherById, type ClassItem } from "@/lib/data";
+import { teacherById } from "@/lib/data";
+import { useDbContent } from "@/hooks/useDb";
 
 export function ClassCard({
   item,
   featured = false,
   href,
+  teacher: passedTeacher,
 }: {
-  item: ClassItem;
+  item: any;
   featured?: boolean;
   href?: string;
+  teacher?: any;
 }) {
   const { lang } = useLang();
-  const teacher = teacherById(item.teacherId);
+  const { data } = useDbContent();
+  
+  const teacher = passedTeacher || data?.teachers?.find((t: any) => t.id === item.teacherId) || teacherById(item.teacherId);
+  
   if (!teacher) return null;
+
+  // Handle both old data.ts structure and new DB structure
+  const day = item.day?.[lang] || item.dayLabel?.[lang];
+  const level = item.level?.[lang];
+  const topic = item.topic?.[lang];
 
   const content = (
     <article
@@ -26,12 +37,12 @@ export function ClassCard({
         </span>
       )}
       <div className="flex items-center gap-2 text-xs text-gold/80 uppercase tracking-[0.2em] mb-4">
-        <span>{item.dayLabel[lang]}</span>
+        <span>{day}</span>
         <span className="text-border">•</span>
-        <span>{item.level[lang]}</span>
+        <span>{level}</span>
       </div>
 
-      <h3 className="font-display text-xl text-primary leading-tight mb-5">{item.topic[lang]}</h3>
+      <h3 className="font-display text-xl text-primary leading-tight mb-5">{topic}</h3>
 
       <div className="space-y-2.5 text-sm text-foreground/80 flex-grow">
         <div className="flex items-center gap-3">

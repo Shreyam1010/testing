@@ -27,262 +27,183 @@ const imgMap: Record<string, string> = { g1, g2, g3, g4, g5, g6 };
 
 export const Route = createFileRoute("/")({ component: Index });
 
+import { useDbContent } from "@/hooks/useDb";
+
 function Index() {
   const { t, lang } = useLang();
+  const { data, loading } = useDbContent();
   const icons = [Drama, Sparkles, Music];
   const highlightOrder = [2, 0, 1]; // 2: Performances, 0: Classes, 1: Workshops
 
+  // Use database content with fallbacks
+  const heroData = data?.siteContent?.hero || t.hero;
+  const aboutData = data?.siteContent?.about || t.about.homeSection;
+  const dbWorkshops = data?.workshops || [];
+  const dbBlogs = data?.blogs || [];
 
-  const handleHighlightClick = (idx: number) => {
-    const targetId =
-      idx === 2 ? "performances-details" : idx === 0 ? "classes-details" : "workshops-details";
-    const element = document.getElementById(targetId);
-    if (element) {
-      const y = element.getBoundingClientRect().top + window.scrollY - 100;
-      window.scrollTo({ top: y, behavior: "smooth" });
-    }
-  };
+
 
   const galleryItems = [
-    { src: g1, label: "The Mask" },
-    { src: g2, label: "Stage Performance" },
-    { src: g4, label: "Crown Heritage" },
-    { src: g6, label: "The Warrior" },
-    { src: g5, label: "Chande Master" },
-    { src: g3, label: "Workshop" },
+    { src: imgMap.g1, label: "The Mask" },
+    { src: imgMap.g2, label: "Stage Performance" },
+    { src: imgMap.g4, label: "Crown Heritage" },
+    { src: imgMap.g6, label: "The Warrior" },
+    { src: imgMap.g5, label: "Chande Master" },
+    { src: imgMap.g3, label: "Workshop" },
   ];
 
   return (
     <Layout>
-      {/* HERO */}
-      <section className="relative min-h-[92vh] flex items-center overflow-hidden">
-        <div className="absolute inset-0 bg-hero" />
-        <img
-          src={mandala}
-          alt=""
-          aria-hidden
-          className="absolute -right-40 -top-40 w-[700px] opacity-10 animate-spin-slow pointer-events-none"
-        />
-        <img
-          src={mandala}
-          alt=""
-          aria-hidden
-          className="absolute -left-60 -bottom-60 w-[600px] opacity-5 animate-spin-slow pointer-events-none"
-          style={{ animationDirection: "reverse" }}
-        />
-
-        <div className="container mx-auto px-6 relative z-10 grid lg:grid-cols-2 gap-12 items-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <motion.img 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.1, duration: 0.8 }}
-              src={logoImg} 
-              alt="Kathe Gaararu Logo" 
-              className="h-32 md:h-48 lg:h-56 w-auto object-contain mb-8 drop-shadow-2xl"
-            />
-            
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gold/40 bg-gold/5 text-xs uppercase tracking-[0.25em] text-primary mb-8"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
-              {t.hero.tag}
-            </motion.div>
-
-            <h1 className="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.05] mb-6">
-              {t.hero.title}
-              <br />
-              <span className="text-gradient-gold glow-text">{t.hero.titleAccent}</span>
-            </h1>
-
-            <p className="text-lg text-muted-foreground max-w-xl leading-relaxed mb-10">
-              {t.hero.subtitle}
-            </p>
-
-            <div className="flex flex-wrap gap-4">
-              <Link
-                to="/classes"
-                className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gold text-background font-medium shadow-glow hover:scale-105 transition-transform"
-              >
-                {t.hero.ctaPrimary}
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link
-                to="/gallery"
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-border hover:border-gold text-foreground transition-colors"
-              >
-                {t.hero.ctaSecondary}
-              </Link>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-            className="relative"
-          >
-            <div className="absolute inset-0 bg-ember rounded-full blur-3xl opacity-40 animate-float-slow" />
-            <motion.img
-              src={heroImg}
-              alt="Yakshagana performer in traditional crown headdress"
-              width={1536}
-              height={1536}
-              className="relative rounded-2xl shadow-glow border border-gold/20 animate-float-slow"
-            />
-          </motion.div>
+      {loading ? (
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="w-12 h-12 border-4 border-gold border-t-transparent rounded-full animate-spin" />
         </div>
-
-        <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-b from-transparent to-background pointer-events-none" />
-      </section>
-
-      {/* OUR STORY */}
-      <section className="relative overflow-hidden">
-        <div className="grid lg:grid-cols-[45%_55%] min-h-[600px]">
-          {/* Image */}
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="relative overflow-hidden"
-          >
+      ) : (
+        <>
+          {/* HERO */}
+          <section className="relative min-h-[92vh] flex items-center overflow-hidden">
+            <div className="absolute inset-0 bg-hero" />
             <img
-              src={aboutImg}
-              alt="Yakshagana performer with elaborate traditional face paint and golden crown"
-              loading="lazy"
-              width={768}
-              height={1024}
-              className="w-full h-full object-cover object-top min-h-[400px] lg:min-h-full"
+              src={mandala}
+              alt=""
+              aria-hidden
+              className="absolute -right-40 -top-40 w-[700px] opacity-10 animate-spin-slow pointer-events-none"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-background/30 lg:to-background/60" />
-          </motion.div>
+            <img
+              src={mandala}
+              alt=""
+              aria-hidden
+              className="absolute -left-60 -bottom-60 w-[600px] opacity-5 animate-spin-slow pointer-events-none"
+              style={{ animationDirection: "reverse" }}
+            />
 
-          {/* Text */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="flex flex-col justify-center px-8 py-16 md:px-16 lg:px-20"
-          >
-            <span className="text-xs uppercase tracking-[0.3em] text-crimson font-medium mb-4">
-              {t.about.homeSection.label}
-            </span>
-            <h2 className="font-display text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.1] mb-8 text-foreground flex items-center gap-4">
-              <img src={sticker0} alt="" className="w-12 h-12 md:w-16 md:h-16 object-contain" />
-              {t.about.homeSection.title}
-            </h2>
-            {t.about.homeSection.body.map((paragraph, i) => (
-              <p
-                key={i}
-                className="text-muted-foreground leading-[1.8] mb-6 text-base md:text-lg"
-                dangerouslySetInnerHTML={{
-                  __html: paragraph.replace(
-                    /Kathegaararu|ಕಥೆಗಾರರು/g,
-                    '<strong class="text-foreground font-semibold">$&</strong>',
-                  ),
-                }}
-              />
-            ))}
-          </motion.div>
-        </div>
-        {/* Subtle gold line separator */}
-        <div className="h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
-      </section>
-
-      {/* HIGHLIGHTS */}
-      <section className="container mx-auto px-6 py-24">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-2xl mx-auto mb-16"
-        >
-          <div className="ornament-divider w-24 mx-auto mb-6" />
-          <h2 className="text-4xl md:text-5xl font-display mb-4 flex items-center justify-center gap-4">
-            <img src={sticker1} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
-            {t.highlights.title}
-          </h2>
-          <p className="text-muted-foreground">{t.highlights.subtitle}</p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-3 gap-6">
-          {highlightOrder.map((idx, i) => {
-            const item = t.highlights.items[idx];
-            const Icon = icons[idx];
-            return (
+            <div className="container mx-auto px-6 relative z-10 grid lg:grid-cols-2 gap-12 items-center">
               <motion.div
-                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <motion.img 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.1, duration: 0.8 }}
+                  src={logoImg} 
+                  alt="Kathe Gaararu Logo" 
+                  className="h-32 md:h-48 lg:h-56 w-auto object-contain mb-8 drop-shadow-2xl"
+                />
+                
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gold/40 bg-gold/5 text-xs uppercase tracking-[0.25em] text-primary mb-8"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
+                  {heroData.tag}
+                </motion.div>
+
+                <h1 className="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.05] mb-6">
+                  {heroData.title}
+                  <br />
+                  <span className="text-gradient-gold glow-text">{heroData.titleAccent}</span>
+                </h1>
+
+                <p className="text-lg text-muted-foreground max-w-xl leading-relaxed mb-10">
+                  {heroData.subtitle}
+                </p>
+
+                <div className="flex flex-wrap gap-4">
+                  <Link
+                    to="/classes"
+                    className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gold text-background font-medium shadow-glow hover:scale-105 transition-transform"
+                  >
+                    {heroData.ctaPrimary}
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                  <Link
+                    to="/gallery"
+                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-border hover:border-gold text-foreground transition-colors"
+                  >
+                    {heroData.ctaSecondary}
+                  </Link>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+                className="relative"
+              >
+                <div className="absolute inset-0 bg-ember rounded-full blur-3xl opacity-40 animate-float-slow" />
+                <motion.img
+                  src={heroData.image || heroImg}
+                  alt="Yakshagana performer in traditional crown headdress"
+                  width={1536}
+                  height={1536}
+                  className="relative rounded-2xl shadow-glow border border-gold/20 animate-float-slow"
+                />
+              </motion.div>
+            </div>
+
+            <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-b from-transparent to-background pointer-events-none" />
+          </section>
+
+          {/* OUR STORY */}
+          <section className="relative overflow-hidden">
+            <div className="grid lg:grid-cols-[45%_55%] min-h-[600px]">
+              {/* Image */}
+              <motion.div
+                initial={{ opacity: 0, x: -40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                className="relative overflow-hidden"
+              >
+                <img
+                  src={aboutData.image || aboutImg}
+                  alt="Veteran Yakshagana Performer"
+                  loading="lazy"
+                  width={768}
+                  height={1024}
+                  className="w-full h-full object-cover object-top min-h-[400px] lg:min-h-full"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent to-background/30 lg:to-background/60" />
+              </motion.div>
+
+              {/* Text */}
+              <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.15 }}
-                whileHover={{ y: -8 }}
-                onClick={() => handleHighlightClick(idx)}
-                className="group relative p-8 rounded-2xl bg-card/50 border border-border hover:border-gold/50 transition-all overflow-hidden cursor-pointer"
+                transition={{ duration: 0.7, delay: 0.2 }}
+                className="flex flex-col justify-center px-8 py-16 md:px-16 lg:px-20"
               >
-                <div className="absolute -top-20 -right-20 w-40 h-40 bg-gold/10 rounded-full blur-3xl group-hover:bg-gold/20 transition" />
-                <div className="relative">
-                  <div className="w-14 h-14 rounded-full bg-gold flex items-center justify-center mb-6 shadow-glow">
-                    <Icon className="w-6 h-6 text-background" />
-                  </div>
-                  <h3 className="text-2xl font-display mb-3 text-primary">{item.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* EXPANDED DETAILS */}
-      <section className="container mx-auto px-6 py-12 flex flex-col gap-32">
-          {/* PERFORMANCES */}
-          <div id="performances-details" className="scroll-mt-32">
-            <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
-              <img src={sticker2} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
-              {t.highlights.items[2].title}
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 grid-flow-dense">
-              {galleryItems.map((it, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: (i % 3) * 0.1 }}
-                  className={`group relative overflow-hidden rounded-2xl border border-border hover:border-gold/50 transition ${
-                    i === 0 || i === 4
-                      ? "md:row-span-2 aspect-[3/4] md:aspect-auto"
-                      : "aspect-square"
-                  }`}
-                >
-                  <img
-                    src={it.src}
-                    alt={it.label}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                <span className="text-xs uppercase tracking-[0.3em] text-crimson font-medium mb-4">
+                  {aboutData.label}
+                </span>
+                <h2 className="font-display text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.1] mb-8 text-foreground flex items-center gap-4">
+                  <img src={sticker0} alt="" className="w-12 h-12 md:w-16 md:h-16 object-contain" />
+                  {aboutData.title}
+                </h2>
+                {(aboutData.body || t.about.homeSection.body).map((paragraph: string, i: number) => (
+                  <p
+                    key={i}
+                    className="text-muted-foreground leading-[1.8] mb-6 text-base md:text-lg"
+                    dangerouslySetInnerHTML={{
+                      __html: paragraph.replace(
+                        /Kathegaararu|ಕಥೆಗಾರರು/g,
+                        '<strong class="text-foreground font-semibold">$&</strong>',
+                      ),
+                    }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent opacity-0 group-hover:opacity-100 transition" />
-                  <div className="absolute bottom-0 inset-x-0 p-5 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition">
-                    <div className="font-display text-lg text-primary">{it.label}</div>
-                  </div>
-                </motion.div>
-              ))}
+                ))}
+              </motion.div>
             </div>
-          </div>
+            {/* Subtle gold line separator */}
+            <div className="h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+          </section>
 
-          {/* CLASSES */}
-          <div id="classes-details" className="scroll-mt-32">
             <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
               <img src={sticker3} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
               {t.highlights.items[0].title}
@@ -330,28 +251,55 @@ function Index() {
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {workshops.map((w) => {
+=======
+          {/* HIGHLIGHTS */}
+          <section className="container mx-auto px-6 py-24">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-center max-w-2xl mx-auto mb-16"
+            >
+              <div className="ornament-divider w-24 mx-auto mb-6" />
+              <h2 className="text-4xl md:text-5xl font-display mb-4">{t.highlights.title}</h2>
+              <p className="text-muted-foreground">{t.highlights.subtitle}</p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {highlightOrder.map((idx, i) => {
+                const item = t.highlights.items[idx];
+                const Icon = icons[idx];
+>>>>>>> Stashed changes
                 return (
                   <Link
-                    key={w.id}
-                    to="/gallery"
-                    className="group relative bg-card/60 border border-border rounded-2xl overflow-hidden transition-all hover:border-gold/50 flex flex-col"
+                    key={i}
+                    to="/services"
+                    hash={idx === 2 ? "performance" : idx === 0 ? "classes" : "workshops"}
+                    className="block"
                   >
-                    <div className="relative aspect-square overflow-hidden">
-                      <img
-                        src={imgMap[w.image]}
-                        alt={w.title[lang]}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
-                    </div>
-                    <div className="p-6">
-                      <h3 className="font-display text-xl text-primary mb-2">{w.title[lang]}</h3>
-                      <p className="text-sm text-gold/80 font-medium">{w.timestamp[lang]}</p>
-                    </div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: i * 0.15 }}
+                      whileHover={{ y: -8 }}
+                      className="group relative p-8 rounded-2xl bg-card/50 border border-border hover:border-gold/50 transition-all overflow-hidden cursor-pointer h-full"
+                    >
+                      <div className="absolute -top-20 -right-20 w-40 h-40 bg-gold/10 rounded-full blur-3xl group-hover:bg-gold/20 transition" />
+                      <div className="relative">
+                        <div className="w-14 h-14 rounded-full bg-gold flex items-center justify-center mb-6 shadow-glow">
+                          <Icon className="w-6 h-6 text-background" />
+                        </div>
+                        <h3 className="text-2xl font-display mb-3 text-primary">{item.title}</h3>
+                        <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
+                      </div>
+                    </motion.div>
                   </Link>
                 );
               })}
             </div>
+<<<<<<< Updated upstream
           </div>
           {/* BLOG PREVIEW */}
           <div id="blog-preview" className="scroll-mt-32">
@@ -359,64 +307,184 @@ function Index() {
               <h2 className="text-4xl md:text-5xl font-display text-primary flex items-center gap-4">
                 <img src={sticker0} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                 {lang === "en" ? "Latest Insights" : "ಇತ್ತೀಚಿನ ಒಳನೋಟಗಳು"}
+=======
+          </section>
+
+          {/* EXPANDED DETAILS */}
+          <section className="container mx-auto px-6 py-12 flex flex-col gap-32">
+            {/* PERFORMANCES */}
+            <div id="performances-details" className="scroll-mt-32">
+              <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary">
+                {t.highlights.items[2].title}
+>>>>>>> Stashed changes
               </h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 grid-flow-dense">
+                {galleryItems.map((it, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: (i % 3) * 0.1 }}
+                    className={`group relative overflow-hidden rounded-2xl border border-border hover:border-gold/50 transition ${i === 0 || i === 4
+                        ? "md:row-span-2 aspect-[3/4] md:aspect-auto"
+                        : "aspect-square"
+                      }`}
+                  >
+                    <img
+                      src={it.src}
+                      alt={it.label}
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent opacity-0 group-hover:opacity-100 transition" />
+                    <div className="absolute bottom-0 inset-x-0 p-5 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition">
+                      <div className="font-display text-lg text-primary">{it.label}</div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* CLASSES */}
+            <div id="classes-details" className="scroll-mt-32">
+              <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary">
+                {t.highlights.items[0].title}
+              </h2>
+              <div className="grid md:grid-cols-2 gap-8 mb-12">
+                <Link to="/classes" className="group relative rounded-3xl overflow-hidden border border-border bg-card/40 p-8 md:p-12 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[450px]">
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent z-10" />
+                  <img src={imgMap.g4} alt="Singing Gurukul" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <div className="relative z-20">
+                    <h3 className="text-4xl md:text-5xl font-display text-primary mb-4">{lang === "en" ? "Singing" : "ಗಾಯನ"}</h3>
+                    <p className="text-muted-foreground text-lg mb-8 leading-relaxed">{lang === "en" ? "Master the authentic narrative singing tradition (Bhagavatike) that anchors every Yakshagana performance." : "ಯಕ್ಷಗಾನ ಪ್ರದರ್ಶನದ ಆಧಾರಸ್ತಂಭವಾದ ಕಥನ ಗಾಯನ (ಭಾಗವತಿಕೆ) ಪರಂಪರೆಯನ್ನು ಕಲಿಯಿರಿ."}</p>
+                    <span className="inline-flex items-center gap-2 text-gold font-bold uppercase tracking-widest text-sm bg-black/40 px-6 py-3 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-gold group-hover:text-background transition-colors">
+                      {lang === "en" ? "Learn More" : "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </div>
+                </Link>
+                <Link to="/classes" className="group relative rounded-3xl overflow-hidden border border-border bg-card/40 p-8 md:p-12 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[450px]">
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent z-10" />
+                  <img src={imgMap.g1} alt="Dancing Gurukul" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <div className="relative z-20">
+                    <h3 className="text-4xl md:text-5xl font-display text-primary mb-4">{lang === "en" ? "Dancing" : "ನೃತ್ಯ"}</h3>
+                    <p className="text-muted-foreground text-lg mb-8 leading-relaxed">{lang === "en" ? "Immerse yourself in the vigorous footwork, intricate expressions, and graceful choreography of Yakshagana." : "ಯಕ್ಷಗಾನದ ಶಕ್ತಿಯುತ ಪಾದಭಂಗಿ, ಸಂಕೀರ್ಣ ಭಾವಾಭಿನಯ ಮತ್ತು ಸುಂದರ ನೃತ್ಯ ಸಂಯೋಜನೆಯಲ್ಲಿ ಮುಳುಗಿರಿ."}</p>
+                    <span className="inline-flex items-center gap-2 text-gold font-bold uppercase tracking-widest text-sm bg-black/40 px-6 py-3 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-gold group-hover:text-background transition-colors">
+                      {lang === "en" ? "Learn More" : "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </div>
+                </Link>
+              </div>
+              <div className="flex justify-center">
+                <Link
+                  to="/classes"
+                  className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gold/10 border border-gold/30 text-primary hover:bg-gold hover:text-background transition-all font-display text-lg"
+                >
+                  {lang === "en" ? "Explore All Gurukul" : "ಗುರುಕುಲವನ್ನು ಅನ್ವೇಷಿಸಿ"}
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+
+            {/* WORKSHOPS */}
+            <div id="workshops-details" className="scroll-mt-32">
+              <h2 className="text-4xl md:text-5xl font-display mb-12 text-center text-primary">
+                {t.highlights.items[1].title}
+              </h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {dbWorkshops.map((w: any) => {
+                  const displayImage = w.image.startsWith('g') ? imgMap[w.image] : w.image;
+                  return (
+                    <Link
+                      key={w.id}
+                      to="/gallery"
+                      className="group relative bg-card/60 border border-border rounded-2xl overflow-hidden transition-all hover:border-gold/50 flex flex-col"
+                    >
+                      <div className="relative aspect-square overflow-hidden">
+                        <img
+                          src={displayImage}
+                          alt={w.title[lang]}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+                      </div>
+                      <div className="p-6">
+                        <h3 className="font-display text-xl text-primary mb-2">{w.title[lang]}</h3>
+                        <p className="text-sm text-gold/80 font-medium">{w.timestamp[lang]}</p>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+            {/* BLOG PREVIEW */}
+            <div id="blog-preview" className="scroll-mt-32">
+              <div className="flex items-center justify-between mb-12">
+                <h2 className="text-4xl md:text-5xl font-display text-primary">
+                  {lang === "en" ? "Latest Insights" : "ಇತ್ತೀಚಿನ ಒಳನೋಟಗಳು"}
+                </h2>
+                <Link
+                  to="/blog"
+                  className="hidden md:flex items-center gap-2 text-gold hover:text-primary transition-colors text-sm font-medium uppercase tracking-widest"
+                >
+                  {lang === "en" ? "View All" : "ಎಲ್ಲವನ್ನೂ ನೋಡಿ"}
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {dbBlogs.slice(0, 4).map((post: any, index: number) => {
+                  const displayImage = post.image.startsWith('g') ? imgMap[post.image] : post.image;
+                  return (
+                    <Link
+                      key={post.id}
+                      to="/blog"
+                      className="group relative bg-card/40 border border-border rounded-2xl overflow-hidden hover:border-gold/50 transition-all flex flex-col"
+                    >
+                      <div className="relative h-48 overflow-hidden">
+                        <img
+                          src={displayImage}
+                          alt={post.title[lang]}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+                        <div className="absolute top-4 left-4">
+                          <span className="px-3 py-1 bg-black/40 backdrop-blur-md border border-white/10 text-[9px] font-bold text-white uppercase tracking-wider rounded-full">
+                            {post.category[lang]}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="p-6 flex flex-col flex-1">
+                        <h3 className="font-display text-lg text-primary mb-3 line-clamp-2 leading-tight group-hover:text-gold transition-colors">
+                          {post.title[lang]}
+                        </h3>
+                        <p className="text-xs text-muted-foreground line-clamp-2 mb-4 flex-1">
+                          {post.excerpt[lang]}
+                        </p>
+                        <div className="flex items-center text-gold text-[10px] font-bold uppercase tracking-widest mt-auto">
+                          {lang === "en" ? "Read Article" : "ಲೇಖನ ಓದಿ"}
+                          <ArrowRight className="w-3 h-3 ml-2 transition-transform group-hover:translate-x-1" />
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+
               <Link
                 to="/blog"
-                className="hidden md:flex items-center gap-2 text-gold hover:text-primary transition-colors text-sm font-medium uppercase tracking-widest"
+                className="md:hidden mt-8 flex items-center justify-center gap-2 text-gold text-sm font-medium uppercase tracking-widest"
               >
-                {lang === "en" ? "View All" : "ಎಲ್ಲವನ್ನೂ ನೋಡಿ"}
+                {lang === "en" ? "View All Posts" : "ಎಲ್ಲಾ ಲೇಖನಗಳನ್ನು ನೋಡಿ"}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {blogs.slice(0, 4).map((post, index) => (
-                <Link
-                  key={post.id}
-                  to="/blog"
-                  className="group relative bg-card/40 border border-border rounded-2xl overflow-hidden hover:border-gold/50 transition-all flex flex-col"
-                >
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={imgMap[post.image]}
-                      alt={post.title[lang]}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
-                    <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 bg-black/40 backdrop-blur-md border border-white/10 text-[9px] font-bold text-white uppercase tracking-wider rounded-full">
-                        {post.category[lang]}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-6 flex flex-col flex-1">
-                    <h3 className="font-display text-lg text-primary mb-3 line-clamp-2 leading-tight group-hover:text-gold transition-colors">
-                      {post.title[lang]}
-                    </h3>
-                    <p className="text-xs text-muted-foreground line-clamp-2 mb-4 flex-1">
-                      {post.excerpt[lang]}
-                    </p>
-                    <div className="flex items-center text-gold text-[10px] font-bold uppercase tracking-widest mt-auto">
-                      {lang === "en" ? "Read Article" : "ಲೇಖನ ಓದಿ"}
-                      <ArrowRight className="w-3 h-3 ml-2 transition-transform group-hover:translate-x-1" />
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-            
-            <Link
-              to="/blog"
-              className="md:hidden mt-8 flex items-center justify-center gap-2 text-gold text-sm font-medium uppercase tracking-widest"
-            >
-              {lang === "en" ? "View All Posts" : "ಎಲ್ಲಾ ಲೇಖನಗಳನ್ನು ನೋಡಿ"}
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </section>
+          </section>
 
-      {/* UPCOMING EVENTS */}
-      <UpcomingEvents />
+          {/* UPCOMING EVENTS */}
+          <UpcomingEvents />
+        </>
+      )}
     </Layout>
   );
 }

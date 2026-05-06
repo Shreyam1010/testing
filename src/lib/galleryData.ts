@@ -1,10 +1,3 @@
-import g1 from "@/assets/gallery-1.jpg";
-import g2 from "@/assets/gallery-2.jpg";
-import g3 from "@/assets/gallery-3.jpg";
-import g4 from "@/assets/gallery-4.jpg";
-import g5 from "@/assets/gallery-5.jpg";
-import g6 from "@/assets/gallery-6.jpg";
-
 export interface GalleryItemType {
   src: string;
   label: string;
@@ -12,22 +5,22 @@ export interface GalleryItemType {
 }
 
 export const initialPerformanceItems: GalleryItemType[] = [
-  { src: g2, label: "Stage Performance", type: "image" },
-  { src: g4, label: "Crown Heritage", type: "image" },
-  { src: g6, label: "The Warrior", type: "image" },
-  { src: g1, label: "The Mask", type: "image" },
+  { src: "/images/gallery-2.jpg", label: "Stage Performance", type: "image" },
+  { src: "/images/gallery-4.jpg", label: "Crown Heritage", type: "image" },
+  { src: "/images/gallery-6.jpg", label: "The Warrior", type: "image" },
+  { src: "/images/gallery-1.jpg", label: "The Mask", type: "image" },
 ];
 
 export const initialWorkshopItems: GalleryItemType[] = [
-  { src: g3, label: "Summer Workshop", type: "image" },
-  { src: g5, label: "Chande Training", type: "image" },
-  { src: g4, label: "Makeup Session", type: "image" },
-  { src: g2, label: "Step Basics", type: "image" },
+  { src: "/images/gallery-3.jpg", label: "Summer Workshop", type: "image" },
+  { src: "/images/gallery-5.jpg", label: "Chande Training", type: "image" },
+  { src: "/images/gallery-4.jpg", label: "Makeup Session", type: "image" },
+  { src: "/images/gallery-2.jpg", label: "Step Basics", type: "image" },
 ];
 
 export const initialGurukulItems: GalleryItemType[] = [
-  { src: g1, label: "Mudra Practice", type: "image" },
-  { src: g3, label: "Vocal Training", type: "image" },
-  { src: g5, label: "Rhythm Class", type: "image" },
-  { src: g6, label: "Traditional Dance", type: "image" },
+  { src: "/images/gallery-1.jpg", label: "Mudra Practice", type: "image" },
+  { src: "/images/gallery-3.jpg", label: "Vocal Training", type: "image" },
+  { src: "/images/gallery-5.jpg", label: "Rhythm Class", type: "image" },
+  { src: "/images/gallery-6.jpg", label: "Traditional Dance", type: "image" },
 ];

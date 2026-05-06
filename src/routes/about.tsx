@@ -21,11 +21,23 @@ export const Route = createFileRoute("/about")({
   component: About,
 });
 
+import { useDbContent } from "@/hooks/useDb";
+
 function About() {
   const { t } = useLang();
+  const { data, loading } = useDbContent();
+
+  // Fallback to i18n if DB doesn't have it yet
+  const aboutData = data?.siteContent?.about || t.about;
+
   return (
     <Layout>
-      <section className="relative overflow-hidden min-h-[80vh] flex items-stretch">
+      {loading ? (
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="w-12 h-12 border-4 border-gold border-t-transparent rounded-full animate-spin" />
+        </div>
+      ) : (
+        <section className="relative overflow-hidden min-h-[80vh] flex items-stretch">
         <div className="grid lg:grid-cols-[45%_55%] w-full">
           {/* Image */}
           <motion.div
@@ -35,7 +47,7 @@ function About() {
             className="relative hidden lg:block overflow-hidden border-r border-gold/10"
           >
             <img
-              src={aboutImg}
+              src={aboutData.image || "/images/about-performer.jpg"}
               alt="Yakshagana performer"
               className="w-full h-full object-cover object-top"
             />
@@ -54,14 +66,14 @@ function About() {
               </span>
               <h1 className="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-10 text-foreground flex items-center gap-4 md:gap-6">
                 <img src={sticker1} alt="" className="w-12 h-12 md:w-16 md:h-16 object-contain drop-shadow-md" />
-                {t.about.title}
+                {aboutData.title}
               </h1>
               
               <div className="space-y-6">
                 <p className="text-xl md:text-2xl text-primary font-medium leading-relaxed italic border-l-4 border-gold pl-6 py-2 bg-gold/5 rounded-r-lg">
-                  {t.about.lead}
+                  {aboutData.lead}
                 </p>
-                {t.about.body.map((p, i) => (
+                {(aboutData.body || t.about.body).map((p: string, i: number) => (
                   <p key={i} className="text-muted-foreground leading-[1.8] text-lg">
                     {p}
                   </p>
@@ -70,7 +82,7 @@ function About() {
 
               {/* Stats Grid Integrated */}
               <div className="mt-16 grid grid-cols-2 gap-6">
-                {t.about.stats.map((s, i) => (
+                {(aboutData.stats || t.about.stats).map((s: any, i: number) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, y: 20 }}
@@ -92,6 +104,7 @@ function About() {
           </div>
         </div>
       </section>
+      )}
     </Layout>
   );
 }

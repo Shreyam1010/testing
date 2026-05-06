@@ -5,12 +5,7 @@ import { ArrowRight, Calendar, User, X } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { useLang } from "@/contexts/LanguageContext";
 import { blogs } from "@/lib/data";
-import g1 from "@/assets/gallery-1.jpg";
-import g2 from "@/assets/gallery-2.jpg";
-import g3 from "@/assets/gallery-3.jpg";
-import g4 from "@/assets/gallery-4.jpg";
-import g5 from "@/assets/gallery-5.jpg";
-import g6 from "@/assets/gallery-6.jpg";
+import { useDbContent } from "@/hooks/useDb";
 
 export const Route = createFileRoute("/blog")({
   head: () => ({
@@ -25,10 +20,20 @@ export const Route = createFileRoute("/blog")({
   component: BlogPage,
 });
 
-const imgMap: Record<string, string> = { g1, g2, g3, g4, g5, g6 };
+const imgMap: Record<string, string> = {
+  g1: "/images/gallery-1.jpg",
+  g2: "/images/gallery-2.jpg",
+  g3: "/images/gallery-3.jpg",
+  g4: "/images/gallery-4.jpg",
+  g5: "/images/gallery-5.jpg",
+  g6: "/images/gallery-6.jpg",
+};
+
+
 
 function BlogPage() {
   const { lang } = useLang();
+  const { data, loading } = useDbContent();
   const [selectedBlog, setSelectedBlog] = useState<any | null>(null);
 
   // Lock body scroll when modal is open
@@ -40,6 +45,18 @@ function BlogPage() {
     }
     return () => { document.body.style.overflow = "auto"; };
   }, [selectedBlog]);
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="w-12 h-12 border-4 border-gold border-t-transparent rounded-full animate-spin" />
+        </div>
+      </Layout>
+    );
+  }
+
+  const dbBlogs = data?.blogs || [];
 
   return (
     <Layout>
@@ -61,7 +78,7 @@ function BlogPage() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {blogs.map((post, index) => (
+          {dbBlogs.map((post: any, index: number) => (
             <BlogCard key={post.id} post={post} index={index} onClick={() => setSelectedBlog(post)} />
           ))}
         </div>
@@ -89,7 +106,7 @@ function BlogPage() {
                   {/* Hero Image */}
                   <div className="relative h-64 sm:h-80 md:h-96 w-full shrink-0">
                     <img 
-                      src={imgMap[selectedBlog.image]} 
+                      src={postImage(selectedBlog)} 
                       alt={selectedBlog.title[lang]} 
                       className="w-full h-full object-cover"
                     />
@@ -122,7 +139,7 @@ function BlogPage() {
                       </p>
                       
                       <div className="space-y-6 whitespace-pre-wrap text-[17px]">
-                        {selectedBlog.content?.[lang] || selectedBlog.excerpt[lang]}
+                        {selectedBlog.content?.[lang] || selectedBlog.excerpt?.[lang] || "No content available."}
                       </div>
                     </div>
                   </div>
@@ -135,6 +152,11 @@ function BlogPage() {
     </Layout>
   );
 }
+
+const postImage = (post: any) => {
+  if (!post || !post.image) return "/images/gallery-3.jpg"; // Default to gallery-3 if missing
+  return post.image.startsWith('g') ? imgMap[post.image] : post.image;
+};
 
 function BlogCard({ post, index, onClick }: { post: any; index: number; onClick: () => void }) {
   const { lang } = useLang();
@@ -150,7 +172,7 @@ function BlogCard({ post, index, onClick }: { post: any; index: number; onClick:
     >
       <div className="relative h-48 overflow-hidden">
         <img
-          src={imgMap[post.image]}
+          src={postImage(post)}
           alt={post.title[lang]}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
@@ -158,7 +180,7 @@ function BlogCard({ post, index, onClick }: { post: any; index: number; onClick:
 
         <div className="absolute top-4 left-4">
           <span className="px-3 py-1 bg-black/50 backdrop-blur-md border border-white/20 text-[10px] font-bold text-white uppercase tracking-wider rounded-full">
-            {post.category[lang]}
+            {post.category?.[lang] || "General"}
           </span>
         </div>
       </div>
@@ -167,11 +189,11 @@ function BlogCard({ post, index, onClick }: { post: any; index: number; onClick:
         <div className="flex items-center justify-between mb-4 text-[11px] text-muted-foreground uppercase tracking-widest">
           <div className="flex items-center gap-2">
             <User className="w-3 h-3 text-gold" />
-            <span>{post.author[lang]}</span>
+            <span>{post.author?.[lang] || "Kathe Gaararu"}</span>
           </div>
           <div className="flex items-center gap-2">
             <Calendar className="w-3 h-3 text-gold" />
-            <span>{post.date}</span>
+            <span>{post.date || "Recently"}</span>
           </div>
         </div>
 

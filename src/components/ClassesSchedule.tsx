@@ -1,25 +1,30 @@
 import React, { useState, useMemo } from "react";
 import { useLang } from "@/contexts/LanguageContext";
 import { ClassCard } from "@/components/ClassCard";
-import { classes, teachers } from "@/lib/data";
+import { useDbContent } from "@/hooks/useDb";
 
 export function ClassesSchedule() {
   const { lang } = useLang();
+  const { data, loading } = useDbContent();
   const [teacherFilter, setTeacherFilter] = useState<string>("all");
   const [dayFilter, setDayFilter] = useState<string>("all");
 
+  const dbClasses = data?.classes || [];
+  const dbTeachers = data?.teachers || [];
+
   const days = useMemo(() => {
     const set = new Map<string, { en: string; kn: string }>();
-    classes.forEach((c) => set.set(c.dayLabel.en, c.dayLabel));
+    dbClasses.forEach((c: any) => set.set(c.day.en, c.day));
     return Array.from(set.values());
-  }, []);
+  }, [dbClasses]);
 
-  const filtered = classes.filter((c) => {
+  const filtered = dbClasses.filter((c: any) => {
     if (teacherFilter !== "all" && c.teacherId !== teacherFilter) return false;
-    if (dayFilter !== "all" && c.dayLabel.en !== dayFilter) return false;
+    if (dayFilter !== "all" && c.day.en !== dayFilter) return false;
     return true;
   });
 
+  if (loading) return null;
 
   return (
     <div className="w-full">
@@ -33,13 +38,13 @@ export function ClassesSchedule() {
             <FilterChip active={teacherFilter === "all"} onClick={() => setTeacherFilter("all")}>
               {lang === "en" ? "All" : "ಎಲ್ಲಾ"}
             </FilterChip>
-            {teachers.map((tch) => (
+            {dbTeachers.map((tch: any) => (
               <FilterChip
                 key={tch.id}
                 active={teacherFilter === tch.id}
                 onClick={() => setTeacherFilter(tch.id)}
               >
-                {tch.name[lang].split(" ").slice(-1)[0]}
+                {tch.name?.[lang] ? tch.name[lang].split(" ").slice(-1)[0] : "Teacher"}
               </FilterChip>
             ))}
           </div>
@@ -52,7 +57,7 @@ export function ClassesSchedule() {
             <FilterChip active={dayFilter === "all"} onClick={() => setDayFilter("all")}>
               {lang === "en" ? "All" : "ಎಲ್ಲಾ"}
             </FilterChip>
-            {days.map((d) => (
+            {days.filter(d => d && d[lang]).map((d: any) => (
               <FilterChip key={d.en} active={dayFilter === d.en} onClick={() => setDayFilter(d.en)}>
                 {d[lang]}
               </FilterChip>
@@ -62,7 +67,7 @@ export function ClassesSchedule() {
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {filtered.map((c) => (
+        {filtered.map((c: any) => (
           <ClassCard key={c.id} item={c} />
         ))}
       </div>

@@ -30,21 +30,21 @@ function Services() {
       title: t.services.performance.title,
       desc: t.services.performance.desc,
       buttonText: t.services.performance.buttonText,
-      images: [g1, g2, g4, g5, g6],
+      images: ["/images/gallery-1.jpg", "/images/gallery-2.jpg", "/images/gallery-4.jpg", "/images/gallery-5.jpg", "/images/gallery-6.jpg"],
     },
     {
       id: "classes",
       title: t.services.classes.title,
       desc: t.services.classes.desc,
       buttonText: t.services.classes.buttonText,
-      images: [g3, g5, g6, g1, g2],
+      images: ["/images/gallery-3.jpg", "/images/gallery-5.jpg", "/images/gallery-6.jpg", "/images/gallery-1.jpg", "/images/gallery-2.jpg"],
     },
     {
       id: "workshops",
       title: t.services.workshops.title,
       desc: t.services.workshops.desc,
       buttonText: t.services.workshops.buttonText,
-      images: [g4, g1, g3, g6, g5],
+      images: ["/images/gallery-4.jpg", "/images/gallery-1.jpg", "/images/gallery-3.jpg", "/images/gallery-6.jpg", "/images/gallery-5.jpg"],
     }
   ];
 
@@ -69,11 +69,12 @@ function Services() {
           {sections.map((section) => (
             <motion.div 
               key={section.id}
+              id={section.id}
+              className="flex flex-col gap-12 scroll-mt-32"
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.7 }}
-              className="flex flex-col gap-12"
             >
               <div className="text-center max-w-4xl mx-auto">
                 <h2 className="text-4xl md:text-5xl font-display text-primary mb-6 flex items-center justify-center gap-4">
@@ -166,19 +167,19 @@ function Services() {
                 { 
                   key: 'facebook', 
                   icon: Facebook, 
-                  img: g2,
+                  img: "/images/gallery-2.jpg",
                   href: "https://facebook.com"
                 },
                 { 
                   key: 'instagram', 
                   icon: Instagram, 
-                  img: g4,
+                  img: "/images/gallery-4.jpg",
                   href: "https://instagram.com"
                 },
                 { 
                   key: 'twitter', 
                   icon: Twitter, 
-                  img: g5,
+                  img: "/images/gallery-5.jpg",
                   href: "https://twitter.com"
                 }
               ].map((social) => {
