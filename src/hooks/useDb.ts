@@ -6,12 +6,14 @@ export function useDbContent() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const refresh = () => setRefreshKey(prev => prev + 1);
 
   useEffect(() => {
     let isMounted = true;
     async function fetchData() {
       try {
-        console.log(`[useDbContent] Fetching for lang: ${lang}...`);
         setLoading(true);
         const res = await fetch(`http://127.0.0.1:5667/api/content?lang=${lang}`);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
@@ -19,11 +21,10 @@ export function useDbContent() {
         
         if (!isMounted) return;
 
-        console.log("[useDbContent] Data received:", raw);
-
         // Transform data to match frontend expectations
         const transformed: any = {
-          siteContent: {},
+          siteContent: [], // Keep as array for raw access if needed
+          siteContentMap: {}, // Helper map
           teachers: raw.teachers?.map((t: any) => ({
             id: t.id,
             name: { en: t.name_en, kn: t.name_kn },
@@ -65,13 +66,22 @@ export function useDbContent() {
             title: { en: w.title_en, kn: w.title_kn },
             timestamp: { en: w.timestamp_en, kn: w.timestamp_kn },
             image: w.image
+          })) || [],
+          socialLinks: raw.socialLinks?.map((s: any) => ({
+            id: s.id,
+            title: { en: s.title_en, kn: s.title_kn },
+            description: { en: s.description_en, kn: s.description_kn },
+            link: s.link,
+            image: s.image,
+            orderIndex: s.order_index
           })) || []
         };
 
         // Site content transformation
+        transformed.siteContent = raw.siteContent || [];
         raw.siteContent?.forEach((item: any) => {
-          if (!transformed.siteContent[item.section]) transformed.siteContent[item.section] = {};
-          transformed.siteContent[item.section][item.content_key] = item.content_value;
+          if (!transformed.siteContentMap[item.section]) transformed.siteContentMap[item.section] = {};
+          transformed.siteContentMap[item.section][item.content_key] = item.content_value;
         });
 
         setData(transformed);
@@ -79,15 +89,13 @@ export function useDbContent() {
         console.error("[useDbContent] Fetch failed:", err);
         setError(err);
       } finally {
-        if (isMounted) {
-          setLoading(false);
-          console.log("[useDbContent] Loading finished.");
-        }
+        if (isMounted) setLoading(false);
       }
     }
     fetchData();
     return () => { isMounted = false; };
-  }, [lang]);
+  }, [lang, refreshKey]);
 
-  return { data, loading, error };
+  return { data, loading, error, refresh };
 }
+

@@ -144,14 +144,31 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
         
         // Update teachers and classes if found in DB
         if (result.teachers?.length > 0 || result.classes?.length > 0) {
-           setData(prev => ({
-             ...prev,
-             [lang]: {
-               ...prev[lang],
-               teachers: result.teachers.length > 0 ? result.teachers : prev[lang].teachers,
-               classes: result.classes.length > 0 ? result.classes : prev[lang].classes
-             }
-           }));
+          const transformedTeachers = result.teachers.map((t: any) => ({
+            id: t.id,
+            name: t[`name_${lang}`] || t.name_en || "",
+            expertise: t[`expertise_${lang}`] || t.expertise_en || "",
+            bio: t[`bio_${lang}`] || t.bio_en || "",
+            image: t.image_url || t.image || ""
+          }));
+
+          const transformedClasses = result.classes.map((c: any) => ({
+            id: c.id,
+            topic: c[`topic_${lang}`] || c.topic_en || "",
+            teacherId: c.teacher_id,
+            day: c[`day_${lang}`] || c.day_en || "",
+            time: c.time,
+            level: c[`level_${lang}`] || c.level_en || ""
+          }));
+
+          setData(prev => ({
+            ...prev,
+            [lang]: {
+              ...prev[lang],
+              teachers: transformedTeachers.length > 0 ? transformedTeachers : prev[lang].teachers,
+              classes: transformedClasses.length > 0 ? transformedClasses : prev[lang].classes
+            }
+          }));
         }
       } catch (err) {
         console.error("Failed to load classes content:", err);
@@ -280,7 +297,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
           transition={{ duration: 1.5 }}
-          src={current.heroImage || g3} 
+          src={current.heroImage || "/images/testing1.png.jpeg"} 
           alt="Classes Hero" 
           className="absolute inset-0 w-full h-full object-cover"
         />
@@ -316,10 +333,10 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3 }}
           >
-            <h1 className="text-7xl md:text-[10rem] font-display text-primary tracking-[0.2em] uppercase leading-none mb-6 drop-shadow-2xl">
+            <h1 className="text-[26px] sm:text-3xl md:text-5xl font-display text-primary tracking-[0.25em] uppercase leading-none mb-6">
               <EditableText value={current.title} onChange={(v) => update("title", v)} isEditing={isEditing} tag="span" />
             </h1>
-            <div className="h-2 w-32 md:w-80 bg-gold mx-auto rounded-full shadow-glow" />
+            <div className="h-0.5 w-16 md:w-24 bg-gold/50 mx-auto rounded-full shadow-glow" />
           </motion.div>
         </div>
       </div>
@@ -350,7 +367,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                 return (
                   <div key={tch.id} className="relative flex items-center">
                     <button onClick={() => setTeacherFilter(tch.id)} className={`px-4 py-1.5 text-sm rounded-sm border ${teacherFilter === tch.id ? "bg-gold text-background border-gold" : "border-border/60 text-foreground/75"}`}>
-                      {tch.name.split(" ").pop()}
+                      {tch.name?.split(" ").pop() || "Guru"}
                     </button>
                     {isEditing && !hasClasses && (
                       <button 

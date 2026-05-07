@@ -33,7 +33,7 @@ export default {
       if (url.pathname === "/api/content" && request.method === "GET") {
         const lang = url.searchParams.get("lang") || "en";
 
-        const [siteContent, teachers, classes, blogs, events, workshops] =
+        const [siteContent, teachers, classes, blogs, events, workshops, socialLinks] =
           await Promise.all([
             env.DB.prepare("SELECT * FROM site_content WHERE lang = ?").bind(lang).all(),
             env.DB.prepare("SELECT * FROM teachers").all(),
@@ -41,6 +41,7 @@ export default {
             env.DB.prepare("SELECT * FROM blogs").all(),
             env.DB.prepare("SELECT * FROM events").all(),
             env.DB.prepare("SELECT * FROM workshops").all(),
+            env.DB.prepare("SELECT * FROM social_links ORDER BY order_index ASC").all(),
           ]);
 
         return json({
@@ -50,6 +51,7 @@ export default {
           blogs: blogs.results,
           events: events.results,
           workshops: workshops.results,
+          socialLinks: socialLinks.results,
         });
       }
 
@@ -57,7 +59,7 @@ export default {
       if (url.pathname === "/api/save" && request.method === "POST") {
         const { section, data, lang } = (await request.json()) as any;
 
-        if (section === "hero" || section === "about") {
+        if (section === "hero" || section === "about" || section === "services") {
           for (const [key, value] of Object.entries(data)) {
             await env.DB.prepare(
               "INSERT OR REPLACE INTO site_content (id, lang, section, content_key, content_value) VALUES (?, ?, ?, ?, ?)"
@@ -172,6 +174,30 @@ export default {
                 w.title?.[lang] || w.title || "",
                 w.timestamp?.[lang] || w.timestamp || "",
                 w.image || ""
+              )
+              .run();
+          }
+        }
+
+        if (section === "social_links") {
+          for (const s of data) {
+            await env.DB.prepare(
+              `INSERT INTO social_links (id, title_${lang}, description_${lang}, link, image, order_index) 
+               VALUES (?, ?, ?, ?, ?, ?)
+               ON CONFLICT(id) DO UPDATE SET 
+               title_${lang}=excluded.title_${lang}, 
+               description_${lang}=excluded.description_${lang},
+               link=excluded.link,
+               image=excluded.image,
+               order_index=excluded.order_index`
+            )
+              .bind(
+                s.id || `social_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+                s.title?.[lang] || s.title || "",
+                s.description?.[lang] || s.description || "",
+                s.link || "",
+                s.image || "",
+                s.order_index || 0
               )
               .run();
           }

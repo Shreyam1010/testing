@@ -14,7 +14,7 @@ import g5 from "@/assets/gallery-5.jpg";
 import g6 from "@/assets/gallery-6.jpg";
 
 import heroImg from "@/assets/hero-yakshagana.jpg";
-import mandala from "@/assets/gallery-1.jpg";
+import mandala from "@/assets/mandala.png";
 import aboutImg from "@/assets/about-performer.jpg";
 import logoImg from "@/assets/logo-transparent.png";
 import sticker0 from "@/assets/stickers/sticker_0.png";
@@ -59,7 +59,7 @@ function Index() {
       ) : (
         <>
           {/* HERO */}
-          <section className="relative min-h-[92vh] flex items-center overflow-hidden">
+          <section className="relative min-h-screen flex items-center overflow-hidden pb-24 md:pb-16">
             <div className="absolute inset-0 bg-hero" />
             <img
               src={mandala}
@@ -75,11 +75,30 @@ function Index() {
               style={{ animationDirection: "reverse" }}
             />
 
-            <div className="container mx-auto px-6 relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+            <div className="container mx-auto px-6 relative z-10 flex flex-col lg:grid lg:grid-cols-2 gap-2 lg:gap-12 items-center pt-10 lg:pt-0 min-h-screen lg:min-h-0">
+              {/* Image - First on mobile */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+                className="relative order-1 lg:order-2 w-full max-w-[180px] sm:max-w-[240px] lg:max-w-none mx-auto mb-1 lg:mb-0 lg:-mt-4"
+              >
+                <div className="absolute inset-0 bg-ember rounded-full blur-3xl opacity-40 lg:animate-float-slow" />
+                <motion.div className="relative aspect-square lg:aspect-auto overflow-hidden rounded-full lg:rounded-2xl border border-gold/20 shadow-glow lg:animate-float-slow">
+                  <img
+                    src={heroData.image || heroImg}
+                    alt="Yakshagana performer"
+                    className="w-full h-full object-cover"
+                  />
+                </motion.div>
+              </motion.div>
+
+              {/* Text & Logo - Second on mobile */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                className="text-center lg:text-left order-2 lg:order-1"
               >
                 <motion.img 
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -87,60 +106,46 @@ function Index() {
                   transition={{ delay: 0.1, duration: 0.8 }}
                   src={logoImg} 
                   alt="Kathe Gaararu Logo" 
-                  className="h-32 md:h-48 lg:h-56 w-auto object-contain mb-8 drop-shadow-2xl"
+                  className="h-28 sm:h-24 md:h-48 lg:h-56 w-auto object-contain mx-auto lg:ml-0 mb-2 lg:mb-8 drop-shadow-2xl"
                 />
                 
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.2 }}
-                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gold/40 bg-gold/5 text-xs uppercase tracking-[0.25em] text-primary mb-8"
+                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-gold/40 bg-gold/5 text-[8.5px] whitespace-nowrap uppercase tracking-[0.1em] text-primary mb-2 lg:mb-8"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
                   {heroData.tag}
                 </motion.div>
 
-                <h1 className="font-display text-[32px] sm:text-4xl md:text-6xl lg:text-7xl leading-[1.05] mb-6">
+                <h1 className="font-display text-[24px] sm:text-4xl md:text-6xl lg:text-7xl leading-tight mb-2 lg:mb-6">
                   {heroData.title}
                   <br />
                   <span className="text-gradient-gold glow-text">{heroData.titleAccent}</span>
                 </h1>
 
-                <p className="text-lg text-muted-foreground max-w-xl leading-relaxed mb-10">
+                <p className="text-[11px] sm:text-lg text-muted-foreground max-w-xl mx-auto lg:ml-0 leading-relaxed mb-4 lg:mb-10">
                   {heroData.subtitle}
                 </p>
 
-                <div className="flex flex-wrap gap-4">
+                <div className="flex flex-wrap justify-center lg:justify-start gap-4">
                   <Link
-                    to="/classes"
-                    className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gold text-background font-medium shadow-glow hover:scale-105 transition-transform"
+                    to="/gallery"
+                    hash="performances"
+                    className="group inline-flex items-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-full bg-gold text-background font-medium shadow-glow hover:scale-105 transition-transform text-sm sm:text-base"
                   >
                     {heroData.ctaPrimary}
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                   <Link
-                    to="/gallery"
-                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-border hover:border-gold text-foreground transition-colors"
+                    to="/services"
+                    hash="classes"
+                    className="inline-flex items-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-full border border-border hover:border-gold text-foreground transition-colors text-sm sm:text-base"
                   >
                     {heroData.ctaSecondary}
                   </Link>
                 </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-                className="relative"
-              >
-                <div className="absolute inset-0 bg-ember rounded-full blur-3xl opacity-40 animate-float-slow" />
-                <motion.img
-                  src={heroData.image || heroImg}
-                  alt="Yakshagana performer in traditional crown headdress"
-                  width={1536}
-                  height={1536}
-                  className="relative rounded-2xl shadow-glow border border-gold/20 animate-float-slow"
-                />
               </motion.div>
             </div>
 

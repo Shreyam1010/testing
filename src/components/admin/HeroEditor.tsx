@@ -1,8 +1,9 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Loader2, Save, Check } from "lucide-react";
-import heroImg from "@/assets/hero-yakshagana.jpg";
+import { ArrowRight, Loader2, Save, Check, Upload } from "lucide-react";
+import heroImgDefault from "@/assets/hero-yakshagana.jpg";
 import mandala from "@/assets/mandala.png";
+import logoImg from "@/assets/logo-transparent.png";
 
 interface HeroEditorProps {
   isEditing: boolean;
@@ -36,7 +37,7 @@ function EditableText({
       contentEditable
       suppressContentEditableWarning
       onBlur={handleBlur}
-      className={`${className} outline-none cursor-text`}
+      className={`${className} outline-none cursor-text hover:bg-white/5 rounded px-1 transition-colors`}
       style={{ caretColor: "var(--gold)" }}
     >
       {value}
@@ -45,7 +46,7 @@ function EditableText({
 }
 
 export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -57,8 +58,9 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
       titleAccent: "Yakshagana",
       subtitle:
         "An immersive cultural sanctuary where traditional Kannada theatre, music, and dance breathe through every performance, class, and story.",
-      ctaPrimary: "Explore ClassesWatch Performances",
-      ctaSecondary: "Watch Performances",
+      ctaPrimary: "Watch Performances",
+      ctaSecondary: "Explore Gurukul",
+      image: ""
     },
     kn: {
       tag: "೪೦೦ ವರ್ಷಗಳ ಪರಂಪರೆಯ ಸಂರಕ್ಷಣೆ",
@@ -66,15 +68,16 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
       titleAccent: "ಯಕ್ಷಗಾನ",
       subtitle:
         "ಸಾಂಪ್ರದಾಯಿಕ ಕನ್ನಡ ರಂಗಭೂಮಿ, ಸಂಗೀತ ಮತ್ತು ನೃತ್ಯ — ಪ್ರತಿ ಪ್ರದರ್ಶನ, ತರಗತಿ ಮತ್ತು ಕಥೆಯಲ್ಲಿ ಉಸಿರಾಡುವ ಸಾಂಸ್ಕೃತಿಕ ತಾಣ.",
-      ctaPrimary: "ತರಗತಿಗಳನ್ನು ನೋಡಿ",
-      ctaSecondary: "ಪ್ರದರ್ಶನಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
+      ctaPrimary: "ಪ್ರದರ್ಶನಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
+      ctaSecondary: "ಗುರುಕುಲವನ್ನು ಅನ್ವೇಷಿಸಿ",
+      image: ""
     },
   };
 
   const [data, setData] = useState(defaults[lang]);
 
   useEffect(() => {
-    setData(defaults[lang]);
+    setLoading(true);
     // Try fetching from DB
     fetch(`http://127.0.0.1:5667/api/content?lang=${lang}`)
       .then((r) => r.json())
@@ -83,14 +86,17 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
         result.siteContent?.forEach((item: any) => {
           if (item.section === "hero") heroData[item.content_key] = item.content_value;
         });
-        if (heroData.title) {
-          setData((prev) => ({
-            ...prev,
-            ...heroData,
-          }));
-        }
+        
+        setData({
+          ...defaults[lang],
+          ...heroData
+        });
+        setLoading(false);
       })
-      .catch(() => {});
+      .catch(() => {
+        setData(defaults[lang]);
+        setLoading(false);
+      });
   }, [lang]);
 
   const handleSave = async () => {
@@ -114,9 +120,22 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
   const update = (field: string, value: string) =>
     setData((prev) => ({ ...prev, [field]: value }));
 
-  /* ── Exact replica of index.tsx Hero ── */
+  const handleImageUpload = (file: File) => {
+    const url = URL.createObjectURL(file);
+    update("image", url);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-gold" />
+      </div>
+    );
+  }
+
+  /* ── Balanced Hero UI ── */
   return (
-    <section className="relative min-h-[92vh] flex items-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center overflow-hidden pb-24 md:pb-16">
       <div className="absolute inset-0 bg-hero" />
       <img
         src={mandala}
@@ -132,17 +151,60 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
         style={{ animationDirection: "reverse" }}
       />
 
-      <div className="container mx-auto px-6 relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+      <div className="container mx-auto px-6 relative z-10 flex flex-col lg:grid lg:grid-cols-2 gap-2 lg:gap-12 items-center pt-10 lg:pt-0 min-h-screen lg:min-h-0">
+        {/* Image - Balanced Size */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          className="relative order-1 lg:order-2 w-full max-w-[180px] sm:max-w-[240px] lg:max-w-none mx-auto mb-1 lg:mb-0 lg:-mt-4"
+        >
+          <div className="absolute inset-0 bg-ember rounded-full blur-3xl opacity-40 lg:animate-float-slow" />
+          <motion.div className="relative aspect-square lg:aspect-auto overflow-hidden rounded-full lg:rounded-2xl border border-gold/20 shadow-glow lg:animate-float-slow group">
+            <img
+              src={data.image || heroImgDefault}
+              alt="Yakshagana performer"
+              className="w-full h-full object-cover"
+            />
+            {isEditing && (
+              <label className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                <Upload className="w-5 h-5 text-gold mb-1" />
+                <span className="text-white font-bold uppercase tracking-widest text-[7px]">Change Photo</span>
+                <input 
+                  type="file" 
+                  className="hidden" 
+                  accept="image/*" 
+                  onChange={(e) => {
+                    if (e.target.files?.[0]) handleImageUpload(e.target.files[0]);
+                  }}
+                />
+              </label>
+            )}
+          </motion.div>
+        </motion.div>
+
+        {/* Text & Logo - Balanced Logo */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center lg:text-left order-2 lg:order-1"
         >
+          {/* Logo - Balanced height */}
+          <motion.img 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1, duration: 0.8 }}
+            src={logoImg} 
+            alt="Kathe Gaararu Logo" 
+            className="h-28 sm:h-24 md:h-48 lg:h-56 w-auto object-contain mx-auto lg:ml-0 mb-2 lg:mb-8 drop-shadow-2xl"
+          />
+
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gold/40 bg-gold/5 text-xs uppercase tracking-[0.25em] text-primary mb-8"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-gold/40 bg-gold/5 text-[8.5px] whitespace-nowrap uppercase tracking-[0.1em] text-primary mb-2 lg:mb-8"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
             <EditableText
@@ -152,7 +214,7 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
             />
           </motion.div>
 
-          <h1 className="font-display text-3xl sm:text-4xl md:text-6xl lg:text-7xl leading-[1.05] mb-6">
+          <h1 className="font-display text-[24px] sm:text-4xl md:text-6xl lg:text-7xl leading-tight mb-2 lg:mb-6">
             <EditableText
               value={data.title}
               onChange={(v) => update("title", v)}
@@ -168,7 +230,7 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
             </span>
           </h1>
 
-          <p className="text-lg text-muted-foreground max-w-xl leading-relaxed mb-10">
+          <p className="text-[11px] sm:text-lg text-muted-foreground max-w-xl mx-auto lg:ml-0 leading-relaxed mb-4 lg:mb-10">
             <EditableText
               value={data.subtitle}
               onChange={(v) => update("subtitle", v)}
@@ -177,39 +239,23 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
             />
           </p>
 
-          <div className="flex flex-wrap gap-4">
-            <button className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gold text-background font-medium shadow-glow hover:scale-105 transition-transform">
+          <div className="flex flex-wrap justify-center lg:justify-start gap-4">
+            <div className="group inline-flex items-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-full bg-gold text-background font-medium shadow-glow hover:scale-105 transition-transform text-sm sm:text-base">
               <EditableText
                 value={data.ctaPrimary}
                 onChange={(v) => update("ctaPrimary", v)}
                 isEditing={isEditing}
               />
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
-            <button className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-border hover:border-gold text-foreground transition-colors">
+            </div>
+            <div className="inline-flex items-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-full border border-border hover:border-gold text-foreground transition-colors text-sm sm:text-base">
               <EditableText
                 value={data.ctaSecondary}
                 onChange={(v) => update("ctaSecondary", v)}
                 isEditing={isEditing}
               />
-            </button>
+            </div>
           </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-          className="relative"
-        >
-          <div className="absolute inset-0 bg-ember rounded-full blur-3xl opacity-40 animate-float-slow" />
-          <motion.img
-            src={heroImg}
-            alt="Yakshagana performer in traditional crown headdress"
-            width={1536}
-            height={1536}
-            className="relative rounded-2xl shadow-glow border border-gold/20 animate-float-slow"
-          />
         </motion.div>
       </div>
 

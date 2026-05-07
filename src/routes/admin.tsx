@@ -6,7 +6,7 @@ import {
   Lock, User, LogOut, LayoutDashboard,
   Image as ImageIcon, Info, Calendar,
   BookOpen, Camera, Mail, Eye, Edit3, Save,
-  Languages, Sparkles, ArrowLeft
+  Languages, Sparkles, ArrowLeft, Globe
 } from "lucide-react";
 
 import { HeroEditor } from "@/components/admin/HeroEditor";
@@ -16,6 +16,7 @@ import { EventsEditor } from "@/components/admin/EventsEditor";
 import { ClassesEditor } from "@/components/admin/ClassesEditor";
 import { ContactEditor } from "@/components/admin/ContactEditor";
 import { GalleryEditor } from "@/components/admin/GalleryEditor";
+import { ServicesEditor } from "@/components/admin/ServicesEditor";
 
 export const Route = createFileRoute("/admin")({
   component: AdminPage,
@@ -23,7 +24,10 @@ export const Route = createFileRoute("/admin")({
 
 function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return localStorage.getItem("admin_auth") === "true";
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("admin_auth") === "true";
+    }
+    return false;
   });
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
@@ -108,7 +112,7 @@ function AdminPage() {
   return <Dashboard onLogout={handleLogout} />;
 }
 
-type Tab = "hero" | "about" | "events" | "classes" | "gallery" | "blog" | "contact";
+type Tab = "hero" | "about" | "events" | "classes" | "gallery" | "blog" | "contact" | "services";
 
 function Dashboard({ onLogout }: { onLogout: () => void }) {
   const [activeTab, setActiveTab] = useState<Tab>("hero");
@@ -122,6 +126,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
     { id: "classes", label: "Gurukul", icon: BookOpen },
     { id: "gallery", label: "Gallery", icon: ImageIcon },
     { id: "blog", label: "Insights", icon: Edit3 },
+    { id: "services", label: "Services", icon: Globe },
     { id: "contact", label: "Contact", icon: Mail },
   ];
 
@@ -260,6 +265,11 @@ function LiveContainer({ section, isEditing, lang }: { section: Tab; isEditing: 
     case "gallery": return <GalleryEditor isEditing={isEditing} lang={lang} />;
     case "contact": return <ContactEditor isEditing={isEditing} lang={lang} />;
     case "blog": return <BlogEditor isEditing={isEditing} lang={lang} />;
+    case "services": return (
+      <div className="p-8 xl:p-12">
+        <ServicesEditor isEditing={isEditing} lang={lang} />
+      </div>
+    );
     default:
       return (
         <div className="min-h-[80vh] flex flex-col items-center justify-center p-20 text-center">

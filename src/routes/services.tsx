@@ -1,6 +1,6 @@
   import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Star, ArrowRight, Facebook, Instagram, Twitter } from "lucide-react";
+import { Star, ArrowRight } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { useLang } from "@/contexts/LanguageContext";
 import g1 from "@/assets/gallery-1.jpg";
@@ -11,6 +11,7 @@ import g5 from "@/assets/gallery-5.jpg";
 import g6 from "@/assets/gallery-6.jpg";
 import sticker0 from "@/assets/stickers/sticker_0.png";
 import sticker5 from "@/assets/stickers/sticker_5.png";
+import { useDbContent } from "@/hooks/useDb";
 
 export const Route = createFileRoute("/services")({
   head: () => ({
@@ -19,34 +20,42 @@ export const Route = createFileRoute("/services")({
     ],
   }),
   component: Services,
-});
+});function Services() {
+  const { t, lang } = useLang();
+  const { data, loading } = useDbContent();
 
-function Services() {
-  const { t } = useLang();
+  const servicesMap = data?.siteContentMap?.services || {};
+
+  const pageTitle = servicesMap.title || t.services.title;
+  const pageSubtitle = servicesMap.subtitle || t.services.subtitle;
+  const socialTitle = servicesMap.social_title || t.services.social.title;
+  const socialSubtitle = servicesMap.social_subtitle || t.services.social.subtitle;
 
   const sections = [
     {
       id: "performance",
-      title: t.services.performance.title,
-      desc: t.services.performance.desc,
-      buttonText: t.services.performance.buttonText,
+      title: servicesMap.perf_title || t.services.performance.title,
+      desc: servicesMap.perf_desc || t.services.performance.desc,
+      buttonText: servicesMap.perf_btn || t.services.performance.buttonText,
       images: ["/images/gallery-1.jpg", "/images/gallery-2.jpg", "/images/gallery-4.jpg", "/images/gallery-5.jpg", "/images/gallery-6.jpg"],
     },
     {
       id: "classes",
-      title: t.services.classes.title,
-      desc: t.services.classes.desc,
-      buttonText: t.services.classes.buttonText,
+      title: servicesMap.class_title || t.services.classes.title,
+      desc: servicesMap.class_desc || t.services.classes.desc,
+      buttonText: servicesMap.class_btn || t.services.classes.buttonText,
       images: ["/images/gallery-3.jpg", "/images/gallery-5.jpg", "/images/gallery-6.jpg", "/images/gallery-1.jpg", "/images/gallery-2.jpg"],
     },
     {
       id: "workshops",
-      title: t.services.workshops.title,
-      desc: t.services.workshops.desc,
-      buttonText: t.services.workshops.buttonText,
+      title: servicesMap.work_title || t.services.workshops.title,
+      desc: servicesMap.work_desc || t.services.workshops.desc,
+      buttonText: servicesMap.work_btn || t.services.workshops.buttonText,
       images: ["/images/gallery-4.jpg", "/images/gallery-1.jpg", "/images/gallery-3.jpg", "/images/gallery-6.jpg", "/images/gallery-5.jpg"],
     }
   ];
+
+  const socialLinks = data?.socialLinks || [];
 
   return (
     <Layout>
@@ -58,10 +67,10 @@ function Services() {
         >
           <div className="ornament-divider w-24 mx-auto mb-6" />
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-display mb-4 text-primary">
-            {t.services.title}
+            {pageTitle}
           </h1>
           <p className="text-muted-foreground text-lg">
-            {t.services.subtitle}
+            {pageSubtitle}
           </p>
         </motion.div>
 
@@ -91,7 +100,6 @@ function Services() {
                 <div className="flex flex-nowrap gap-4 lg:gap-6 overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                   {section.images.map((img, imgIdx) => {
                     const isLast = imgIdx === 4;
-                    // Calculate exact widths to fit 4.5 items on lg, 3.5 on md, 2.5 on default
                     const cardClasses = "shrink-0 w-[calc((100%-1rem)/2.5)] sm:w-[calc((100%-2rem)/3.5)] lg:w-[calc((100%-6rem)/4.5)] relative aspect-[4/5] rounded-2xl overflow-hidden border border-border shadow-xl group snap-start";
                     
                     return isLast ? (
@@ -105,7 +113,6 @@ function Services() {
                           alt="View more in gallery"
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
-                        {/* Position arrow at left 25% so it's visible even when right half is cut off */}
                         <div className="absolute inset-0 bg-black/50 flex flex-col justify-center pl-[25%] transition-all group-hover:bg-black/70">
                           <ArrowRight className="w-8 h-8 text-white transition-transform group-hover:translate-x-1" />
                           <span className="text-xs font-bold uppercase tracking-widest text-white mt-2 opacity-0 group-hover:opacity-100 transition-opacity">More</span>
@@ -155,71 +162,47 @@ function Services() {
             <div className="text-center max-w-2xl mx-auto mb-16">
               <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display text-primary mb-6 flex items-center justify-center gap-4">
                 <img src={sticker0} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
-                {t.services.social.title}
+                {socialTitle}
               </h2>
               <p className="text-xl text-muted-foreground">
-                {t.services.social.subtitle}
+                {socialSubtitle}
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                { 
-                  key: 'facebook', 
-                  icon: Facebook, 
-                  img: "/images/gallery-2.jpg",
-                  href: "https://facebook.com"
-                },
-                { 
-                  key: 'instagram', 
-                  icon: Instagram, 
-                  img: "/images/gallery-4.jpg",
-                  href: "https://instagram.com"
-                },
-                { 
-                  key: 'twitter', 
-                  icon: Twitter, 
-                  img: "/images/gallery-5.jpg",
-                  href: "https://twitter.com"
-                }
-              ].map((social) => {
-                const Icon = social.icon;
-                const data = t.services.social[social.key];
-                return (
-                  <motion.div
-                    key={social.key}
-                    whileHover={{ y: -10 }}
-                    className="relative rounded-3xl overflow-hidden border border-border group h-[400px] flex flex-col justify-end p-8"
-                  >
-                    <img 
-                      src={social.img} 
-                      alt={data.title}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
-                    <div className="relative z-10">
-                      <div className="w-12 h-12 rounded-2xl bg-gold flex items-center justify-center mb-6 shadow-glow">
-                        <Icon className="w-6 h-6 text-background" />
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
+              {loading ? (
+                Array.from({ length: 7 }).map((_, i) => (
+                  <div key={i} className="aspect-[4/5] rounded-2xl bg-white/5 animate-pulse" />
+                ))
+              ) : (
+                socialLinks.slice(0, 21).map((social: any) => {
+                  return (
+                    <motion.a
+                      key={social.id}
+                      href={social.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ y: -10 }}
+                      className="relative rounded-2xl overflow-hidden border border-border group aspect-[4/5] flex flex-col justify-end p-4"
+                    >
+                      <img 
+                        src={social.image || "/images/gallery-1.jpg"} 
+                        alt={social.title[lang]}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
+                      <div className="relative z-10">
+                        <h3 className="text-sm font-display text-primary mb-1">
+                          {social.title[lang]}
+                        </h3>
+                        <p className="text-[10px] text-muted-foreground line-clamp-2 leading-tight">
+                          {social.description[lang]}
+                        </p>
                       </div>
-                      <h3 className="text-2xl font-display text-primary mb-3">
-                        {data.title}
-                      </h3>
-                      <p className="text-muted-foreground mb-8 line-clamp-2">
-                        {data.desc}
-                      </p>
-                      <a 
-                        href={social.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-white font-bold uppercase tracking-widest text-[10px] hover:bg-gold hover:text-background hover:border-gold transition-all"
-                      >
-                        {data.buttonText}
-                        <ArrowRight className="w-3 h-3" />
-                      </a>
-                    </div>
-                  </motion.div>
-                );
-              })}
+                    </motion.a>
+                  );
+                })
+              )}
             </div>
           </motion.div>
         </div>
@@ -227,3 +210,4 @@ function Services() {
     </Layout>
   );
 }
+

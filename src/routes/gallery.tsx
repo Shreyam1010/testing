@@ -45,7 +45,7 @@ function Gallery() {
         </motion.div>
 
         {/* PERFORMANCES */}
-        <div className="mb-24">
+        <div id="performances" className="mb-24 scroll-mt-24">
           <h2 className="text-3xl font-display mb-10 text-primary flex items-center gap-3">
             <img src={sticker2} alt="" className="w-10 h-10 object-contain drop-shadow-md" />
             {lang === "en" ? "Performances" : "ಪ್ರದರ್ಶನಗಳು"}
@@ -58,7 +58,7 @@ function Gallery() {
         </div>
         
         {/* GURUKUL (CLASSES) */}
-        <div className="mb-24">
+        <div id="gurukul" className="mb-24 scroll-mt-24">
           <h2 className="text-3xl font-display mb-10 text-primary flex items-center gap-3">
             <img src={sticker3} alt="" className="w-10 h-10 object-contain drop-shadow-md" />
             {lang === "en" ? "Gurukul" : "ಗುರುಕುಲ"}
@@ -71,7 +71,7 @@ function Gallery() {
         </div>
 
         {/* WORKSHOPS */}
-        <div className="mb-24">
+        <div id="workshops" className="mb-24 scroll-mt-24">
           <h2 className="text-3xl font-display mb-10 text-primary flex items-center gap-3">
             <img src={sticker4} alt="" className="w-10 h-10 object-contain drop-shadow-md" />
             {lang === "en" ? "Workshops" : "ಕಾರ್ಯಾಗಾರಗಳು"}
