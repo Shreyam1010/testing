@@ -36,7 +36,7 @@ export default {
       if (url.pathname === "/api/content" && request.method === "GET") {
         const lang = url.searchParams.get("lang") || "en";
 
-        const [siteContent, teachers, classes, blogs, events, workshops, socialLinks] =
+        const [siteContent, teachers, classes, blogs, events, workshops, socialLinks, faqs] =
           await Promise.all([
             env.DB.prepare("SELECT * FROM site_content WHERE lang = ?").bind(lang).all(),
             env.DB.prepare("SELECT * FROM teachers").all(),
@@ -45,6 +45,7 @@ export default {
             env.DB.prepare("SELECT * FROM events").all(),
             env.DB.prepare("SELECT * FROM workshops").all(),
             env.DB.prepare("SELECT * FROM social_links ORDER BY order_index ASC").all(),
+            env.DB.prepare("SELECT * FROM faqs WHERE lang = ? ORDER BY order_index ASC").bind(lang).all(),
           ]);
 
         return json({
@@ -55,6 +56,7 @@ export default {
           events: events.results,
           workshops: workshops.results,
           socialLinks: socialLinks.results,
+          faqs: faqs.results,
         });
       }
 
@@ -201,6 +203,29 @@ export default {
                 s.link || "",
                 s.image || "",
                 s.order_index || 0
+              )
+              .run();
+          }
+        }
+
+        if (section === "faqs") {
+          for (const f of data) {
+            await env.DB.prepare(
+              `INSERT INTO faqs (id, lang, blog_id, question, answer, order_index) 
+               VALUES (?, ?, ?, ?, ?, ?)
+               ON CONFLICT(id) DO UPDATE SET 
+               question=excluded.question, 
+               answer=excluded.answer,
+               blog_id=excluded.blog_id,
+               order_index=excluded.order_index`
+            )
+              .bind(
+                f.id || `faq_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+                lang,
+                f.blog_id || null,
+                f.question || "",
+                f.answer || "",
+                f.order_index || 0
               )
               .run();
           }

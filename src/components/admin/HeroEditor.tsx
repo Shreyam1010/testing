@@ -4,6 +4,7 @@ import { ArrowRight, Loader2, Save, Check, Upload } from "lucide-react";
 import heroImgDefault from "@/assets/hero-yakshagana.jpg";
 import mandala from "@/assets/mandala.png";
 import logoImg from "@/assets/logo-transparent.png";
+import { FaqManager } from "./FaqManager";
 
 interface HeroEditorProps {
   isEditing: boolean;
@@ -135,6 +136,7 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
 
   /* ── Balanced Hero UI with Subtle Floating ── */
   return (
+    <>
     <section className="relative min-h-screen flex items-center overflow-hidden pb-24 md:pb-16">
       <div className="absolute inset-0 bg-hero" />
       <img
@@ -285,5 +287,10 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
         </div>
       )}
     </section>
+
+    <div className="container mx-auto px-6 pb-24 relative z-10">
+      <FaqManager lang={lang} blogId={null} title="General FAQ Manager" />
+    </div>
+    </>
   );
 }

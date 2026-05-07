@@ -1,0 +1,167 @@
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { MessageCircle, X, HelpCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { useDbContent } from "@/hooks/useDb";
+import { useLang } from "@/contexts/LanguageContext";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import logoImg from "@/assets/logo-transparent.png";
+
+interface FaqAssistantProps {
+  blogId?: string | null;
+}
+
+export function FaqAssistant({ blogId = null }: FaqAssistantProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const { data, loading } = useDbContent();
+  const { lang } = useLang();
+
+  // Filter FAQs based on context (home or specific blog)
+  const filteredFaqs = data?.faqs?.filter((f: any) => 
+    blogId ? f.blogId === blogId : !f.blogId
+  ) || [];
+
+  const t = {
+    en: {
+      title: "Kathe Gaararu Assistant",
+      subtitle: "Frequently Asked Questions",
+      empty: "No FAQs available for this section.",
+    },
+    kn: {
+      title: "ಕಥೆಗಾರರು ಸಹಾಯಕ",
+      subtitle: "ಪದೇ ಪದೇ ಕೇಳಲಾಗುವ ಪ್ರಶ್ನೆಗಳು",
+      empty: "ಈ ವಿಭಾಗಕ್ಕೆ ಯಾವುದೇ ಪ್ರಶ್ನೆಗಳು ಲಭ್ಯವಿಲ್ಲ.",
+    }
+  };
+
+  const labels = t[lang as keyof typeof t] || t.en;
+
+  // Lock scroll when open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [isOpen]);
+
+  return (
+    <>
+      {/* Backdrop Blur Overlay */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsOpen(false)}
+            className="fixed inset-0 bg-background/40 backdrop-blur-sm z-[190]"
+          />
+        )}
+      </AnimatePresence>
+
+      <div className="fixed bottom-6 right-6 z-[200]">
+      {/* Floating Button */}
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-14 h-14 bg-gold rounded-full shadow-glow flex items-center justify-center text-background transition-colors hover:bg-gold-soft z-[201] relative"
+      >
+        <AnimatePresence mode="wait">
+          {isOpen ? (
+            <motion.div
+              key="close"
+              initial={{ rotate: -90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: 90, opacity: 0 }}
+            >
+              <X className="w-6 h-6" />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="open"
+              initial={{ rotate: 90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: -90, opacity: 0 }}
+            >
+              <HelpCircle className="w-6 h-6" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.button>
+
+      {/* Assistant Panel */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95, x: 20 }}
+            animate={{ opacity: 1, y: 0, scale: 1, x: 0 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95, x: 20 }}
+            className="absolute bottom-20 right-0 w-[320px] sm:w-[400px] max-h-[80vh] bg-card border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col"
+          >
+            {/* Header */}
+            <div className="p-6 bg-gradient-to-br from-crimson/20 to-card border-b border-white/5 relative shrink-0">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-gold/10 rounded-2xl flex items-center justify-center border border-gold/20">
+                  <img src={logoImg} alt="Logo" className="w-8 h-8 object-contain opacity-80" />
+                </div>
+                <div>
+                  <h3 className="font-display text-lg text-gold leading-tight">{labels.title}</h3>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
+                    {labels.subtitle}
+                  </p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsOpen(false)}
+                className="absolute top-4 right-4 text-muted-foreground hover:text-white transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Content Area */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
+              {loading ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="w-6 h-6 border-2 border-gold border-t-transparent rounded-full animate-spin" />
+                </div>
+              ) : filteredFaqs.length > 0 ? (
+                <Accordion type="single" collapsible className="space-y-3">
+                  {filteredFaqs.map((faq: any, i: number) => (
+                    <AccordionItem 
+                      key={faq.id} 
+                      value={`item-${i}`}
+                      className="border border-white/5 bg-white/5 rounded-2xl px-4 overflow-hidden hover:bg-white/[0.08] transition-colors"
+                    >
+                      <AccordionTrigger className="text-left text-sm font-medium py-4 hover:no-underline text-foreground/90 group">
+                        <span className="flex-1 pr-4">{faq.question}</span>
+                      </AccordionTrigger>
+                      <AccordionContent className="text-xs text-muted-foreground leading-relaxed pb-4">
+                        {faq.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              ) : (
+                <div className="text-center py-12 text-muted-foreground text-sm italic">
+                  {labels.empty}
+                </div>
+              )}
+            </div>
+
+            {/* Footer decoration */}
+            <div className="h-2 bg-gradient-to-r from-gold/40 via-gold to-gold/40 opacity-30" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+    </>
+  );
+}

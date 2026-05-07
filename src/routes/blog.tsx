@@ -6,6 +6,7 @@ import { Layout } from "@/components/Layout";
 import { useLang } from "@/contexts/LanguageContext";
 import { blogs } from "@/lib/data";
 import { useDbContent } from "@/hooks/useDb";
+import { FaqAssistant } from "@/components/FaqAssistant";
 
 export const Route = createFileRoute("/blog")({
   head: () => ({
@@ -148,6 +149,7 @@ function BlogPage() {
             </div>
           )}
         </AnimatePresence>
+        <FaqAssistant blogId={selectedBlog?.id} />
       </section>
     </Layout>
   );

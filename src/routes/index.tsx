@@ -28,6 +28,7 @@ const imgMap: Record<string, string> = { g1, g2, g3, g4, g5, g6 };
 export const Route = createFileRoute("/")({ component: Index });
 
 import { useDbContent } from "@/hooks/useDb";
+import { FaqAssistant } from "@/components/FaqAssistant";
 
 function OurStorySection({ aboutData, aboutImg, sticker0, mandala, bodyParagraphs, lang, t, imgMap }: any) {
   return (
@@ -522,6 +523,7 @@ function Index() {
 
           {/* UPCOMING EVENTS */}
           <UpcomingEvents />
+          <FaqAssistant />
         </>
       )}
     </Layout>

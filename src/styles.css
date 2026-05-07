@@ -129,6 +129,17 @@
   .glow-text {
     text-shadow: 0 0 30px oklch(0.78 0.16 80 / 0.5);
   }
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--gold);
+    border-radius: 10px;
+    opacity: 0.5;
+  }
 }
 
 @keyframes float-slow {

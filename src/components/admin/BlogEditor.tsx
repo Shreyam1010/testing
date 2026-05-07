@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Loader2, Save, Check, Plus, Trash2, Edit3, X, User, Calendar, Image as ImageIcon } from "lucide-react";
+import { FaqManager } from "./FaqManager";
 import { blogs, BlogItem } from "@/lib/data";
 import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
@@ -248,6 +249,13 @@ export function BlogEditor({ isEditing, lang }: BlogEditorProps) {
                         placeholder="Write the full article content here..."
                       />
                     </div>
+
+                    <FaqManager 
+                      lang={lang} 
+                      blogId={editorData.id} 
+                      title="Article-Specific FAQs"
+                      subtitle="Manage questions specifically for this blog post."
+                    />
                   </div>
 
                   <div className="mt-12 flex justify-end">

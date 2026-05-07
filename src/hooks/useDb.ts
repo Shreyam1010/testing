@@ -74,6 +74,13 @@ export function useDbContent() {
             link: s.link,
             image: s.image,
             orderIndex: s.order_index
+          })) || [],
+          faqs: raw.faqs?.map((f: any) => ({
+            id: f.id,
+            blogId: f.blog_id,
+            question: f.question,
+            answer: f.answer,
+            orderIndex: f.order_index
           })) || []
         };
 

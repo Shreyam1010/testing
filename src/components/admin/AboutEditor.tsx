@@ -2,8 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Camera, Loader2, Save, Check } from "lucide-react";
 import aboutImg from "@/assets/about-performer.jpg";
-import sticker0 from "@/assets/sticker-0.png";
-
+import sticker0 from "@/assets/stickers/sticker_0.png";
 interface AboutEditorProps {
   isEditing: boolean;
   lang: "en" | "kn";

@@ -102,3 +102,14 @@ CREATE TABLE IF NOT EXISTS social_links (
     image TEXT,
     order_index INTEGER DEFAULT 0
 );
+
+-- 9. FAQs (Home and Blog-specific)
+CREATE TABLE IF NOT EXISTS faqs (
+    id TEXT PRIMARY KEY,
+    lang TEXT NOT NULL,        -- 'en' or 'kn'
+    blog_id TEXT,              -- NULL for home page, non-null for blog-specific
+    question TEXT NOT NULL,
+    answer TEXT NOT NULL,
+    order_index INTEGER DEFAULT 0,
+    FOREIGN KEY (blog_id) REFERENCES blogs(id)
+);
