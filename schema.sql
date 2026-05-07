@@ -90,3 +90,15 @@ CREATE TABLE IF NOT EXISTS gallery (
     src TEXT,
     category TEXT DEFAULT 'performance'  -- 'performance' or 'workshop'
 );
+
+-- 8. Social Links
+CREATE TABLE IF NOT EXISTS social_links (
+    id TEXT PRIMARY KEY,
+    title_en TEXT,
+    title_kn TEXT,
+    description_en TEXT,
+    description_kn TEXT,
+    link TEXT,
+    image TEXT,
+    order_index INTEGER DEFAULT 0
+);

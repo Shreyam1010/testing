@@ -4,7 +4,7 @@ export const translations = {
   en: {
     nav: {
       home: "Home",
-      about: "About",
+      about: "Tales of tradition",
       classes: "Gurukul",
       services: "Services",
       schedule: "Schedule",

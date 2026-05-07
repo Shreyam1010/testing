@@ -3,9 +3,12 @@ export interface Env {
   IMAGES?: R2Bucket; // Made optional
 }
 
+console.log("[Worker] Global scope evaluating...");
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+    console.log("[Worker] Incoming request:", request.method, url.pathname);
 
     const corsHeaders = {
       "Access-Control-Allow-Origin": "*",

@@ -10,7 +10,7 @@ export default defineConfig({
   vite: {
     server: {
       proxy: {
-        '/images': 'http://127.0.0.1:5667'
+        // We serve images statically from public/images now, so no proxy needed for it
       }
     }
   }
