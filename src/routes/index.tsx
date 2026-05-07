@@ -83,8 +83,8 @@ function Index() {
                 transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
                 className="relative order-1 lg:order-2 w-full max-w-[180px] sm:max-w-[240px] lg:max-w-none mx-auto mb-1 lg:mb-0 lg:-mt-4"
               >
-                <div className="absolute inset-0 bg-ember rounded-full blur-3xl opacity-40 lg:animate-float-slow" />
-                <motion.div className="relative aspect-square lg:aspect-auto overflow-hidden rounded-full lg:rounded-2xl border border-gold/20 shadow-glow lg:animate-float-slow">
+                <div className="absolute inset-0 bg-ember rounded-full blur-3xl opacity-40 animate-float-subtle lg:animate-float-slow" />
+                <motion.div className="relative aspect-square lg:aspect-auto overflow-hidden rounded-full lg:rounded-2xl border border-gold/20 shadow-glow animate-float-subtle lg:animate-float-slow">
                   <img
                     src={heroData.image || heroImg}
                     alt="Yakshagana performer"
@@ -154,24 +154,24 @@ function Index() {
 
           {/* OUR STORY */}
           <section className="relative overflow-hidden">
-            <div className="grid lg:grid-cols-[45%_55%] min-h-[600px]">
+            <div className="flex flex-col lg:grid lg:grid-cols-[45%_55%] min-h-[600px]">
               {/* Image */}
               <motion.div
                 initial={{ opacity: 0, x: -40 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="relative overflow-hidden"
+                className="relative overflow-hidden lg:block flex justify-center pt-16 lg:pt-0"
               >
-                <img
-                  src={aboutData.image || aboutImg}
-                  alt="Veteran Yakshagana Performer"
-                  loading="lazy"
-                  width={768}
-                  height={1024}
-                  className="w-full h-full object-cover object-top min-h-[400px] lg:min-h-full"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent to-background/30 lg:to-background/60" />
+                <div className="relative">
+                  <img
+                    src={aboutData.image || aboutImg}
+                    alt="Veteran Yakshagana Performer"
+                    loading="lazy"
+                    className="w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] lg:w-full lg:h-full object-cover object-top rounded-full lg:rounded-none border border-gold/20 lg:border-none shadow-glow lg:shadow-none"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-background/30 lg:to-background/60 rounded-full lg:rounded-none" />
+                </div>
               </motion.div>
 
               {/* Text */}
@@ -180,13 +180,13 @@ function Index() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: 0.2 }}
-                className="flex flex-col justify-center px-8 py-16 md:px-16 lg:px-20"
+                className="flex flex-col justify-center px-8 py-12 lg:py-16 md:px-16 lg:px-20 text-center lg:text-left"
               >
                 <span className="text-xs uppercase tracking-[0.3em] text-crimson font-medium mb-4">
                   {aboutData.label}
                 </span>
-                <h2 className="font-display text-[28px] sm:text-3xl md:text-5xl lg:text-[3.5rem] leading-[1.1] mb-8 text-foreground flex items-center gap-4">
-                  <img src={sticker0} alt="" className="w-12 h-12 md:w-16 md:h-16 object-contain" />
+                <h2 className="font-display text-[26px] sm:text-3xl md:text-5xl lg:text-[3.5rem] leading-[1.1] mb-6 lg:mb-8 text-foreground flex items-center justify-center lg:justify-start gap-4">
+                  <img src={sticker0} alt="" className="w-10 h-10 md:w-16 md:h-16 object-contain" />
                   {aboutData.title}
                 </h2>
                 {(aboutData.body || t.about.homeSection.body).map((paragraph: string, i: number) => (

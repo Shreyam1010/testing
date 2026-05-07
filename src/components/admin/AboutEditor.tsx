@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Camera, Loader2, Save, Check } from "lucide-react";
 import aboutImg from "@/assets/about-performer.jpg";
+import sticker0 from "@/assets/sticker-0.png";
 
 interface AboutEditorProps {
   isEditing: boolean;
@@ -176,36 +177,38 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
         onChange={handleImageChange}
       />
       
-      <div className="grid lg:grid-cols-[45%_55%] w-full min-h-[90vh]">
-        {/* Image - REPLICATED 1:1 */}
+      <div className="flex flex-col lg:grid lg:grid-cols-[45%_55%] w-full min-h-[90vh]">
+        {/* Image - Replicated Mobile Circular vs Desktop Grid */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative hidden lg:block overflow-hidden border-r border-gold/10 group"
+          className="relative lg:block flex justify-center pt-16 lg:pt-0 group overflow-hidden"
         >
-          <img
-            src={currentAboutImg}
-            alt=""
-            className="w-full h-full object-cover object-top"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-background/60" />
-          
-          {isEditing && (
-            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all cursor-pointer">
-              <button 
-                onClick={() => fileInputRef.current?.click()}
-                className="flex items-center gap-2 px-6 py-3 bg-gold text-background rounded-full font-bold text-xs uppercase tracking-widest shadow-glow hover:scale-105 transition-all"
-              >
-                <Camera className="w-4 h-4" />
-                Replace Image
-              </button>
-            </div>
-          )}
+          <div className="relative">
+            <img
+              src={currentAboutImg}
+              alt=""
+              className="w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] lg:w-full lg:h-full object-cover object-top rounded-full lg:rounded-none border border-gold/20 lg:border-none shadow-glow lg:shadow-none"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-background/30 lg:to-background/60 rounded-full lg:rounded-none" />
+            
+            {isEditing && (
+              <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all cursor-pointer rounded-full lg:rounded-none">
+                <button 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex flex-col items-center gap-1 p-4 bg-gold text-background rounded-full font-bold text-[8px] uppercase tracking-widest shadow-glow hover:scale-105 transition-all"
+                >
+                  <Camera className="w-4 h-4" />
+                  Replace
+                </button>
+              </div>
+            )}
+          </div>
         </motion.div>
 
-        {/* Text Content - REPLICATED 1:1 */}
-        <div className="flex flex-col justify-center px-8 py-20 md:px-16 lg:px-24">
+        {/* Text Content - Responsive alignment */}
+        <div className="flex flex-col justify-center px-8 py-12 lg:py-20 md:px-16 lg:px-24 text-center lg:text-left">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -220,7 +223,8 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
               />
             </div>
             
-            <h1 className="font-display text-3xl sm:text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-10 text-foreground">
+            <h1 className="font-display text-[26px] sm:text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-6 lg:mb-10 text-foreground flex items-center justify-center lg:justify-start gap-4">
+              <img src={sticker0} alt="" className="w-10 h-10 md:w-16 md:h-16 object-contain" />
               <EditableText
                 value={current.title}
                 onChange={(v) => update("title", v)}
@@ -229,14 +233,13 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
             </h1>
 
             <div className="space-y-6">
-              {/* Lead Paragraph Styling - FIXED */}
               <div className="relative">
                 <EditableText
                   tag="p"
                   value={current.lead}
                   onChange={(v) => update("lead", v)}
                   isEditing={isEditing}
-                  className="text-xl md:text-2xl text-primary font-medium leading-relaxed italic border-l-4 border-gold pl-6 py-2 bg-gold/5 rounded-r-lg"
+                  className="text-lg md:text-2xl text-primary font-medium leading-relaxed italic border-l-4 border-gold pl-6 py-2 bg-gold/5 rounded-r-lg"
                 />
               </div>
 
@@ -247,29 +250,29 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
                   value={p}
                   onChange={(v) => updateBody(i, v)}
                   isEditing={isEditing}
-                  className="text-muted-foreground leading-[1.8] text-lg"
+                  className="text-muted-foreground leading-[1.8] text-base md:text-lg"
                 />
               ))}
             </div>
 
-            {/* Stats Grid - ADDED */}
-            <div className="mt-16 grid grid-cols-2 gap-6">
+            {/* Stats Grid */}
+            <div className="mt-16 grid grid-cols-2 gap-4 sm:gap-6">
               {current.stats.map((s, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 + i * 0.1 }}
-                  className="p-6 rounded-2xl bg-card/40 border border-border hover:border-gold/30 transition group"
+                  className="p-4 sm:p-6 rounded-2xl bg-card/40 border border-border hover:border-gold/30 transition group"
                 >
-                  <div className="text-3xl md:text-4xl font-display text-gradient-gold mb-1 group-hover:scale-110 transition-transform">
+                  <div className="text-2xl sm:text-4xl font-display text-gradient-gold mb-1 group-hover:scale-110 transition-transform">
                     <EditableText
                       value={s.value}
                       onChange={(v) => updateStat(i, "value", v)}
                       isEditing={isEditing}
                     />
                   </div>
-                  <div className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-widest">
+                  <div className="text-[8px] sm:text-xs text-muted-foreground uppercase tracking-widest">
                     <EditableText
                       value={s.label}
                       onChange={(v) => updateStat(i, "label", v)}

@@ -133,7 +133,7 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
     );
   }
 
-  /* ── Balanced Hero UI ── */
+  /* ── Balanced Hero UI with Subtle Floating ── */
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden pb-24 md:pb-16">
       <div className="absolute inset-0 bg-hero" />
@@ -152,15 +152,15 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
       />
 
       <div className="container mx-auto px-6 relative z-10 flex flex-col lg:grid lg:grid-cols-2 gap-2 lg:gap-12 items-center pt-10 lg:pt-0 min-h-screen lg:min-h-0">
-        {/* Image - Balanced Size */}
+        {/* Image - Subtle Floating for Mobile */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
           className="relative order-1 lg:order-2 w-full max-w-[180px] sm:max-w-[240px] lg:max-w-none mx-auto mb-1 lg:mb-0 lg:-mt-4"
         >
-          <div className="absolute inset-0 bg-ember rounded-full blur-3xl opacity-40 lg:animate-float-slow" />
-          <motion.div className="relative aspect-square lg:aspect-auto overflow-hidden rounded-full lg:rounded-2xl border border-gold/20 shadow-glow lg:animate-float-slow group">
+          <div className="absolute inset-0 bg-ember rounded-full blur-3xl opacity-40 animate-float-subtle lg:animate-float-slow" />
+          <motion.div className="relative aspect-square lg:aspect-auto overflow-hidden rounded-full lg:rounded-2xl border border-gold/20 shadow-glow animate-float-subtle lg:animate-float-slow group">
             <img
               src={data.image || heroImgDefault}
               alt="Yakshagana performer"
