@@ -15,17 +15,17 @@ export function useDbContent() {
     async function fetchData() {
       try {
         setLoading(true);
-        const apiUrl = new URL(`${window.location.origin}/api/content?lang=${lang}`, window.location.origin);
-        const res = await fetch(apiUrl.toString());
+        // Use a clean relative path - Cloudflare Pages handles this best
+        const res = await fetch(`/api/content?lang=${lang}`);
+        
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const raw = await res.json();
         
         if (!isMounted) return;
 
-        // Transform data to match frontend expectations
         const transformed: any = {
-          siteContent: [], // Keep as array for raw access if needed
-          siteContentMap: {}, // Helper map
+          siteContent: raw.siteContent || [],
+          siteContentMap: {},
           teachers: raw.teachers?.map((t: any) => ({
             id: t.id,
             name: { en: t.name_en, kn: t.name_kn },
@@ -85,8 +85,6 @@ export function useDbContent() {
           })) || []
         };
 
-        // Site content transformation
-        transformed.siteContent = raw.siteContent || [];
         raw.siteContent?.forEach((item: any) => {
           if (!transformed.siteContentMap[item.section]) transformed.siteContentMap[item.section] = {};
           transformed.siteContentMap[item.section][item.content_key] = item.content_value;
@@ -106,4 +104,3 @@ export function useDbContent() {
 
   return { data, loading, error, refresh };
 }
-
