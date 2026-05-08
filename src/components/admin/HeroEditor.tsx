@@ -80,7 +80,7 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
   useEffect(() => {
     setLoading(true);
     // Try fetching from DB
-    fetch(`/api/content?lang=${lang}`)
+    fetch(`${window.location.origin}/api/content?lang=${lang}`)
       .then((r) => r.json())
       .then((result) => {
         const heroData: any = {};
@@ -104,7 +104,7 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
-      await fetch("/api/save", {
+      await fetch(window.location.origin + "/api/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ section: "hero", lang, data }),

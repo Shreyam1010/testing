@@ -139,7 +139,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
     async function loadData() {
       setLoading(true);
       try {
-        const res = await fetch(`/api/content?lang=${lang}`);
+        const res = await fetch(`${window.location.origin}/api/content?lang=${lang}`);
         const result = await res.json();
         
         // Update teachers and classes if found in DB
@@ -184,7 +184,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
-      await fetch("/api/save", {
+      await fetch(window.location.origin + "/api/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

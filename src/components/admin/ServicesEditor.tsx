@@ -120,7 +120,7 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
-      await fetch("/api/save", {
+      await fetch(window.location.origin + "/api/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -130,7 +130,7 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
         })
       });
 
-      await fetch("/api/save", {
+      await fetch(window.location.origin + "/api/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

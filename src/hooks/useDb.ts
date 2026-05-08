@@ -15,7 +15,8 @@ export function useDbContent() {
     async function fetchData() {
       try {
         setLoading(true);
-        const res = await fetch(`/api/content?lang=${lang}`);
+        const apiUrl = new URL(`${window.location.origin}/api/content?lang=${lang}`, window.location.origin);
+        const res = await fetch(apiUrl.toString());
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const raw = await res.json();
         

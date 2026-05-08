@@ -48,7 +48,7 @@ export function BlogEditor({ isEditing, lang }: BlogEditorProps) {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
-      await fetch("/api/save", {
+      await fetch(window.location.origin + "/api/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ section: "blogs", lang, data: localBlogs }),

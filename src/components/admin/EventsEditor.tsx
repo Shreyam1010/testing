@@ -351,7 +351,7 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
   ]);
 
   useEffect(() => {
-    fetch(`/api/content?lang=${lang}`)
+    fetch(`${window.location.origin}/api/content?lang=${lang}`)
       .then((r) => r.json())
       .then((result) => {
         const evData = result.siteContent?.find((item: any) => item.section === "events");
@@ -430,7 +430,7 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
-      await fetch("/api/save", {
+      await fetch(window.location.origin + "/api/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ section: "events", lang, data: events }),
