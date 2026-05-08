@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+// v2.1.0 - Triggering fresh deployment
 import { RouterProvider } from "@tanstack/react-router";
 import { getRouter } from "./router";
 import "./styles.css";
