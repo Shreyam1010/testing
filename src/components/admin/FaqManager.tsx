@@ -42,7 +42,7 @@ export function FaqManager({ lang, blogId = null, title = "FAQ MANAGER", subtitl
     const orderedFaqs = faqs.map((f, i) => ({ ...f, orderIndex: i }));
 
     try {
-      await fetch("http://127.0.0.1:5667/api/save", {
+      await fetch("/api/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ section: "faqs", lang, data: orderedFaqs }),

@@ -15,7 +15,7 @@ export function useDbContent() {
     async function fetchData() {
       try {
         setLoading(true);
-        const res = await fetch(`http://127.0.0.1:5667/api/content?lang=${lang}`);
+        const res = await fetch(`/api/content?lang=${lang}`);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const raw = await res.json();
         

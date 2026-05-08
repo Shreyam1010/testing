@@ -87,7 +87,7 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
 
   // --- FETCH FROM DATABASE ---
   useEffect(() => {
-    fetch(`http://127.0.0.1:5667/api/content?lang=${lang}`)
+    fetch(`/api/content?lang=${lang}`)
       .then((r) => r.json())
       .then((result) => {
         const aboutData: any = {};
@@ -115,7 +115,7 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
     setSaveSuccess(false);
     try {
       const current = data[lang];
-      await fetch("http://127.0.0.1:5667/api/save", {
+      await fetch("/api/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
