@@ -10,7 +10,8 @@ export async function onRequest(context) {
   const object = await env.IMAGES.get(key);
 
   if (!object) {
-    return new Response("Image Not Found", { status: 404 });
+    // Fallback to static assets in the build output (e.g. public/images)
+    return env.ASSETS.fetch(request);
   }
 
   const headers = new Headers();
