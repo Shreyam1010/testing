@@ -24,8 +24,10 @@ export async function onRequest(context) {
     });
 
   try {
+    const path = url.pathname;
+
     // ─── GET /api/content ───
-    if (url.pathname.includes("/api/content") && request.method === "GET") {
+    if ((path === "/api/content" || path.endsWith("/api/content")) && request.method === "GET") {
       const lang = url.searchParams.get("lang") || "en";
       const [siteContent, teachers, classes, blogs, events, workshops, socialLinks, faqs] =
         await Promise.all([
@@ -52,7 +54,7 @@ export async function onRequest(context) {
     }
 
     // ─── POST /api/save ───
-    if (url.pathname.includes("/api/save") && request.method === "POST") {
+    if ((path === "/api/save" || path.endsWith("/api/save")) && request.method === "POST") {
       const { section, data, lang } = (await request.json());
 
       if (section === "hero" || section === "about" || section === "services") {
