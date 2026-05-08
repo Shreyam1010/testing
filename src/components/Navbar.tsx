@@ -23,16 +23,16 @@ export function Navbar() {
     <header className="fixed top-0 inset-x-0 z-50 backdrop-blur-xl bg-background/70 border-b border-border/40">
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="relative w-10 h-10 rounded-full bg-gold flex items-center justify-center shadow-glow transition-transform group-hover:scale-110">
-            <span className="text-background font-display font-bold text-lg">ಯ</span>
-          </div>
+          
           <div className="leading-tight">
             <div className="font-display text-lg text-gradient-gold tracking-wider">
-              Kathe Gaararu
+              Kathegaararu
             </div>
-            <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-              Yakshagana Kala
+            <div className="text-[8px] md:text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+              Centre for Yakshagana Performance,
             </div>
+            <div className="text-[8px] md:text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Training & Research</div> 
+
           </div>
         </Link>
 

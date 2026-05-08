@@ -63,7 +63,7 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
     perf_desc: "Experience the awe-inspiring magic of Yakshagana with our year-round stage events. We celebrate ancient epics through powerful storytelling, bringing the rich, vibrant heritage of coastal Karnataka directly to your venue. Every performance is a complete cultural immersion featuring authentic, elaborately crafted costumes, mesmerizing live traditional music, and seasoned veteran artists who breathe life into mythological legends.",
     perf_btn: "Host the Show",
     perf_imgs: JSON.stringify(["/images/gallery-1.jpg", "/images/gallery-2.jpg", "/images/gallery-4.jpg", "/images/gallery-5.jpg", "/images/gallery-6.jpg"]),
-    class_title: "Gurukul",
+    class_title: "Classes",
     class_desc: "Step into the sacred circle of learning with our authentic training programs. We offer comprehensive, gurukula-style instruction in traditional dance, intricate footwork, classical music (Bhagavatike), and powerful dialogue delivery, guided by highly experienced veteran gurus.",
     class_btn: "Book Demo",
     class_imgs: JSON.stringify(["/images/gallery-3.jpg", "/images/gallery-5.jpg", "/images/gallery-6.jpg", "/images/gallery-1.jpg", "/images/gallery-2.jpg"]),

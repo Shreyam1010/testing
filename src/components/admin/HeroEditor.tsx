@@ -60,7 +60,7 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
       subtitle:
         "An immersive cultural sanctuary where traditional Kannada theatre, music, and dance breathe through every performance, class, and story.",
       ctaPrimary: "Watch Performances",
-      ctaSecondary: "Explore Gurukul",
+      ctaSecondary: "Explore Classes",
       image: ""
     },
     kn: {

@@ -123,7 +123,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
     { id: "hero", label: "Hero", icon: ImageIcon },
     { id: "about", label: "About", icon: Info },
     { id: "events", label: "Events", icon: Calendar },
-    { id: "classes", label: "Gurukul", icon: BookOpen },
+    { id: "classes", label: "Classes", icon: BookOpen },
     { id: "gallery", label: "Gallery", icon: ImageIcon },
     { id: "blog", label: "Insights", icon: Edit3 },
     { id: "services", label: "Services", icon: Globe },

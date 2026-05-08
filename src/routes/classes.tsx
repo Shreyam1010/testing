@@ -15,13 +15,13 @@ import { useDbContent } from "@/hooks/useDb";
 export const Route = createFileRoute("/classes")({
   head: () => ({
     meta: [
-      { title: "Yakshagana Gurukul & Workshops — Kathe Gaararu" },
+      { title: "Yakshagana Classes & Workshops — Kathe Gaararu" },
       {
         name: "description",
         content:
           "Authentic Yakshagana training in dance, music, vocals, and costume from veteran gurus.",
       },
-      { property: "og:title", content: "Gurukul & Workshops" },
+      { property: "og:title", content: "Classes & Workshops" },
       {
         property: "og:description",
         content: "Train under master gurus across vocals, drums, dance, and more.",
@@ -92,7 +92,7 @@ function Classes() {
                 className="text-center mb-20"
               >
                 <h1 className="text-[26px] sm:text-3xl md:text-5xl font-display text-primary tracking-[0.25em] uppercase leading-none mb-6">
-                  {classesData.title || (lang === "en" ? "Gurukul" : "ಗುರುಕುಲ")}
+                  {classesData.title || (lang === "en" ? "Classes" : "ಗುರುಕುಲ")}
                 </h1>
                 <div className="h-0.5 w-16 md:w-24 bg-gold/50 mx-auto rounded-full shadow-glow" />
               </motion.div>

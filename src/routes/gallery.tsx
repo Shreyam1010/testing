@@ -61,7 +61,7 @@ function Gallery() {
         <div id="gurukul" className="mb-24 scroll-mt-24">
           <h2 className="text-3xl font-display mb-10 text-primary flex items-center gap-3">
             <img src={sticker3} alt="" className="w-10 h-10 object-contain drop-shadow-md" />
-            {lang === "en" ? "Gurukul" : "ಗುರುಕುಲ"}
+            {lang === "en" ? "Classes" : "ಗುರುಕುಲ"}
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 grid-flow-dense">
             {gurukulItems.map((it, i) => (

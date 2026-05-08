@@ -185,6 +185,9 @@ export default {
         }
 
         if (section === "social_links") {
+          // Clear existing links to allow full re-sync
+          await env.DB.prepare("DELETE FROM social_links").run();
+          
           for (const s of data) {
             await env.DB.prepare(
               `INSERT INTO social_links (id, title_${lang}, description_${lang}, link, image, order_index) 

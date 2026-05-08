@@ -59,7 +59,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
 
   const [data, setData] = useState({
     en: {
-      title: "Gurukul",
+      title: "Classes",
       subtitle: "Train under masters of the tradition",
       intro: "Step into the sacred circle of learning where tradition meets discipline. Our gurukul is designed to provide a comprehensive understanding of Yakshagana, from the foundational rhythms to the complex expressions of the epics. Beyond the physical movements, we delve into the literary and musical heritage, ensuring each student becomes a custodian of the art's soul. Join us in this journey of rhythm, expression, and divinity.",
       points: [

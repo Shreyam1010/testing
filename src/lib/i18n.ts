@@ -4,8 +4,8 @@ export const translations = {
   en: {
     nav: {
       home: "Home",
-      about: "Tales of tradition",
-      classes: "Gurukul",
+      about: "About",
+      classes: "Classes",
       services: "Services",
       schedule: "Schedule",
       gallery: "Gallery",
@@ -19,14 +19,14 @@ export const translations = {
       subtitle:
         "An immersive cultural sanctuary where traditional Kannada theatre, music, and dance breathe through every performance, class, and story.",
       ctaPrimary: "Watch Performances",
-      ctaSecondary: "Explore Gurukul",
+      ctaSecondary: "Explore Classes",
     },
     highlights: {
       title: "Where Tradition Awakens",
       subtitle: "Three pillars of our cultural mission",
       items: [
         {
-          title: "Gurukul",
+          title: "Classes",
           desc: "Authentic training in dance, music, and dialogue from veteran gurus.",
         },
         {
@@ -40,10 +40,10 @@ export const translations = {
       ],
     },
     about: {
-      title: "Our Story",
+      title: "About",
       homeSection: {
-        label: "OUR STORY",
-        title: "Our Story",
+        label: "ABOUT",
+        title: "About",
         body: [
           "Kathe Gaararu was founded to safeguard and share the radiant heritage of Yakshagana — Karnataka’s monumental folk theatre tradition.",
           "For over four centuries, Yakshagana has united dance, music, costume, and storytelling into a single transcendent art form. Our institution carries that flame forward — training new generations, hosting public performances, and collaborating with masters of the craft.",
@@ -63,7 +63,7 @@ export const translations = {
       ],
     },
     classes: {
-      title: "Gurukul & Workshops",
+      title: "Classes & Workshops",
       subtitle: "Train under masters of the tradition",
       items: [
         {
