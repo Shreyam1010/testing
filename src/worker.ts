@@ -261,6 +261,11 @@ export default {
         return new Response(object.body, { headers });
       }
 
+      // ─── Fallback to Static Assets (Pages) ───
+      if (typeof (env as any).ASSETS !== "undefined") {
+        return await (env as any).ASSETS.fetch(request);
+      }
+
       return new Response("Not Found", { status: 404 });
     } catch (err: any) {
       return error(err.message);
