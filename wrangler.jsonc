@@ -1,7 +1,6 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "yakshagana-app",
-	"main": "src/worker.ts",
 	"compatibility_date": "2025-05-01",
 	"compatibility_flags": [
 		"nodejs_compat"

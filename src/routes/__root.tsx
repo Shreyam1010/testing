@@ -1,4 +1,4 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { Outlet, Link, createRootRoute } from "@tanstack/react-router";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
 import appCss from "../styles.css?url";
@@ -78,11 +78,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
-        <HeadContent />
       </head>
       <body>
         {children}
-        <Scripts />
       </body>
     </html>
   );
