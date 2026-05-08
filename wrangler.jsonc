@@ -12,5 +12,11 @@
 			"database_name": "kathe-gaararu-db",
 			"database_id": "3bd194c0-bc74-485f-8885-e0208fd54337"
 		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "IMAGES",
+			"bucket_name": "kathe-gaararu-images"
+		}
 	]
 }
