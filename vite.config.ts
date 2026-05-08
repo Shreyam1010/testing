@@ -15,4 +15,18 @@ export default defineConfig({
     outDir: "dist",
     emptyOutDir: true,
   },
+  server: {
+    proxy: {
+      "/api": {
+        target: "https://testing-4rk.pages.dev",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/images": {
+        target: "https://testing-4rk.pages.dev",
+        changeOrigin: true,
+        secure: false,
+      }
+    }
+  }
 });
