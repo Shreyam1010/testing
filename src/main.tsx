@@ -7,6 +7,15 @@ import "./styles.css";
 
 const router = getRouter();
 
+// Unregister any old service workers that might intercept fetch and cause SyntaxErrors
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+    for(let registration of registrations) {
+      registration.unregister();
+    }
+  });
+}
+
 // Render the app
 const rootElement = document.getElementById("root");
 if (rootElement && !rootElement.innerHTML) {
