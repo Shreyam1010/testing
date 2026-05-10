@@ -1,5 +1,6 @@
+import React, { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Sparkles, Music, Drama } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { useLang } from "@/contexts/LanguageContext";
@@ -31,15 +32,36 @@ import { useDbContent } from "@/hooks/useDb";
 import { FaqAssistant } from "@/components/FaqAssistant";
 
 function OurStorySection({ aboutData, aboutImg, sticker1, lang, t }: any) {
+  const [activeTab, setActiveTab] = useState(0);
+  
+  const tabs = [
+    { 
+      id: 0, 
+      label: lang === "en" ? "Mission" : "ಧ್ಯೇಯ", 
+      content: aboutData.content1 || (lang === "en" ? "Kathe Gaararu was founded to safeguard and share the radiant heritage of Yakshagana — Karnataka's monumental folk theatre tradition." : "ಯಕ್ಷಗಾನದ ಭವ್ಯ ಪರಂಪರೆಯನ್ನು ರಕ್ಷಿಸಲು ಮತ್ತು ಹಂಚಿಕೊಳ್ಳಲು ಕಥೆಗಾರರು ಸಂಸ್ಥೆಯನ್ನು ಸ್ಥಾಪಿಸಲಾಯಿತು."),
+      isQuote: true 
+    },
+    { 
+      id: 1, 
+      label: lang === "en" ? "Legacy" : "ಪರಂಪರೆ", 
+      content: aboutData.content2 || (lang === "en" ? "For over four centuries, Yakshagana has united dance, music, costume, and storytelling into a single transcendent art form. Our institution carries that flame forward — training new generations, hosting public performances, and collaborating with masters of the craft." : "ನಾಲ್ಕು ಶತಮಾನಗಳಿಂದ, ಯಕ್ಷಗಾನವು ನೃತ್ಯ, ಸಂಗೀತ, ವೇಷಭೂಷಣ ಮತ್ತು ಕಥೆ ಹೇಳುವಿಕೆಯನ್ನು ಒಂದು ಮಹಾನ್ ಕಲೆಯಾಗಿ ಒಂದುಗೂಡಿಸಿದೆ. ನಮ್ಮ ಸಂಸ್ಥೆಯು ಆ ಜ್ವಾಲೆಯನ್ನು ಮುಂದಕ್ಕೆ ಕೊಂಡೊಯ್ಯುತ್ತಿದೆ.")
+    },
+    { 
+      id: 2, 
+      label: lang === "en" ? "Philosophy" : "ತತ್ವ", 
+      content: aboutData.content3 || (lang === "en" ? "We believe culture is not a museum piece. It is living, breathing, evolving — a conversation between the ancient and the present. Through immersive learning and stagecraft, we invite every seeker to step into that conversation." : "ಸಂಸ್ಕೃತಿಯು ಕೇವಲ ವಸ್ತುಸಂಗ್ರಹಾಲಯದ ವಸ್ತುವಲ್ಲ ಎಂದು ನಾವು ನಂಬುತ್ತೇವೆ. ಇದು ಜೀವಂತವಾಗಿರುವ, ಉಸಿರಾಡುವ ಮತ್ತು ವಿಕಸನಗೊಳ್ಳುವ ಪ್ರಕ್ರಿಯೆಯಾಗಿದೆ.")
+    }
+  ];
+
   return (
-    <section className="relative overflow-hidden min-h-[80vh] flex items-stretch border-y border-gold/10">
+    <section className="relative overflow-hidden min-h-[70vh] lg:min-h-[80vh] flex items-stretch border-y border-gold/10 -mt-12 md:mt-0">
       <div className="grid lg:grid-cols-[45%_55%] w-full">
         <motion.div
           initial={{ opacity: 0, x: -40 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative lg:block flex justify-center pt-16 lg:pt-0 overflow-hidden border-r border-gold/10 lg:h-auto"
+          className="relative lg:block flex justify-center pt-4 lg:pt-0 overflow-hidden border-r border-gold/10 lg:h-auto"
         >
           <div className="relative h-full w-full">
             <img
@@ -52,30 +74,61 @@ function OurStorySection({ aboutData, aboutImg, sticker1, lang, t }: any) {
         </motion.div>
 
         {/* Text Content */}
-        <div className="flex flex-col justify-center px-8 py-12 lg:py-20 md:px-16 lg:px-24 text-center lg:text-left">
+        <div className="flex flex-col justify-center px-6 py-12 lg:py-20 md:px-16 lg:px-24 text-center lg:text-left">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.2 }}
+            transition={{ duration: 0.6 }}
           >
-            <span className="text-xs uppercase tracking-[0.3em] text-crimson font-medium mb-4 block">
-              {lang === "en" ? "ABOUT" : "ನಮ್ಮ ಕಥೆ"}
-            </span>
-            <h2 className="font-display text-[26px] sm:text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-6 lg:mb-10 text-foreground flex items-center justify-center lg:justify-start gap-4 md:gap-6">
-              <img src={sticker1} alt="" className="w-10 h-10 md:w-16 md:h-16 object-contain drop-shadow-md" />
-              {aboutData.title}
+            <span className="text-gold font-display tracking-[0.3em] uppercase text-[10px] md:text-sm mb-2 block">Our Story</span>
+            <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-6 md:mb-10 text-primary flex items-center justify-center lg:justify-start gap-3">
+              <img src={sticker1} alt="" className="w-8 h-8 md:w-12 md:h-12 object-contain" />
+              {lang === "en" ? "ABOUT US" : "ನಮ್ಮ ಬಗ್ಗೆ"}
             </h2>
             
-            <div className="space-y-6">
-              <p className="text-lg md:text-2xl text-gold font-medium leading-relaxed italic border-l-4 border-gold pl-6 py-2 bg-gold/5 rounded-r-lg">
-                {aboutData.lead}
-              </p>
-              {(aboutData.body || t.about.body).map((p: string, i: number) => (
-                <p key={i} className="text-muted-foreground leading-[1.8] text-base md:text-lg">
-                  {p}
-                </p>
+            {/* MOBILE TABS - INNOVATIVE COMPACT VIEW */}
+            <div className="lg:hidden mb-8 flex justify-center gap-2 p-1 bg-gold/5 rounded-full border border-gold/10">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-1 py-2 px-3 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all duration-300 ${
+                    activeTab === tab.id 
+                      ? "bg-gold text-background shadow-glow" 
+                      : "text-muted-foreground hover:text-gold"
+                  }`}
+                >
+                  {tab.label}
+                </button>
               ))}
+            </div>
+            {/* CONTENT AREA */}
+            <div className="relative min-h-[160px] md:min-h-0">
+              <AnimatePresence mode="wait">
+                {/* Mobile View with Tabs */}
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="lg:hidden"
+                >
+                  <p className={`${tabs[activeTab].isQuote ? "text-gold italic font-medium text-lg border-l-2 border-gold pl-4 py-1 bg-gold/5 rounded-r-lg" : "text-sm text-foreground/80 leading-relaxed font-light"}`}>
+                    {tabs[activeTab].content}
+                  </p>
+                </motion.div>
+
+                {/* Desktop View (Standard Scroll) */}
+                <div className="hidden lg:flex flex-col space-y-8 text-lg text-foreground/80 leading-relaxed font-light">
+                  <p className="text-gold italic font-medium text-2xl border-l-2 border-gold pl-6 py-2 bg-gold/5 rounded-r-xl">
+                    {tabs[0].content}
+                  </p>
+                  <p>{tabs[1].content}</p>
+                  <p>{tabs[2].content}</p>
+                </div>
+              </AnimatePresence>
             </div>
           </motion.div>
         </div>
@@ -114,7 +167,7 @@ function Index() {
       ) : (
         <>
           {/* HERO */}
-          <section className="relative min-h-screen flex items-center overflow-hidden pb-24 md:pb-16">
+          <section className="relative min-h-screen flex items-center overflow-hidden pb-0 md:pb-16">
             <div className="absolute inset-0 bg-hero" />
             <img
               src={mandala}
@@ -217,7 +270,7 @@ function Index() {
           />
 
           {/* HIGHLIGHTS */}
-          <section className="container mx-auto px-6 py-24">
+          <section className="container mx-auto px-6 pt-20 pb-4 md:pb-20 relative overflow-hidden">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -226,65 +279,100 @@ function Index() {
               className="text-center max-w-2xl mx-auto mb-16"
             >
               <div className="ornament-divider w-24 mx-auto mb-6" />
-              <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-4 flex items-center justify-center gap-4">
-                <img src={sticker1} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
+              <h2 className="text-[22px] xs:text-26px sm:text-3xl md:text-5xl font-display mb-4 flex items-center justify-center gap-3 md:gap-4 leading-tight">
+                <img src={sticker1} alt="" className="w-8 h-8 md:w-12 md:h-12 object-contain" />
                 {t.highlights.title}
               </h2>
-              <p className="text-muted-foreground">{t.highlights.subtitle}</p>
+              <p className="text-muted-foreground text-sm md:text-base">{t.highlights.subtitle}</p>
             </motion.div>
 
-            <div className="grid md:grid-cols-3 gap-6">
-              {highlightOrder.map((idx, i) => {
-                const item = t.highlights.items[idx];
-                const Icon = icons[idx];
-                return (
-                  <Link
-                    key={i}
-                    to="/services"
-                    hash={idx === 2 ? "performance" : idx === 0 ? "classes" : "workshops"}
-                    className="block"
-                  >
-                    <motion.div
-                      initial={{ opacity: 0, y: 30 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.6, delay: i * 0.15 }}
-                      whileHover={{ y: -8 }}
-                      className="group relative p-8 rounded-2xl bg-card/50 border border-border hover:border-gold/50 transition-all overflow-hidden cursor-pointer h-full"
+            <div className="relative group/slider">
+              <div 
+                id="highlights-slider"
+                onScroll={(e) => {
+                  const target = e.currentTarget;
+                  const indicator = document.getElementById('scroll-indicator');
+                  if (indicator) {
+                    const isAtEnd = target.scrollLeft + target.clientWidth >= target.scrollWidth - 20;
+                    indicator.style.opacity = isAtEnd ? '0' : '1';
+                    indicator.style.visibility = isAtEnd ? 'hidden' : 'visible';
+                  }
+                }}
+                className="flex md:grid md:grid-cols-3 gap-6 overflow-x-auto md:overflow-visible pb-8 md:pb-0 snap-x snap-mandatory scrollbar-hide px-2 md:px-0 -mx-2 md:mx-0 scroll-smooth"
+              >
+                {highlightOrder.map((idx, i) => {
+                  const item = t.highlights.items[idx];
+                  const Icon = icons[idx];
+                  return (
+                    <Link
+                      key={i}
+                      to="/services"
+                      hash={idx === 2 ? "performance" : idx === 0 ? "classes" : "workshops"}
+                      className="block min-w-[85%] sm:min-w-[45%] md:min-w-0 snap-center"
                     >
-                      <div className="absolute -top-20 -right-20 w-40 h-40 bg-gold/10 rounded-full blur-3xl group-hover:bg-gold/20 transition" />
-                      <div className="relative">
-                        <div className="w-14 h-14 rounded-full bg-gold flex items-center justify-center mb-6 shadow-glow">
-                          <Icon className="w-6 h-6 text-background" />
+                      <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: i * 0.15 }}
+                        whileHover={{ y: -8 }}
+                        className="group relative p-6 md:p-8 rounded-[2rem] bg-gradient-to-br from-card/80 to-card/30 border border-gold/10 hover:border-gold/40 transition-all overflow-hidden cursor-pointer h-full flex flex-col justify-between"
+                      >
+                        <div className="absolute -top-12 -right-12 w-32 h-32 bg-gold/5 rounded-full blur-3xl group-hover:bg-gold/10 transition-all duration-700" />
+                        
+                        <div className="relative">
+                          <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br from-gold to-crimson flex items-center justify-center mb-6 shadow-glow transform transition-transform duration-500 group-hover:rotate-[10deg] group-hover:scale-110">
+                            <Icon className="w-6 h-6 text-background" />
+                          </div>
+                          <h3 className="text-xl md:text-2xl font-display mb-3 text-primary group-hover:text-gold transition-colors">{item.title}</h3>
+                          <p className="text-sm md:text-base text-muted-foreground leading-relaxed line-clamp-3 md:line-clamp-none">{item.desc}</p>
                         </div>
-                        <h3 className="text-2xl font-display mb-3 text-primary">{item.title}</h3>
-                        <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
-                      </div>
-                    </motion.div>
-                  </Link>
-                );
-              })}
+
+                        <div className="mt-8 flex items-center gap-2 text-gold text-xs font-bold uppercase tracking-widest opacity-0 md:opacity-100 group-hover:opacity-100 transition-opacity">
+                          {lang === "en" ? "Discover" : "ಅನ್ವೇಷಿಸಿ"}
+                          <ArrowRight className="w-3 h-3 transform transition-transform group-hover:translate-x-1" />
+                        </div>
+                      </motion.div>
+                    </Link>
+                  );
+                })}
+              </div>
+
+              {/* Scroll Indicator - Mobile Only */}
+              <button 
+                id="scroll-indicator"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  const slider = document.getElementById('highlights-slider');
+                  if (slider) {
+                    const cardWidth = slider.querySelector('a')?.clientWidth || 300;
+                    slider.scrollBy({ left: cardWidth + 24, behavior: 'smooth' });
+                  }
+                }}
+                className="md:hidden absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-gold/30 backdrop-blur-xl border border-gold/50 rounded-full flex items-center justify-center text-gold animate-bounce-horizontal cursor-pointer shadow-glow active:scale-95 transition-all duration-300"
+              >
+                <ArrowRight className="w-6 h-6" />
+              </button>
             </div>
           </section>
 
           {/* EXPANDED DETAILS */}
-          <section className="container mx-auto px-6 py-12 flex flex-col gap-32">
+          <section className="container mx-auto px-6 pt-4 pb-12 md:py-12 flex flex-col gap-16 md:gap-32">
             {/* PERFORMANCES */}
             <div id="performances-details" className="scroll-mt-32">
               <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
                 <img src={sticker2} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                 {t.highlights.items[2].title}
               </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3 md:gap-6 grid-flow-dense">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3 md:gap-6">
                 {galleryItems.map((it, i) => (
                   <Link
                     key={i}
                     to="/gallery"
                     hash="performances"
-                    className={`block ${
-                      i === 0 || i === 4
-                        ? "md:row-span-2 aspect-[3/4] md:aspect-auto"
-                        : "aspect-square"
+                    className={`block aspect-square ${
+                      (i === 0 || i === 4) ? "md:row-span-2 md:aspect-auto" : ""
                     }`}
                   >
                     <motion.div
@@ -316,26 +404,26 @@ function Index() {
                 <img src={sticker3} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                 {t.highlights.items[0].title}
               </h2>
-              <div className="grid grid-cols-2 gap-3 md:gap-8 mb-12">
-                <Link to="/classes" className="group relative rounded-2xl md:rounded-3xl overflow-hidden border border-border bg-card/40 p-4 sm:p-8 md:p-12 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[250px] sm:min-h-[350px] md:min-h-[450px]">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-8">
+                <Link to="/classes" className="group relative rounded-2xl md:rounded-3xl overflow-hidden border border-border bg-card/40 p-4 sm:p-8 md:p-12 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[220px] sm:min-h-[250px] md:min-h-[450px]">
                   <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent z-10" />
-                  <img src={imgMap.g4} alt="Singing Gurukul" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <img src={imgMap.g4} alt="Singing Classes" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="relative z-20">
-                    <h3 className="text-xl sm:text-3xl md:text-5xl font-display text-primary mb-2 md:mb-4">{lang === "en" ? "Singing" : "ಗಾಯನ"}</h3>
-                    <p className="text-muted-foreground text-[10px] sm:text-sm md:text-lg mb-4 md:mb-8 leading-relaxed line-clamp-3 md:line-clamp-none">{lang === "en" ? "Master the authentic narrative singing tradition (Bhagavatike) that anchors every Yakshagana performance." : "ಯಕ್ಷಗಾನ ಪ್ರದರ್ಶನದ ಆಧಾರಸ್ತಂಭವಾದ ಕಥನ ಗಾಯನ (ಭಾಗವತಿಕೆ) ಪರಂಪರೆಯನ್ನು ಕಲಿಯಿರಿ."}</p>
-                    <span className="inline-flex items-center gap-1 md:gap-2 text-gold font-bold uppercase tracking-widest text-[8px] sm:text-[10px] md:text-sm bg-black/40 px-3 py-2 md:px-6 md:py-3 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-gold group-hover:text-background transition-colors">
-                      {lang === "en" ? "Learn More" : "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"} <ArrowRight className="w-3 h-3 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
+                    <h3 className="text-xl sm:text-3xl md:text-5xl font-display text-primary mb-1 md:mb-4">{lang === "en" ? "Singing" : "ಗಾಯನ"}</h3>
+                    <p className="text-muted-foreground text-[10px] sm:text-base md:text-lg mb-2 md:mb-8 leading-tight sm:leading-relaxed line-clamp-2 md:line-clamp-none">{lang === "en" ? "Master the authentic narrative singing tradition (Bhagavatike) of Yakshagana." : "ಯಕ್ಷಗಾನದ ಭಾಗವತಿಕೆ ಪರಂಪರೆಯನ್ನು ಕಲಿಯಿರಿ."}</p>
+                    <span className="inline-flex items-center gap-1.5 text-gold font-bold uppercase tracking-widest text-[8px] sm:text-xs md:text-sm bg-black/40 px-3 py-1.5 md:px-6 md:py-3 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-gold group-hover:text-background transition-colors w-fit">
+                      {lang === "en" ? "Explore" : "ಅನ್ವೇಷಿಸಿ"} <ArrowRight className="w-3 h-3 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
                     </span>
                   </div>
                 </Link>
-                <Link to="/classes" className="group relative rounded-2xl md:rounded-3xl overflow-hidden border border-border bg-card/40 p-4 sm:p-8 md:p-12 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[250px] sm:min-h-[350px] md:min-h-[450px]">
+                <Link to="/classes" className="group relative rounded-2xl md:rounded-3xl overflow-hidden border border-border bg-card/40 p-4 sm:p-8 md:p-12 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[220px] sm:min-h-[250px] md:min-h-[450px]">
                   <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent z-10" />
-                  <img src={imgMap.g1} alt="Dancing Gurukul" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <img src={imgMap.g1} alt="Dancing Classes" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="relative z-20">
-                    <h3 className="text-xl sm:text-3xl md:text-5xl font-display text-primary mb-2 md:mb-4">{lang === "en" ? "Dancing" : "ನೃತ್ಯ"}</h3>
-                    <p className="text-muted-foreground text-[10px] sm:text-sm md:text-lg mb-4 md:mb-8 leading-relaxed line-clamp-3 md:line-clamp-none">{lang === "en" ? "Immerse yourself in the vigorous footwork, intricate expressions, and graceful choreography of Yakshagana." : "ಯಕ್ಷಗಾನದ ಶಕ್ತಿಯುತ ಪಾದಭಂಗಿ, ಸಂಕೀರ್ಣ ಭಾವಾಭಿನಯ ಮತ್ತು ಸುಂದರ ನೃತ್ಯ ಸಂಯೋಜನೆಯಲ್ಲಿ ಮುಳುಗಿರಿ."}</p>
-                    <span className="inline-flex items-center gap-1 md:gap-2 text-gold font-bold uppercase tracking-widest text-[8px] sm:text-[10px] md:text-sm bg-black/40 px-3 py-2 md:px-6 md:py-3 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-gold group-hover:text-background transition-colors">
-                      {lang === "en" ? "Learn More" : "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"} <ArrowRight className="w-3 h-3 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
+                    <h3 className="text-xl sm:text-3xl md:text-5xl font-display text-primary mb-1 md:mb-4">{lang === "en" ? "Dancing" : "ನೃತ್ಯ"}</h3>
+                    <p className="text-muted-foreground text-[10px] sm:text-base md:text-lg mb-2 md:mb-8 leading-tight sm:leading-relaxed line-clamp-2 md:line-clamp-none">{lang === "en" ? "Immerse yourself in the vigorous footwork and graceful choreography of Yakshagana." : "ಯಕ್ಷಗಾನದ ಶಕ್ತಿಯುತ ಪಾದಭಂಗಿ ಮತ್ತು ನೃತ್ಯವನ್ನು ಕಲಿಯಿರಿ."}</p>
+                    <span className="inline-flex items-center gap-1.5 text-gold font-bold uppercase tracking-widest text-[8px] sm:text-xs md:text-sm bg-black/40 px-3 py-1.5 md:px-6 md:py-3 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-gold group-hover:text-background transition-colors w-fit">
+                      {lang === "en" ? "Explore" : "ಅನ್ವೇಷಿಸಿ"} <ArrowRight className="w-3 h-3 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
                     </span>
                   </div>
                 </Link>
@@ -343,10 +431,10 @@ function Index() {
               <div className="flex justify-center">
                 <Link
                   to="/classes"
-                  className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gold/10 border border-gold/30 text-primary hover:bg-gold hover:text-background transition-all font-display text-lg"
+                  className="group inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gold/10 border border-gold/30 text-primary hover:bg-gold hover:text-background transition-all font-display text-sm md:text-lg"
                 >
-                  {lang === "en" ? "Explore All Gurukul" : "ಗುರುಕುಲವನ್ನು ಅನ್ವೇಷಿಸಿ"}
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  {lang === "en" ? "Explore All Classes" : "ಎಲ್ಲಾ ತರಗತಿಗಳನ್ನು ಅನ್ವೇಷಿಸಿ"}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </div>

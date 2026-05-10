@@ -1,10 +1,38 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { motion } from "framer-motion";
-import { ArrowRight, Loader2, Save, Check, Upload } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, Loader2, Save, Check, Upload, X, Crop } from "lucide-react";
+import Cropper from "react-easy-crop";
 import heroImgDefault from "@/assets/hero-yakshagana.jpg";
 import mandala from "@/assets/mandala.png";
 import logoImg from "@/assets/logo-transparent.png";
 import { FaqManager } from "./FaqManager";
+
+async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> {
+  const image = new Image();
+  image.src = imageSrc;
+  await new Promise((resolve) => (image.onload = resolve));
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return "";
+
+  canvas.width = pixelCrop.width;
+  canvas.height = pixelCrop.height;
+
+  ctx.drawImage(
+    image,
+    pixelCrop.x,
+    pixelCrop.y,
+    pixelCrop.width,
+    pixelCrop.height,
+    0,
+    0,
+    pixelCrop.width,
+    pixelCrop.height
+  );
+
+  return canvas.toDataURL("image/jpeg");
+}
 
 interface HeroEditorProps {
   isEditing: boolean;
@@ -76,6 +104,10 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
   };
 
   const [data, setData] = useState(defaults[lang]);
+  const [tempImage, setTempImage] = useState<string | null>(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -121,9 +153,22 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
   const update = (field: string, value: string) =>
     setData((prev) => ({ ...prev, [field]: value }));
 
+  const onCropComplete = useCallback((_croppedArea: any, pixels: any) => {
+    setCroppedAreaPixels(pixels);
+  }, []);
+
+  const handleApplyCrop = async () => {
+    if (tempImage && croppedAreaPixels) {
+      const cropped = await getCroppedImg(tempImage, croppedAreaPixels);
+      update("image", cropped);
+      setTempImage(null);
+    }
+  };
+
   const handleImageUpload = (file: File) => {
-    const url = URL.createObjectURL(file);
-    update("image", url);
+    const reader = new FileReader();
+    reader.addEventListener("load", () => setTempImage(reader.result as string));
+    reader.readAsDataURL(file);
   };
 
   if (loading) {
@@ -291,6 +336,75 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
     <div className="container mx-auto px-6 pb-24 relative z-10">
       <FaqManager lang={lang} blogId={null} title="General FAQ Manager" isEditing={isEditing} />
     </div>
+
+    {/* Crop Modal */}
+    <AnimatePresence>
+      {tempImage && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 bg-background/95 backdrop-blur-xl">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="w-full max-w-2xl bg-card border border-border rounded-3xl overflow-hidden shadow-2xl flex flex-col"
+          >
+            <div className="p-6 border-b border-border flex items-center justify-between">
+              <h3 className="text-xl font-display text-primary flex items-center gap-2">
+                <Crop className="w-5 h-5 text-gold" />
+                Crop Hero Image
+              </h3>
+              <button onClick={() => setTempImage(null)} className="text-muted-foreground hover:text-white transition-colors">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="relative h-[300px] sm:h-[400px] bg-black">
+              <Cropper
+                image={tempImage}
+                crop={crop}
+                zoom={zoom}
+                aspect={16 / 9}
+                onCropChange={setCrop}
+                onCropComplete={onCropComplete}
+                onZoomChange={setZoom}
+              />
+            </div>
+
+            <div className="p-6 space-y-6">
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                  <span>Zoom</span>
+                  <span>{Math.round(zoom * 100)}%</span>
+                </div>
+                <input
+                  type="range"
+                  value={zoom}
+                  min={1}
+                  max={3}
+                  step={0.1}
+                  onChange={(e) => setZoom(Number(e.target.value))}
+                  className="w-full h-1.5 bg-border rounded-lg appearance-none cursor-pointer accent-gold"
+                />
+              </div>
+
+              <div className="flex justify-end gap-4">
+                <button
+                  onClick={() => setTempImage(null)}
+                  className="px-6 py-2 rounded-xl border border-border text-muted-foreground hover:text-white transition-colors text-xs font-bold uppercase tracking-widest"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleApplyCrop}
+                  className="px-8 py-2 rounded-xl bg-gold text-background hover:scale-105 transition-transform text-xs font-bold uppercase tracking-widest shadow-glow"
+                >
+                  Apply Crop
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
     </>
   );
 }

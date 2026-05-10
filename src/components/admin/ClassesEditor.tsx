@@ -1,6 +1,161 @@
 import { useState, useRef, useCallback, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Camera, User, Clock, BookOpen, Loader2, Save, Check, Plus, Trash2, Edit2, X } from "lucide-react";
+import { Camera, User, Clock, BookOpen, Loader2, Save, Check, Plus, Trash2, Edit2, X, ChevronUp, ChevronDown } from "lucide-react";
+
+function useOnClickOutside(ref: React.RefObject<HTMLElement>, handler: () => void) {
+  useEffect(() => {
+    const listener = (event: any) => {
+      if (!ref.current || ref.current.contains(event.target)) return;
+      handler();
+    };
+    document.addEventListener("mousedown", listener);
+    document.addEventListener("touchstart", listener);
+    return () => {
+      document.removeEventListener("mousedown", listener);
+      document.removeEventListener("touchstart", listener);
+    };
+  }, [ref, handler]);
+}
+
+function ScrollPicker({
+  items,
+  value,
+  onChange,
+  visibleCount = 3,
+  className = "",
+}: {
+  items: string[];
+  value: string;
+  onChange: (v: string) => void;
+  visibleCount?: number;
+  className?: string;
+}) {
+  const [startIndex, setStartIndex] = useState(() => {
+    const idx = items.indexOf(value);
+    return idx !== -1 ? Math.max(0, idx - Math.floor(visibleCount / 2)) : 0;
+  });
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      if (e.deltaY > 0) {
+        setStartIndex(prev => Math.min(items.length - visibleCount, prev + 1));
+      } else {
+        setStartIndex(prev => Math.max(0, prev - 1));
+      }
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [items, visibleCount]);
+
+  const visibleItems = items.slice(startIndex, startIndex + visibleCount);
+
+  return (
+    <div 
+      ref={containerRef}
+      className={`flex flex-col items-center bg-[#1a1a1a]/80 backdrop-blur-md border border-gold/20 rounded-xl overflow-hidden ${className}`}
+    >
+      <button
+        onClick={(e) => { e.stopPropagation(); setStartIndex(prev => Math.max(0, prev - 1)); }}
+        className="w-full py-1 flex justify-center hover:bg-gold/10 text-gold/50 hover:text-gold transition-colors"
+      >
+        <ChevronUp size={14} />
+      </button>
+      <div className="flex flex-col w-full">
+        {visibleItems.map((item) => (
+          <button
+            key={item}
+            onClick={(e) => { e.stopPropagation(); onChange(item); }}
+            className={`py-2 px-4 text-sm text-center transition-all ${
+              item === value 
+                ? "text-gold font-bold scale-110" 
+                : "text-foreground/40 hover:text-primary hover:bg-white/5"
+            }`}
+          >
+            {item}
+          </button>
+        ))}
+      </div>
+      <button
+        onClick={(e) => { e.stopPropagation(); setStartIndex(prev => Math.min(items.length - visibleCount, prev + 1)); }}
+        className="w-full py-1 flex justify-center hover:bg-gold/10 text-gold/50 hover:text-gold transition-colors"
+      >
+        <ChevronDown size={14} />
+      </button>
+    </div>
+  );
+}
+
+function TimeScrollPicker({
+  value,
+  onChange,
+  onClose,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  onClose: () => void;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  useOnClickOutside(containerRef, onClose);
+
+  const parseTime = (val: string) => {
+    const timeMatch = val.match(/(\d{1,2}):(\d{2})\s?(AM|PM)/i);
+    if (timeMatch) {
+      return { h: timeMatch[1], m: timeMatch[2], p: timeMatch[3].toUpperCase() };
+    }
+    return { h: "06", m: "00", p: "PM" };
+  };
+
+  const initial = useMemo(() => parseTime(value), [value]);
+  const [hour, setHour] = useState(initial.h);
+  const [minute, setMinute] = useState(initial.m);
+  const [ampm, setAmpm] = useState(initial.p);
+
+  const hours = Array.from({ length: 12 }, (_, i) => (i + 1).toString());
+  const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
+  const periods = ["AM", "PM"];
+
+  const handleUpdate = (h: string, m: string, p: string) => {
+    onChange(`${h}:${m} ${p}`);
+  };
+
+  return (
+    <div ref={containerRef} className="absolute bottom-full left-0 mb-4 z-[100] flex gap-2 p-3 bg-[#121212] border border-gold/30 rounded-2xl shadow-2xl items-center">
+      <ScrollPicker 
+        items={hours} 
+        value={hour} 
+        onChange={(v) => { setHour(v); handleUpdate(v, minute, ampm); }}
+        visibleCount={3}
+        className="w-16"
+      />
+      <span className="text-gold font-bold animate-pulse">:</span>
+      <ScrollPicker 
+        items={minutes} 
+        value={minute} 
+        onChange={(v) => { setMinute(v); handleUpdate(hour, v, ampm); }}
+        visibleCount={3}
+        className="w-16"
+      />
+      <ScrollPicker 
+        items={periods} 
+        value={ampm} 
+        onChange={(v) => { setAmpm(v); handleUpdate(hour, minute, v); }}
+        visibleCount={3}
+        className="w-16"
+      />
+      <button 
+        onClick={onClose}
+        className="ml-2 p-2 bg-gold text-background rounded-full hover:scale-110 transition-all"
+      >
+        <Check size={16} />
+      </button>
+    </div>
+  );
+}
 import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
 import g3 from "@/assets/gallery-3.jpg";
@@ -56,6 +211,8 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [loading, setLoading] = useState(true);
   const [editingTeacherIndex, setEditingTeacherIndex] = useState<number | null>(null);
+
+  const [showTimePicker, setShowTimePicker] = useState<string | null>(null);
 
   const [data, setData] = useState({
     en: {
@@ -507,23 +664,26 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                          <span>{lang === "en" ? "with" : "ಜೊತೆಗೆ"} {teacher?.name}</span>
                       )}
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 relative">
                       <Clock size={14} className="text-gold shrink-0" />
                       {isEditing ? (
-                        <select
-                          value={c.time}
-                          onChange={(e) => updateClass(originalIndex, "time", e.target.value)}
-                          className="bg-black/40 border border-border/50 rounded px-2 py-1 outline-none focus:border-gold text-xs"
-                        >
-                          {Array.from({ length: 48 }).map((_, i) => {
-                            const h = Math.floor(i / 2);
-                            const m = i % 2 === 0 ? "00" : "30";
-                            const hh = h % 12 || 12;
-                            const ampm = h < 12 ? "AM" : "PM";
-                            const timeStr = `${hh}:${m} ${ampm}`;
-                            return <option key={timeStr} value={timeStr}>{timeStr}</option>;
-                          })}
-                        </select>
+                        <div className="relative flex-grow">
+                          <button
+                            onClick={() => setShowTimePicker(showTimePicker === c.id ? null : c.id)}
+                            className="text-left w-full text-xs text-primary hover:text-gold transition-colors"
+                          >
+                            {c.time || "Select Time"}
+                          </button>
+                          {showTimePicker === c.id && (
+                            <TimeScrollPicker
+                              value={c.time || "6:00 PM"}
+                              onChange={(v) => {
+                                updateClass(originalIndex, "time", v);
+                              }}
+                              onClose={() => setShowTimePicker(null)}
+                            />
+                          )}
+                        </div>
                       ) : (
                         <span>{c.time}</span>
                       )}

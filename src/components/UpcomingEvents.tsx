@@ -28,7 +28,7 @@ export function UpcomingEvents() {
         <div className="ornament-divider w-24 mx-auto" />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
         <AnimatePresence>
           {events.map((ev: any, i: number) => {
             const displayImage = ev.image.startsWith('/') ? (imgMap[ev.id] || ev.image) : (ev.image.startsWith('g') ? imgMap[ev.image] : ev.image);
@@ -42,9 +42,9 @@ export function UpcomingEvents() {
                 viewport={{ once: true }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group relative bg-[#0a0a0a] border border-border/50 rounded-lg overflow-hidden transition-all hover:border-gold/40 flex flex-col"
+                className="group relative bg-[#0a0a0a] border border-border/50 rounded-xl overflow-hidden transition-all hover:border-gold/40 flex flex-col h-full"
               >
-                <div className="relative aspect-[4/3] overflow-hidden">
+                <div className="relative aspect-square overflow-hidden">
                   <img
                     src={displayImage}
                     alt={ev.title?.[lang] || "Event Image"}
@@ -52,28 +52,24 @@ export function UpcomingEvents() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
                   {ev.badge?.[lang] && (
-                    <span className="absolute top-4 right-4 bg-gold text-[#0a0a0a] text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-sm">
+                    <span className="absolute top-2 right-2 bg-gold text-[#0a0a0a] text-[7px] md:text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 md:px-2 md:py-1 rounded-sm">
                       {ev.badge[lang]}
                     </span>
                   )}
                 </div>
 
-                <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="font-display text-xl text-primary mb-4 leading-tight">
+                <div className="p-3 md:p-6 flex flex-col flex-grow">
+                  <h3 className="font-display text-[13px] sm:text-lg md:text-xl text-primary mb-1 md:mb-4 leading-tight line-clamp-2">
                     {ev.title?.[lang]}
                   </h3>
 
-                  <div className="space-y-3 text-sm text-foreground/70 mb-8 flex-grow">
-                    <div className="flex items-center gap-3">
-                      <User size={14} className="text-gold shrink-0" />
-                      <span>{ev.teacher?.[lang]}</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Calendar size={14} className="text-gold shrink-0" />
+                  <div className="space-y-1 md:space-y-3 text-[9px] md:text-sm text-foreground/70 mb-3 md:mb-8 flex-grow">
+                    <div className="flex items-center gap-1.5 md:gap-3">
+                      <Calendar size={10} className="text-gold shrink-0 md:w-3.5 md:h-3.5" />
                       <span>{ev.date || (lang === "en" ? "TBD" : "ಶೀಘ್ರದಲ್ಲೇ")}</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <Clock size={14} className="text-gold shrink-0" />
+                    <div className="flex items-center gap-1.5 md:gap-3">
+                      <Clock size={10} className="text-gold shrink-0 md:w-3.5 md:h-3.5" />
                       <span>{ev.time?.[lang]}</span>
                     </div>
                   </div>
@@ -83,13 +79,13 @@ export function UpcomingEvents() {
                       href="https://wa.me/919876543210"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block w-full text-center py-3 px-4 border border-border/50 text-xs font-bold uppercase tracking-widest text-primary hover:border-gold/50 hover:bg-gold/5 transition-colors rounded-sm"
+                      className="block w-full text-center py-1.5 md:py-3 px-2 md:px-4 border border-gold/30 text-[8px] md:text-xs font-bold uppercase tracking-widest text-gold hover:bg-gold hover:text-background transition-all rounded-md"
                     >
-                      {lang === "en" ? "BOOKING" : "ಬುಕಿಂಗ್"}
+                      {lang === "en" ? "BOOK NOW" : "ಬುಕಿಂಗ್"}
                     </a>
                   ) : (
-                    <div className="block w-full text-center py-3 px-4 border border-border/30 text-xs font-bold uppercase tracking-widest text-foreground/40 bg-background/20 rounded-sm cursor-not-allowed">
-                      {lang === "en" ? "COMING SOON" : "ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ"}
+                    <div className="block w-full text-center py-1.5 md:py-3 px-2 md:px-4 border border-border/30 text-[8px] md:text-xs font-bold uppercase tracking-widest text-foreground/40 bg-background/20 rounded-md cursor-not-allowed">
+                      {lang === "en" ? "SOON" : "ಶೀಘ್ರದಲ್ಲೇ"}
                     </div>
                   )}
                 </div>

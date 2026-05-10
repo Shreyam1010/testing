@@ -63,7 +63,7 @@ export function ContactEditor({ isEditing, lang }: ContactEditorProps) {
       title: "ಭೇಟಿ ಮತ್ತು ಸಂಪರ್ಕ",
       subtitle: "ವಿದ್ಯಾರ್ಥಿಗಳು, ವಿದ್ವಾಂಸರು ಮತ್ತು ಕಲಾಪ್ರೇಮಿಗಳಿಗೆ ಸ್ವಾಗತ",
       address: "ಕಥೆ ಗಾರಾರು ಸಾಂಸ್ಕೃತಿಕ ಕೇಂದ್ರ, ಉಡುಪಿ, ಕರ್ನಾಟಕ, ಭಾರತ",
-      phone: "+೯೧ ೯೮೭೬೫ ೪೩೨೧೦",
+      phone: "+91 98765 43210",
       email: "info@kathegaararu.com",
       formName: "ನಿಮ್ಮ ಹೆಸರು",
       formEmail: "ಇಮೇಲ್ ವಿಳಾಸ",

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Loader2, Save, Check, Plus, Trash2, Edit3, X, User, Calendar, Image as ImageIcon } from "lucide-react";
+import { ArrowRight, Loader2, Save, Check, Plus, Trash2, Edit3, X, User, Calendar, Image as ImageIcon, Bold, Italic, Heading1, Heading2, List, ListOrdered, Quote, Link2, Undo, Redo } from "lucide-react";
 import { FaqManager } from "./FaqManager";
 import { blogs, BlogItem } from "@/lib/data";
 import g1 from "@/assets/gallery-1.jpg";
@@ -10,6 +10,67 @@ import g5 from "@/assets/gallery-5.jpg";
 import g6 from "@/assets/gallery-6.jpg";
 
 const imgMap: Record<string, string> = { g1, g2, g4, g5, g6 };
+
+function RichEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const exec = (cmd: string, val: string = "") => {
+    document.execCommand(cmd, false, val);
+  };
+
+  return (
+    <div className="w-full border border-border rounded-xl overflow-hidden bg-background">
+      {/* Toolbar */}
+      <div className="flex flex-wrap items-center gap-1 p-2 border-b border-border bg-muted/30">
+        <ToolbarButton icon={Bold} onClick={() => exec("bold")} title="Bold" />
+        <ToolbarButton icon={Italic} onClick={() => exec("italic")} title="Italic" />
+        <div className="w-[1px] h-4 bg-border mx-1" />
+        <ToolbarButton icon={Heading1} onClick={() => exec("formatBlock", "H1")} title="H1" />
+        <ToolbarButton icon={Heading2} onClick={() => exec("formatBlock", "H2")} title="H2" />
+        <div className="w-[1px] h-4 bg-border mx-1" />
+        <ToolbarButton icon={List} onClick={() => exec("insertUnorderedList")} title="Bullet List" />
+        <ToolbarButton icon={ListOrdered} onClick={() => exec("insertOrderedList")} title="Numbered List" />
+        <div className="w-[1px] h-4 bg-border mx-1" />
+        <ToolbarButton icon={Quote} onClick={() => exec("formatBlock", "BLOCKQUOTE")} title="Quote" />
+        <div className="w-[1px] h-4 bg-border mx-1" />
+        <ToolbarButton 
+          icon={Link2} 
+          onClick={() => {
+            const url = prompt("Enter URL:");
+            if (url) exec("createLink", url);
+          }} 
+          title="Link" 
+        />
+        <div className="w-[1px] h-4 bg-border mx-1" />
+        <ToolbarButton icon={Undo} onClick={() => exec("undo")} title="Undo" />
+        <ToolbarButton icon={Redo} onClick={() => exec("redo")} title="Redo" />
+      </div>
+
+      {/* Editable Area */}
+      <div
+        contentEditable
+        suppressContentEditableWarning
+        onBlur={(e) => onChange(e.currentTarget.innerHTML)}
+        className="p-4 h-[400px] overflow-y-auto overscroll-contain outline-none prose prose-invert prose-gold max-w-none text-muted-foreground [&>h1]:text-2xl [&>h1]:font-display [&>h1]:text-primary [&>h1]:mb-4 [&>h2]:text-xl [&>h2]:font-display [&>h2]:text-primary [&>h2]:mb-3 [&>blockquote]:border-l-2 [&>blockquote]:border-gold [&>blockquote]:pl-4 [&>blockquote]:italic [&>ul]:list-disc [&>ul]:ml-5 [&>ol]:list-decimal [&>ol]:ml-5"
+        dangerouslySetInnerHTML={{ __html: value }}
+      />
+    </div>
+  );
+}
+
+function ToolbarButton({ icon: Icon, onClick, title }: { icon: any; onClick: () => void; title: string }) {
+  return (
+    <button
+      type="button"
+      onMouseDown={(e) => {
+        e.preventDefault(); // Prevent losing focus from editor
+        onClick();
+      }}
+      title={title}
+      className="p-1.5 hover:bg-gold/10 hover:text-gold rounded transition-colors text-muted-foreground"
+    >
+      <Icon className="w-4 h-4" />
+    </button>
+  );
+}
 
 interface BlogEditorProps {
   isEditing: boolean;
@@ -242,11 +303,9 @@ export function BlogEditor({ isEditing, lang }: BlogEditorProps) {
                     
                     <div>
                       <label className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-2 block">Full Content</label>
-                      <textarea 
+                      <RichEditor 
                         value={editorData.content?.[lang] || ''}
-                        onChange={e => setEditorData({...editorData, content: {...editorData.content, [lang]: e.target.value}})}
-                        className="w-full p-4 bg-background border border-border rounded-xl text-muted-foreground outline-none focus:border-gold/50 min-h-[300px] resize-y"
-                        placeholder="Write the full article content here..."
+                        onChange={v => setEditorData({...editorData, content: {...editorData.content, [lang]: v}})}
                       />
                     </div>
 
