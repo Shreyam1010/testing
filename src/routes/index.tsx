@@ -54,22 +54,22 @@ function OurStorySection({ aboutData, aboutImg, sticker1, lang, t }: any) {
   ];
 
   return (
-    <section className="relative overflow-hidden min-h-[70vh] lg:min-h-[80vh] flex items-stretch border-y border-gold/10 -mt-12 md:mt-0">
+    <section className="relative overflow-hidden min-h-[70vh] lg:min-h-[80vh] flex items-stretch border-y border-gold/10 -mt-12 md:mt-0 bg-background">
       <div className="grid lg:grid-cols-[45%_55%] w-full">
         <motion.div
-          initial={{ opacity: 0, x: -40 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={window.innerWidth < 1024 ? { opacity: 0, y: 20 } : { opacity: 0, x: -40 }}
+          whileInView={window.innerWidth < 1024 ? { opacity: 1, y: 0 } : { opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative lg:block flex justify-center pt-4 lg:pt-0 overflow-hidden border-r border-gold/10 lg:h-auto"
+          className="relative lg:block flex justify-center pt-8 lg:pt-0 overflow-hidden lg:border-r lg:border-gold/10 lg:h-auto"
         >
-          <div className="relative h-full w-full">
+          <div className="relative h-full w-full flex justify-center lg:block">
             <img
               src={aboutData.image || aboutImg}
               alt="Yakshagana performer"
-              className="w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] lg:w-full lg:h-full object-cover object-top rounded-full lg:rounded-none border border-gold/20 lg:border-none shadow-glow lg:shadow-none"
+              className="w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] lg:w-full lg:h-full object-cover object-top rounded-full lg:rounded-none border border-gold/20 lg:border-none lg:shadow-none"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-background/30 lg:to-background/60 rounded-full lg:rounded-none" />
+
           </div>
         </motion.div>
 
@@ -115,14 +115,14 @@ function OurStorySection({ aboutData, aboutImg, sticker1, lang, t }: any) {
                   transition={{ duration: 0.3 }}
                   className="lg:hidden"
                 >
-                  <p className={`${tabs[activeTab].isQuote ? "text-gold italic font-medium text-lg border-l-2 border-gold pl-4 py-1 bg-gold/5 rounded-r-lg" : "text-sm text-foreground/80 leading-relaxed font-light"}`}>
+                  <p className={`${tabs[activeTab].isQuote ? "text-gold text-sm md:text-lg leading-relaxed font-light" : "text-sm text-foreground/80 leading-relaxed font-light"}`}>
                     {tabs[activeTab].content}
                   </p>
                 </motion.div>
 
                 {/* Desktop View (Standard Scroll) */}
                 <div className="hidden lg:flex flex-col space-y-8 text-lg text-foreground/80 leading-relaxed font-light">
-                  <p className="text-gold italic font-medium text-2xl border-l-2 border-gold pl-6 py-2 bg-gold/5 rounded-r-xl">
+                  <p className="text-gold text-lg leading-relaxed font-light">
                     {tabs[0].content}
                   </p>
                   <p>{tabs[1].content}</p>
@@ -405,26 +405,20 @@ function Index() {
                 {t.highlights.items[0].title}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-8">
-                <Link to="/classes" className="group relative rounded-2xl md:rounded-3xl overflow-hidden border border-border bg-card/40 p-4 sm:p-8 md:p-12 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[220px] sm:min-h-[250px] md:min-h-[450px]">
+                <Link to="/classes" className="group relative rounded-2xl md:rounded-3xl overflow-hidden border border-border bg-card/40 p-4 sm:p-8 md:pt-12 md:px-12 md:pb-6 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[220px] sm:min-h-[250px] md:min-h-[450px]">
                   <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent z-10" />
                   <img src={imgMap.g4} alt="Singing Classes" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="relative z-20">
                     <h3 className="text-xl sm:text-3xl md:text-5xl font-display text-primary mb-1 md:mb-4">{lang === "en" ? "Singing" : "ಗಾಯನ"}</h3>
-                    <p className="text-muted-foreground text-[10px] sm:text-base md:text-lg mb-2 md:mb-8 leading-tight sm:leading-relaxed line-clamp-2 md:line-clamp-none">{lang === "en" ? "Master the authentic narrative singing tradition (Bhagavatike) of Yakshagana." : "ಯಕ್ಷಗಾನದ ಭಾಗವತಿಕೆ ಪರಂಪರೆಯನ್ನು ಕಲಿಯಿರಿ."}</p>
-                    <span className="inline-flex items-center gap-1.5 text-gold font-bold uppercase tracking-widest text-[8px] sm:text-xs md:text-sm bg-black/40 px-3 py-1.5 md:px-6 md:py-3 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-gold group-hover:text-background transition-colors w-fit">
-                      {lang === "en" ? "Explore" : "ಅನ್ವೇಷಿಸಿ"} <ArrowRight className="w-3 h-3 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
-                    </span>
+                    <p className="text-muted-foreground text-[10px] sm:text-base md:text-lg mb-2 md:mb-4 leading-tight sm:leading-relaxed line-clamp-2 md:line-clamp-none">{lang === "en" ? "Master the authentic narrative singing tradition (Bhagavatike) of Yakshagana." : "ಯಕ್ಷಗಾನದ ಭಾಗವತಿಕೆ ಪರಂಪರೆಯನ್ನು ಕಲಿಯಿರಿ."}</p>
                   </div>
                 </Link>
-                <Link to="/classes" className="group relative rounded-2xl md:rounded-3xl overflow-hidden border border-border bg-card/40 p-4 sm:p-8 md:p-12 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[220px] sm:min-h-[250px] md:min-h-[450px]">
+                <Link to="/classes" className="group relative rounded-2xl md:rounded-3xl overflow-hidden border border-border bg-card/40 p-4 sm:p-8 md:pt-12 md:px-12 md:pb-6 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[220px] sm:min-h-[250px] md:min-h-[450px]">
                   <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent z-10" />
                   <img src={imgMap.g1} alt="Dancing Classes" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="relative z-20">
                     <h3 className="text-xl sm:text-3xl md:text-5xl font-display text-primary mb-1 md:mb-4">{lang === "en" ? "Dancing" : "ನೃತ್ಯ"}</h3>
-                    <p className="text-muted-foreground text-[10px] sm:text-base md:text-lg mb-2 md:mb-8 leading-tight sm:leading-relaxed line-clamp-2 md:line-clamp-none">{lang === "en" ? "Immerse yourself in the vigorous footwork and graceful choreography of Yakshagana." : "ಯಕ್ಷಗಾನದ ಶಕ್ತಿಯುತ ಪಾದಭಂಗಿ ಮತ್ತು ನೃತ್ಯವನ್ನು ಕಲಿಯಿರಿ."}</p>
-                    <span className="inline-flex items-center gap-1.5 text-gold font-bold uppercase tracking-widest text-[8px] sm:text-xs md:text-sm bg-black/40 px-3 py-1.5 md:px-6 md:py-3 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-gold group-hover:text-background transition-colors w-fit">
-                      {lang === "en" ? "Explore" : "ಅನ್ವೇಷಿಸಿ"} <ArrowRight className="w-3 h-3 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
-                    </span>
+                    <p className="text-muted-foreground text-[10px] sm:text-base md:text-lg mb-2 md:mb-4 leading-tight sm:leading-relaxed line-clamp-2 md:line-clamp-none">{lang === "en" ? "Immerse yourself in the vigorous footwork and graceful choreography of Yakshagana." : "ಯಕ್ಷಗಾನದ ಶಕ್ತಿಯುತ ಪಾದಭಂಗಿ ಮತ್ತು ನೃತ್ಯವನ್ನು ಕಲಿಯಿರಿ."}</p>
                   </div>
                 </Link>
               </div>

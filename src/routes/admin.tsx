@@ -6,7 +6,7 @@ import {
   Lock, User, LogOut, LayoutDashboard,
   Image as ImageIcon, Info, Calendar,
   BookOpen, Camera, Mail, Eye, Edit3, Save,
-  Languages, Sparkles, ArrowLeft, Globe
+  Languages, Sparkles, ArrowLeft, Globe, Menu, X
 } from "lucide-react";
 
 import { HeroEditor } from "@/components/admin/HeroEditor";
@@ -149,107 +149,190 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
     { id: "contact", label: "Contact", icon: Mail },
   ];
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const activeNavItem = navItems.find(item => item.id === activeTab);
+
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden bg-background">
       <div className="relative z-10 flex flex-col min-h-screen">
-        <header className="h-20 border-b border-border bg-card/50 backdrop-blur-xl flex items-center px-4 xl:px-8 sticky top-0 z-50 w-full gap-2 xl:gap-4">
-        {/* LEFT LOGO */}
-        <div className="flex items-center gap-3 pr-2 xl:pr-4 border-r border-border shrink-0">
-          <div className="w-8 h-8 bg-gold rounded-full flex items-center justify-center font-display font-bold text-background text-sm">ಯ</div>
-          <span className="text-primary font-display text-sm tracking-widest uppercase hidden md:block whitespace-nowrap">Kathe Gaararu</span>
-        </div>
-        
-        {/* MIDDLE NAV */}
-        <div className="flex-1 overflow-x-auto no-scrollbar flex items-center">
-          <nav className="flex items-center gap-1">
+        {/* TOP HEADER */}
+        <header className="h-16 md:h-20 border-b border-border bg-card/50 backdrop-blur-xl flex items-center px-4 md:px-8 sticky top-0 z-[60] w-full justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <Link to="/admin" className="flex items-center gap-2 group">
+              <div className="w-8 h-8 bg-gold rounded-xl flex items-center justify-center font-display font-bold text-background text-sm shadow-glow group-hover:scale-110 transition-transform">ಯ</div>
+              <div className="flex flex-col leading-none">
+                <span className="text-[10px] font-bold text-gold uppercase tracking-[0.2em] mb-0.5">Admin</span>
+                <span className="text-xs font-display text-primary tracking-widest uppercase hidden sm:block">Kathe Gaararu</span>
+              </div>
+            </Link>
+          </div>
+
+          {/* Desktop Nav */}
+          <nav className="hidden xl:flex items-center gap-1 bg-background/50 p-1 rounded-xl border border-border/50">
             {navItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id as Tab)}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all ${
                   activeTab === item.id 
-                    ? "bg-gold/10 text-gold" 
-                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                    ? "bg-gold text-background shadow-glow" 
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <item.icon className="w-3.5 h-3.5 shrink-0" />
-                <span className="hidden lg:inline">{item.label}</span>
+                <item.icon className="w-3.5 h-3.5" />
+                <span>{item.label}</span>
               </button>
             ))}
           </nav>
-        </div>
 
-        {/* RIGHT CONTROLS */}
-        <div className="flex items-center gap-2 xl:gap-4 shrink-0">
-          {/* Language Toggle */}
-          <div className="flex bg-background/50 border border-border rounded-full p-1 shrink-0">
-            <button
-              onClick={() => setEditLang("en")}
-              className={`px-2 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all ${
-                editLang === "en" ? "bg-blue-500 text-white" : "text-muted-foreground"
-              }`}
-            >
-              EN
-            </button>
-            <button
-              onClick={() => setEditLang("kn")}
-              className={`px-2 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all ${
-                editLang === "kn" ? "bg-gold text-background" : "text-muted-foreground"
-              }`}
-            >
-              ಕನ್ನಡ
-            </button>
-          </div>
+          {/* Controls Container */}
+          <div className="flex items-center gap-2">
+            {/* Desktop Controls */}
+            <div className="hidden md:flex items-center gap-3 pr-3 border-r border-border/50">
+              {/* Language */}
+              <div className="flex bg-background/50 border border-border rounded-full p-0.5">
+                <button onClick={() => setEditLang("en")} className={`px-2 py-1 rounded-full text-[10px] font-bold transition-all ${editLang === "en" ? "bg-blue-500 text-white" : "text-muted-foreground"}`}>EN</button>
+                <button onClick={() => setEditLang("kn")} className={`px-2 py-1 rounded-full text-[10px] font-bold transition-all ${editLang === "kn" ? "bg-gold text-background" : "text-muted-foreground"}`}>KN</button>
+              </div>
 
-          <div className="h-6 w-px bg-border shrink-0 hidden sm:block" />
+              {/* View */}
+              <div className="flex bg-background/50 border border-border rounded-lg p-0.5">
+                <button onClick={() => setView("preview")} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold transition-all ${view === "preview" ? "bg-white/10 text-white" : "text-muted-foreground"}`}>
+                  <Eye size={12} /> PREVIEW
+                </button>
+                <button onClick={() => setView("edit")} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold transition-all ${view === "edit" ? "bg-gold text-background" : "text-muted-foreground"}`}>
+                  <Edit3 size={12} /> EDIT
+                </button>
+              </div>
+            </div>
 
-          {/* View Toggle */}
-          <div className="flex bg-background/50 border border-border rounded-lg p-1 shrink-0">
-            <button
-              onClick={() => setView("preview")}
-              className={`flex items-center gap-1.5 px-2 xl:px-3 py-1.5 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all ${
-                view === "preview" ? "bg-white/10 text-white" : "text-muted-foreground"
-              }`}
-            >
-              <Eye className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Preview</span>
-            </button>
-            <button
-              onClick={() => setView("edit")}
-              className={`flex items-center gap-1.5 px-2 xl:px-3 py-1.5 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all ${
-                view === "edit" ? "bg-gold text-background" : "text-muted-foreground"
-              }`}
-            >
-              <Edit3 className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Edit</span>
-            </button>
-          </div>
+            {/* Save Button (Always visible when needed) */}
+            {view === "edit" && (
+              <button 
+                onClick={() => { alert("Changes saved successfully!"); setView("preview"); }}
+                className="flex items-center gap-1.5 px-4 py-2 bg-gold text-background rounded-lg font-bold shadow-glow hover:scale-105 active:scale-95 transition-all text-[11px] uppercase tracking-widest"
+              >
+                <Save size={14} />
+                <span className="hidden sm:inline">Save</span>
+              </button>
+            )}
 
-          {view === "edit" && (
+            {/* Mobile Menu Trigger */}
             <button 
-              onClick={() => {
-                alert("Changes saved successfully! (Simulated)");
-                setView("preview");
-              }}
-              className="flex items-center gap-1.5 px-3 xl:px-4 py-2 bg-primary text-background rounded-lg font-bold shadow-glow hover:scale-105 transition-all text-[9px] uppercase tracking-widest shrink-0"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden p-2 bg-white/5 rounded-lg text-gold border border-white/10"
             >
-              <Save className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Save</span>
+              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
-          )}
 
-          <div className="h-6 w-px bg-border shrink-0" />
-
-          <div className="flex items-center gap-1 shrink-0">
-            <Link to="/" className="p-2 text-muted-foreground hover:text-gold transition-colors" title="Back to Site">
-              <ArrowLeft className="w-4 h-4 xl:w-5 xl:h-5" />
-            </Link>
-            <button onClick={onLogout} className="p-2 text-muted-foreground hover:text-red-500 transition-colors" title="Logout">
-              <LogOut className="w-4 h-4 xl:w-5 xl:h-5" />
-            </button>
+            {/* Desktop Exit */}
+            <div className="hidden md:flex items-center gap-1 ml-2">
+              <Link to="/" className="p-2 text-muted-foreground hover:text-gold transition-colors"><ArrowLeft size={18} /></Link>
+              <button onClick={onLogout} className="p-2 text-muted-foreground hover:text-red-500 transition-colors"><LogOut size={18} /></button>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+
+        {/* MOBILE MENU OVERLAY */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <>
+              {/* Backdrop */}
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[70] lg:hidden"
+              />
+              
+              {/* Menu Container (Centering Wrapper) */}
+              <div className="fixed inset-0 z-[80] flex items-start justify-center pt-20 px-4 pointer-events-none lg:hidden">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                  className="w-full max-w-[320px] bg-background/95 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-5 shadow-2xl overflow-y-auto max-h-[80vh] pointer-events-auto"
+                >
+                  <div className="space-y-6">
+                  {/* Section Selector */}
+                  <div>
+                    <span className="text-[8px] font-bold text-gold/60 uppercase tracking-[0.2em] mb-3 block text-center">Content Sanctuary</span>
+                    
+                    {/* Grid for 3x2 */}
+                    <div className="grid grid-cols-3 gap-2 mb-2">
+                      {navItems.slice(0, 6).map((item) => (
+                        <button
+                          key={item.id}
+                          onClick={() => { setActiveTab(item.id as Tab); setIsMobileMenuOpen(false); }}
+                          className={`flex flex-col items-center justify-center p-2.5 rounded-xl border transition-all gap-1.5 ${
+                            activeTab === item.id 
+                              ? "bg-gold/10 border-gold/50 text-gold shadow-glow" 
+                              : "bg-white/5 border-white/5 text-muted-foreground"
+                          }`}
+                        >
+                          <item.icon size={16} />
+                          <span className="text-[7px] font-bold uppercase tracking-tighter">{item.label}</span>
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Centered for last 2 */}
+                    <div className="flex justify-center gap-2">
+                      {navItems.slice(6).map((item) => (
+                        <button
+                          key={item.id}
+                          onClick={() => { setActiveTab(item.id as Tab); setIsMobileMenuOpen(false); }}
+                          className={`flex-1 max-w-[32%] flex flex-col items-center justify-center p-2.5 rounded-xl border transition-all gap-1.5 ${
+                            activeTab === item.id 
+                              ? "bg-gold/10 border-gold/50 text-gold shadow-glow" 
+                              : "bg-white/5 border-white/5 text-muted-foreground"
+                          }`}
+                        >
+                          <item.icon size={16} />
+                          <span className="text-[7px] font-bold uppercase tracking-tighter">{item.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Settings Grid */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <span className="text-[8px] font-bold text-gold/60 uppercase tracking-widest block text-center">Language</span>
+                      <div className="flex bg-white/5 border border-white/5 rounded-lg p-0.5">
+                        <button onClick={() => setEditLang("en")} className={`flex-1 py-1.5 rounded-md text-[8px] font-bold transition-all ${editLang === "en" ? "bg-blue-500 text-white shadow-lg" : "text-muted-foreground"}`}>EN</button>
+                        <button onClick={() => setEditLang("kn")} className={`flex-1 py-1.5 rounded-md text-[8px] font-bold transition-all ${editLang === "kn" ? "bg-gold text-background shadow-lg" : "text-muted-foreground"}`}>KN</button>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <span className="text-[8px] font-bold text-gold/60 uppercase tracking-widest block text-center">Mode</span>
+                      <div className="flex bg-white/5 border border-white/5 rounded-lg p-0.5">
+                        <button onClick={() => setView("preview")} className={`flex-1 flex flex-col items-center py-1 rounded-md transition-all ${view === "preview" ? "bg-white/10 text-white" : "text-muted-foreground"}`}>
+                          <Eye size={12} /> <span className="text-[7px] font-bold">VIEW</span>
+                        </button>
+                        <button onClick={() => setView("edit")} className={`flex-1 flex flex-col items-center py-1 rounded-md transition-all ${view === "edit" ? "bg-gold text-background" : "text-muted-foreground"}`}>
+                          <Edit3 size={12} /> <span className="text-[7px] font-bold">EDIT</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Account/Exit */}
+                  <div className="pt-4 border-t border-white/5 flex flex-col gap-2">
+                    <Link to="/" className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-white/5 text-primary font-bold text-[9px] border border-white/10 tracking-widest uppercase">
+                      <ArrowLeft size={14} /> Exit Website
+                    </Link>
+                    <button onClick={onLogout} className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-red-500/10 text-red-500 font-bold text-[9px] border border-red-500/10 tracking-widest uppercase">
+                      <LogOut size={14} /> Logout
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </>
+          )}
+        </AnimatePresence>
 
         {/* Main Canvas Area */}
         <main className="flex-1 overflow-auto custom-scrollbar">

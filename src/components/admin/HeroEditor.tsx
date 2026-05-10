@@ -182,7 +182,7 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
   /* ── Balanced Hero UI with Subtle Floating ── */
   return (
     <>
-    <section className="relative min-h-screen flex items-center overflow-hidden pb-24 md:pb-16">
+    <section className="relative min-h-[70vh] md:min-h-screen flex items-center overflow-hidden md:pb-16">
       <div className="absolute inset-0 bg-hero" />
       <img
         src={mandala}
@@ -198,7 +198,7 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
         style={{ animationDirection: "reverse" }}
       />
 
-      <div className="container mx-auto px-6 relative z-10 flex flex-col lg:grid lg:grid-cols-2 gap-2 lg:gap-12 items-center pt-10 lg:pt-0 min-h-screen lg:min-h-0">
+      <div className="container mx-auto px-6 relative z-10 flex flex-col lg:grid lg:grid-cols-2 gap-2 lg:gap-12 items-center pt-9 lg:pt-0 min-h-0">
         {/* Image - Subtle Floating for Mobile */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -333,7 +333,7 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
       )}
     </section>
 
-    <div className="container mx-auto px-6 pb-24 relative z-10">
+    <div className="container mx-auto px-6 pb-12 md:pb-24 relative z-10">
       <FaqManager lang={lang} blogId={null} title="General FAQ Manager" isEditing={isEditing} />
     </div>
 
