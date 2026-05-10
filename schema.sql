@@ -113,3 +113,10 @@ CREATE TABLE IF NOT EXISTS faqs (
     order_index INTEGER DEFAULT 0,
     FOREIGN KEY (blog_id) REFERENCES blogs(id)
 );
+
+-- 10. Admin Users
+CREATE TABLE IF NOT EXISTS admin_users (
+    id TEXT PRIMARY KEY,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL
+);

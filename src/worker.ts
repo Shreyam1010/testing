@@ -1,11 +1,14 @@
 export interface Env {
   DB: D1Database;
-  IMAGES?: R2Bucket;
+  IMAGES?: R2Bucket; // Made optional
 }
+
+console.log("[Worker] Global scope evaluating...");
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+    console.log("[Worker] Incoming request:", request.method, url.pathname);
 
     const corsHeaders = {
       "Access-Control-Allow-Origin": "*",
@@ -32,6 +35,7 @@ export default {
       // ─── GET /api/content ───
       if (url.pathname === "/api/content" && request.method === "GET") {
         const lang = url.searchParams.get("lang") || "en";
+
         const [siteContent, teachers, classes, blogs, events, workshops, socialLinks, faqs] =
           await Promise.all([
             env.DB.prepare("SELECT * FROM site_content WHERE lang = ?").bind(lang).all(),
@@ -129,6 +133,7 @@ export default {
         }
 
         if (section === "classes_full") {
+          // Sync teachers
           for (const t of data.teachers || []) {
             await env.DB.prepare(
               `INSERT INTO teachers (id, name_${lang}, expertise_${lang}, bio_${lang}, image_url) 
@@ -142,6 +147,7 @@ export default {
               .bind(t.id, t.name || "", t.expertise || "", t.bio || "", t.image || "")
               .run();
           }
+          // Sync classes
           for (const c of data.classes || []) {
             await env.DB.prepare(
               `INSERT INTO classes (id, topic_${lang}, teacher_id, day_${lang}, time, level_${lang}) 
@@ -179,7 +185,9 @@ export default {
         }
 
         if (section === "social_links") {
+          // Clear existing links to allow full re-sync
           await env.DB.prepare("DELETE FROM social_links").run();
+          
           for (const s of data) {
             await env.DB.prepare(
               `INSERT INTO social_links (id, title_${lang}, description_${lang}, link, image, order_index) 
@@ -204,6 +212,9 @@ export default {
         }
 
         if (section === "faqs") {
+          // Clear existing FAQs to allow full re-sync
+          await env.DB.prepare("DELETE FROM faqs").run();
+          
           for (const f of data) {
             await env.DB.prepare(
               `INSERT INTO faqs (id, lang, blog_id, question, answer, order_index) 
@@ -229,23 +240,54 @@ export default {
         return json({ success: true });
       }
 
-      // ─── IMAGES: /images/* ───
+      // ─── POST /api/login ───
+      if (url.pathname === "/api/login" && request.method === "POST") {
+        const body: any = await request.json();
+        const { username, password } = body;
+        
+        if (!username || !password) {
+           return error("Missing credentials", 400);
+        }
+
+        const user = await env.DB.prepare("SELECT * FROM admin_users WHERE username = ? AND password = ?")
+          .bind(username, password)
+          .first();
+
+        if (user) {
+          return json({ success: true, token: "admin_token_validated" });
+        } else {
+          return new Response(JSON.stringify({ success: false, error: "Invalid credentials" }), {
+            status: 401,
+            headers: {
+              "Content-Type": "application/json",
+              ...corsHeaders,
+            },
+          });
+        }
+      }
+
+      // ─── POST /api/upload (R2 disabled) ───
+      if (url.pathname === "/api/upload" && request.method === "POST") {
+        return error("R2 Storage not configured", 400);
+      }
+
+      // ─── GET /images/* ───
       if (url.pathname.startsWith("/images/")) {
         const key = url.pathname.replace("/images/", "");
         const object = await env.IMAGES?.get(key);
-        if (!object) return new Response("Not Found", { status: 404 });
+
+        if (!object) {
+          return new Response("Image Not Found", { status: 404 });
+        }
+
         const headers = new Headers();
         object.writeHttpMetadata(headers);
-        return new Response(object.body, { headers });
-      }
+        headers.set("etag", object.httpEtag);
+        headers.set("Access-Control-Allow-Origin", "*");
+        // Add cache control for performance
+        headers.set("Cache-Control", "public, max-age=31536000, immutable");
 
-      // ─── SPA FALLBACK: Serve index.html for all other routes ───
-      if (typeof (env as any).ASSETS !== "undefined") {
-        const response = await (env as any).ASSETS.fetch(request);
-        if (response.status === 404) {
-          return await (env as any).ASSETS.fetch(new Request(new URL("/", request.url)));
-        }
-        return response;
+        return new Response(object.body, { headers });
       }
 
       return new Response("Not Found", { status: 404 });

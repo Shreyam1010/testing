@@ -289,7 +289,7 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
     </section>
 
     <div className="container mx-auto px-6 pb-24 relative z-10">
-      <FaqManager lang={lang} blogId={null} title="General FAQ Manager" />
+      <FaqManager lang={lang} blogId={null} title="General FAQ Manager" isEditing={isEditing} />
     </div>
     </>
   );

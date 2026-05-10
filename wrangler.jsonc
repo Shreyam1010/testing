@@ -1,6 +1,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "yakshagana-app",
+	"main": "src/worker.ts",
 	"compatibility_date": "2025-05-01",
 	"compatibility_flags": [
 		"nodejs_compat"
@@ -10,12 +11,6 @@
 			"binding": "DB",
 			"database_name": "kathe-gaararu-db",
 			"database_id": "3bd194c0-bc74-485f-8885-e0208fd54337"
-		}
-	],
-	"r2_buckets": [
-		{
-			"binding": "IMAGES",
-			"bucket_name": "kathe-gaararu-images"
 		}
 	]
 }

@@ -19,9 +19,10 @@ interface FaqManagerProps {
   blogId?: string | null; // NULL for home page
   title?: string;
   subtitle?: string;
+  isEditing?: boolean;
 }
 
-export function FaqManager({ lang, blogId = null, title = "FAQ MANAGER", subtitle = "Manage the questions and answers shown in the floating assistant." }: FaqManagerProps) {
+export function FaqManager({ lang, blogId = null, title = "FAQ MANAGER", subtitle = "Manage the questions and answers shown in the floating assistant.", isEditing = true }: FaqManagerProps) {
   const { data, loading, refresh } = useDbContent();
   const [faqs, setFaqs] = useState<FaqItem[]>([]);
   const [isSaving, setIsSaving] = useState(false);
@@ -97,13 +98,15 @@ export function FaqManager({ lang, blogId = null, title = "FAQ MANAGER", subtitl
             <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
           </div>
         </div>
-        <button 
-          onClick={addFaq}
-          className="flex items-center gap-2 px-4 py-2 bg-gold/10 border border-gold/30 rounded-lg text-gold text-[10px] font-bold uppercase tracking-widest hover:bg-gold hover:text-background transition-all"
-        >
-          <Plus className="w-4 h-4" />
-          Add Question
-        </button>
+        {isEditing && blogId !== null && (
+          <button 
+            onClick={addFaq}
+            className="flex items-center gap-2 px-4 py-2 bg-gold/10 border border-gold/30 rounded-lg text-gold text-[10px] font-bold uppercase tracking-widest hover:bg-gold hover:text-background transition-all"
+          >
+            <Plus className="w-4 h-4" />
+            Add Question
+          </button>
+        )}
       </div>
 
       {/* FAQ List */}
@@ -117,12 +120,14 @@ export function FaqManager({ lang, blogId = null, title = "FAQ MANAGER", subtitl
               exit={{ opacity: 0, scale: 0.95 }}
               className="bg-card/40 border border-border/50 rounded-2xl p-6 relative group"
             >
-              <button 
-                onClick={() => deleteFaq(faq.id)}
-                className="absolute top-6 right-6 text-muted-foreground hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+              {isEditing && blogId !== null && (
+                <button 
+                  onClick={() => deleteFaq(faq.id)}
+                  className="absolute top-6 right-6 text-muted-foreground hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              )}
 
               <div className="space-y-4">
                 <div className="flex items-center gap-3 mb-2">
@@ -131,24 +136,33 @@ export function FaqManager({ lang, blogId = null, title = "FAQ MANAGER", subtitl
                    </span>
                 </div>
                 
-                <input 
-                  type="text"
-                  value={faq.question}
-                  onChange={(e) => updateFaq(faq.id, "question", e.target.value)}
-                  className="w-full bg-background/50 border border-border rounded-xl px-4 py-3 text-sm font-medium outline-none focus:border-gold/50 transition-all text-foreground"
-                  placeholder="e.g. How long does a project take?"
-                />
+                {isEditing ? (
+                  <>
+                    <input 
+                      type="text"
+                      value={faq.question}
+                      onChange={(e) => updateFaq(faq.id, "question", e.target.value)}
+                      className="w-full bg-background/50 border border-border rounded-xl px-4 py-3 text-sm font-medium outline-none focus:border-gold/50 transition-all text-foreground"
+                      placeholder="e.g. How long does a project take?"
+                    />
 
-                <div className="space-y-1.5">
-                  <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Answer</label>
-                  <textarea 
-                    value={faq.answer}
-                    onChange={(e) => updateFaq(faq.id, "answer", e.target.value)}
-                    rows={3}
-                    className="w-full bg-background/50 border border-border rounded-xl px-4 py-3 text-sm leading-relaxed outline-none focus:border-gold/50 transition-all text-muted-foreground"
-                    placeholder="Type the answer here..."
-                  />
-                </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground ml-1">Answer</label>
+                      <textarea 
+                        value={faq.answer}
+                        onChange={(e) => updateFaq(faq.id, "answer", e.target.value)}
+                        rows={3}
+                        className="w-full bg-background/50 border border-border rounded-xl px-4 py-3 text-sm leading-relaxed outline-none focus:border-gold/50 transition-all text-muted-foreground"
+                        placeholder="Type the answer here..."
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <h3 className="text-sm font-medium text-foreground">{faq.question || "Empty Question"}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{faq.answer || "Empty Answer"}</p>
+                  </>
+                )}
               </div>
             </motion.div>
           ))}
@@ -163,20 +177,22 @@ export function FaqManager({ lang, blogId = null, title = "FAQ MANAGER", subtitl
       </div>
 
       {/* Save Button for this section */}
-      <div className="mt-8 flex justify-end">
-        <button
-          onClick={handleSave}
-          disabled={isSaving}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all shadow-glow ${
-            saveSuccess
-              ? "bg-green-500 text-white"
-              : "bg-primary text-background hover:scale-105"
-          }`}
-        >
-          {isSaving ? <Loader2 className="w-3 h-3 animate-spin" /> : saveSuccess ? <Check className="w-3 h-3" /> : <Save className="w-3 h-3" />}
-          {isSaving ? "Saving..." : saveSuccess ? "Saved!" : "Save FAQs"}
-        </button>
-      </div>
+      {isEditing && (
+        <div className="mt-8 flex justify-end">
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all shadow-glow ${
+              saveSuccess
+                ? "bg-green-500 text-white"
+                : "bg-primary text-background hover:scale-105"
+            }`}
+          >
+            {isSaving ? <Loader2 className="w-3 h-3 animate-spin" /> : saveSuccess ? <Check className="w-3 h-3" /> : <Save className="w-3 h-3" />}
+            {isSaving ? "Saving..." : saveSuccess ? "Saved!" : "Save FAQs"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

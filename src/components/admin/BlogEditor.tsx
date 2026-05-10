@@ -255,6 +255,7 @@ export function BlogEditor({ isEditing, lang }: BlogEditorProps) {
                       blogId={editorData.id} 
                       title="Article-Specific FAQs"
                       subtitle="Manage questions specifically for this blog post."
+                      isEditing={isEditing}
                     />
                   </div>
 

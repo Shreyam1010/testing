@@ -33,14 +33,32 @@ function AdminPage() {
   const [pass, setPass] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (user === "admin" && pass === "admin") {
-      localStorage.setItem("admin_auth", "true");
-      setIsAuthenticated(true);
-      setError("");
-    } else {
-      setError("Invalid credentials. Try admin/admin");
+    setIsLoggingIn(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: user, password: pass })
+      });
+      
+      const data = await res.json();
+      
+      if (data.success) {
+        localStorage.setItem("admin_auth", "true");
+        setIsAuthenticated(true);
+      } else {
+        setError(data.error || "Invalid credentials.");
+      }
+    } catch (err) {
+      setError("Failed to connect to the authentication server.");
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -98,9 +116,10 @@ function AdminPage() {
 
               <button
                 type="submit"
-                className="w-full bg-gold text-background py-4 rounded-xl font-bold shadow-glow hover:scale-[1.02] active:scale-[0.98] transition-all"
+                disabled={isLoggingIn}
+                className="w-full bg-gold text-background py-4 rounded-xl font-bold shadow-glow hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Enter Dashboard
+                {isLoggingIn ? "Verifying..." : "Enter Dashboard"}
               </button>
             </form>
           </motion.div>

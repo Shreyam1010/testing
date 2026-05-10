@@ -18,6 +18,8 @@ import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DataSaveRouteImport } from './routes/data.save'
+import { Route as DataContentRouteImport } from './routes/data.content'
 
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
@@ -64,6 +66,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DataSaveRoute = DataSaveRouteImport.update({
+  id: '/data/save',
+  path: '/data/save',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DataContentRoute = DataContentRouteImport.update({
+  id: '/data/content',
+  path: '/data/content',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -75,6 +87,8 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/schedule': typeof ScheduleRoute
   '/services': typeof ServicesRoute
+  '/data/content': typeof DataContentRoute
+  '/data/save': typeof DataSaveRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -86,6 +100,8 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/schedule': typeof ScheduleRoute
   '/services': typeof ServicesRoute
+  '/data/content': typeof DataContentRoute
+  '/data/save': typeof DataSaveRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -98,6 +114,8 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/schedule': typeof ScheduleRoute
   '/services': typeof ServicesRoute
+  '/data/content': typeof DataContentRoute
+  '/data/save': typeof DataSaveRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +129,8 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/schedule'
     | '/services'
+    | '/data/content'
+    | '/data/save'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +142,8 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/schedule'
     | '/services'
+    | '/data/content'
+    | '/data/save'
   id:
     | '__root__'
     | '/'
@@ -133,6 +155,8 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/schedule'
     | '/services'
+    | '/data/content'
+    | '/data/save'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -145,6 +169,8 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRoute
   ScheduleRoute: typeof ScheduleRoute
   ServicesRoute: typeof ServicesRoute
+  DataContentRoute: typeof DataContentRoute
+  DataSaveRoute: typeof DataSaveRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -212,6 +238,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/data/save': {
+      id: '/data/save'
+      path: '/data/save'
+      fullPath: '/data/save'
+      preLoaderRoute: typeof DataSaveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/data/content': {
+      id: '/data/content'
+      path: '/data/content'
+      fullPath: '/data/content'
+      preLoaderRoute: typeof DataContentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -225,7 +265,18 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   ScheduleRoute: ScheduleRoute,
   ServicesRoute: ServicesRoute,
+  DataContentRoute: DataContentRoute,
+  DataSaveRoute: DataSaveRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
