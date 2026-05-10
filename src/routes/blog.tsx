@@ -61,24 +61,24 @@ function BlogPage() {
 
   return (
     <Layout>
-      <section className="container mx-auto px-6 py-20 min-h-screen">
+      <section className="container mx-auto px-6 pt-4 pb-20 sm:py-20 min-h-screen">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center max-w-2xl mx-auto mb-16"
+          className="text-center max-w-2xl mx-auto mb-6 sm:mb-16"
         >
           <div className="ornament-divider w-24 mx-auto mb-6" />
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-display mb-4">
             {lang === "en" ? "Latest Insights" : "ಇತ್ತೀಚಿನ ಒಳನೋಟಗಳು"}
           </h1>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground text-sm sm:text-lg">
             {lang === "en"
               ? "Stories, tutorials, and behind-the-scenes perspectives."
               : "ಕಥೆಗಳು, ಟ್ಯುಟೋರಿಯಲ್ಗಳು ಮತ್ತು ತೆರೆಮರೆಯ ದೃಷ್ಟಿಕೋನಗಳು."}
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
           {dbBlogs.map((post: any, index: number) => (
             <BlogCard key={post.id} post={post} index={index} onClick={() => setSelectedBlog(post)} />
           ))}
@@ -104,43 +104,68 @@ function BlogPage() {
 
                 {/* Content Container (Scrollable) */}
                 <div className="overflow-y-auto custom-scrollbar flex-1 relative">
-                  {/* Hero Image */}
-                  <div className="relative h-64 sm:h-80 md:h-96 w-full shrink-0">
+                  {/* Hero Image Section - Fixed overlay for mobile */}
+                  <div className="relative h-[50vh] sm:h-80 md:h-96 w-full shrink-0">
                     <img 
                       src={postImage(selectedBlog)} 
                       alt={selectedBlog.title[lang]} 
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
-                  </div>
-
-                  {/* Article Content */}
-                  <div className="px-6 py-8 sm:px-12 sm:py-12 -mt-20 relative z-10 max-w-3xl mx-auto">
-                    <div className="flex flex-wrap items-center gap-4 mb-6 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                      <span className="px-3 py-1 bg-gold/10 text-gold border border-gold/20 rounded-full">
-                        {selectedBlog.category[lang]}
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <User className="w-4 h-4 text-gold" />
-                        <span>{selectedBlog.author[lang]}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-gold" />
-                        <span>{selectedBlog.date}</span>
+                    {/* Mobile Overlay - Text over image */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent flex flex-col justify-end p-6 sm:hidden">
+                      <div className="space-y-3">
+                        <span className="inline-block px-2.5 py-1 bg-gold text-background text-[9px] font-bold uppercase tracking-widest rounded-sm">
+                          {selectedBlog.category[lang]}
+                        </span>
+                        <h1 className="text-2xl font-display text-white leading-tight">
+                          {selectedBlog.title[lang]}
+                        </h1>
+                        <div className="flex items-center gap-4 text-white/70 text-[9px] font-bold uppercase tracking-widest">
+                          <div className="flex items-center gap-1.5">
+                            <User className="w-3.5 h-3.5 text-gold" />
+                            {selectedBlog.author[lang]}
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <Calendar className="w-3.5 h-3.5 text-gold" />
+                            {selectedBlog.date}
+                          </div>
+                        </div>
                       </div>
                     </div>
+                    {/* Desktop Gradient (Matches original) */}
+                    <div className="hidden sm:block absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
+                  </div>
 
-                    <h2 className="text-3xl sm:text-[26px] sm:text-3xl md:text-5xl font-display text-primary mb-8 leading-tight">
-                      {selectedBlog.title[lang]}
-                    </h2>
+                  {/* Article Content - Clean flow below image for mobile */}
+                  <div className="px-6 py-8 sm:px-12 sm:py-12 sm:-mt-20 relative z-10 max-w-3xl mx-auto">
+                    {/* Desktop-only Metadata & Title */}
+                    <div className="hidden sm:block">
+                      <div className="flex flex-wrap items-center gap-4 mb-6 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                        <span className="px-3 py-1 bg-gold/10 text-gold border border-gold/20 rounded-full">
+                          {selectedBlog.category[lang]}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <User className="w-4 h-4 text-gold" />
+                          <span>{selectedBlog.author[lang]}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-gold" />
+                          <span>{selectedBlog.date}</span>
+                        </div>
+                      </div>
+
+                      <h2 className="text-3xl sm:text-[26px] md:text-5xl font-display text-primary mb-8 leading-tight">
+                        {selectedBlog.title[lang]}
+                      </h2>
+                    </div>
 
                     <div className="prose prose-invert prose-lg max-w-none text-muted-foreground leading-relaxed">
-                      <p className="text-xl text-foreground/90 font-medium mb-8 border-l-4 border-gold pl-6 py-2">
+                      <p className="text-base sm:text-xl text-foreground/90 font-medium mb-8 border-l-4 border-gold pl-6 py-2 bg-gold/5">
                         {selectedBlog.excerpt[lang]}
                       </p>
                       
                       <div 
-                        className="text-[17px] prose prose-invert prose-gold max-w-none [&>h1]:text-3xl [&>h1]:font-display [&>h1]:text-primary [&>h1]:mt-8 [&>h1]:mb-4 [&>h2]:text-2xl [&>h2]:font-display [&>h2]:text-primary [&>h2]:mt-6 [&>h2]:mb-3 [&>blockquote]:border-l-4 [&>blockquote]:border-gold [&>blockquote]:pl-6 [&>blockquote]:italic [&>ul]:list-disc [&>ul]:ml-6 [&>ol]:list-decimal [&>ol]:ml-6 [&>p]:mb-4 [&>p]:leading-relaxed [&>a]:text-gold [&>a]:underline hover:[&>a]:text-gold/80"
+                        className="text-[15px] sm:text-[17px] prose prose-invert prose-gold max-w-none [&>h1]:text-2xl sm:[&>h1]:text-3xl [&>h1]:font-display [&>h1]:text-primary [&>h1]:mt-8 [&>h1]:mb-4 [&>h2]:text-xl sm:[&>h2]:text-2xl [&>h2]:font-display [&>h2]:text-primary [&>h2]:mt-6 [&>h2]:mb-3 [&>blockquote]:border-l-4 [&>blockquote]:border-gold [&>blockquote]:pl-6 [&>blockquote]:italic [&>ul]:list-disc [&>ul]:ml-6 [&>ol]:list-decimal [&>ol]:ml-6 [&>p]:mb-4 [&>p]:leading-relaxed [&>a]:text-gold [&>a]:underline hover:[&>a]:text-gold/80"
                         dangerouslySetInnerHTML={{ __html: selectedBlog.content?.[lang] || selectedBlog.excerpt?.[lang] || "No content available." }}
                       />
                     </div>
@@ -171,9 +196,9 @@ function BlogCard({ post, index, onClick }: { post: any; index: number; onClick:
       viewport={{ once: true }}
       transition={{ delay: index * 0.1, duration: 0.5 }}
       whileHover={{ y: -5 }}
-      className="group relative h-full flex flex-col bg-card/60 border border-border rounded-2xl overflow-hidden hover:border-gold/50 transition-all shadow-xl cursor-pointer"
+      className="group relative h-full flex flex-col bg-card/60 border border-border rounded-xl sm:rounded-2xl overflow-hidden hover:border-gold/50 transition-all shadow-xl cursor-pointer"
     >
-      <div className="relative h-48 overflow-hidden">
+      <div className="relative h-32 sm:h-48 overflow-hidden">
         <img
           src={postImage(post)}
           alt={post.title[lang]}
@@ -181,36 +206,36 @@ function BlogCard({ post, index, onClick }: { post: any; index: number; onClick:
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
 
-        <div className="absolute top-4 left-4">
-          <span className="px-3 py-1 bg-black/50 backdrop-blur-md border border-white/20 text-[10px] font-bold text-white uppercase tracking-wider rounded-full">
+        <div className="absolute top-2 left-2 sm:top-4 sm:left-4">
+          <span className="px-2 py-0.5 sm:px-3 sm:py-1 bg-black/50 backdrop-blur-md border border-white/20 text-[8px] sm:text-[10px] font-bold text-white uppercase tracking-wider rounded-full">
             {post.category?.[lang] || "General"}
           </span>
         </div>
       </div>
 
-      <div className="flex-1 p-6 flex flex-col">
-        <div className="flex items-center justify-between mb-4 text-[11px] text-muted-foreground uppercase tracking-widest">
-          <div className="flex items-center gap-2">
-            <User className="w-3 h-3 text-gold" />
-            <span>{post.author?.[lang] || "Kathe Gaararu"}</span>
+      <div className="flex-1 p-3 sm:p-6 flex flex-col">
+        <div className="flex items-center justify-between mb-2 sm:mb-4 text-[9px] sm:text-[11px] text-muted-foreground uppercase tracking-widest">
+          <div className="flex items-center gap-1.5">
+            <User className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gold" />
+            <span className="truncate max-w-[80px] sm:max-w-none">{post.author?.[lang] || "Author"}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Calendar className="w-3 h-3 text-gold" />
-            <span>{post.date || "Recently"}</span>
+          <div className="hidden sm:flex items-center gap-1.5">
+            <Calendar className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gold" />
+            <span>{post.date?.split(',')[0] || "Recent"}</span>
           </div>
         </div>
 
-        <h3 className="font-display text-xl text-primary mb-3 line-clamp-2 leading-tight group-hover:text-gold transition-colors">
+        <h3 className="font-display text-sm sm:text-xl text-primary mb-2 line-clamp-2 leading-tight group-hover:text-gold transition-colors">
           {post.title[lang]}
         </h3>
 
-        <p className="text-sm text-muted-foreground line-clamp-3 mb-6 flex-1 leading-relaxed">
+        <p className="hidden sm:block text-sm text-muted-foreground line-clamp-3 mb-6 flex-1 leading-relaxed">
           {post.excerpt[lang]}
         </p>
 
-        <div className="flex items-center text-gold text-sm font-medium mt-auto group/btn">
-          <span>{lang === "en" ? "Read Article" : "ಲೇಖನ ಓದಿ"}</span>
-          <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover/btn:translate-x-1" />
+        <div className="flex items-center text-gold text-[10px] sm:text-sm font-medium mt-auto group/btn">
+          <span>{lang === "en" ? "Read" : "ಓದಿ"}</span>
+          <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1.5 sm:ml-2 transition-transform group-hover/btn:translate-x-1" />
         </div>
       </div>
     </motion.div>

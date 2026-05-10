@@ -86,22 +86,22 @@ export function FaqManager({ lang, blogId = null, title = "FAQ MANAGER", subtitl
   if (loading) return null;
 
   return (
-    <div className="mt-12 pt-12 border-t border-border/50">
+    <div className="mt-8 sm:mt-12 pt-8 sm:pt-12 border-t border-border/50">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center border border-gold/20">
-            <HelpCircle className="w-6 h-6 text-gold" />
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4 sm:gap-0">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gold/10 rounded-xl flex items-center justify-center border border-gold/20 shrink-0">
+            <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6 text-gold" />
           </div>
           <div>
-            <h2 className="text-xl font-display text-primary uppercase tracking-wider">{title}</h2>
-            <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
+            <h2 className="text-lg sm:text-xl font-display text-primary uppercase tracking-wider">{title}</h2>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">{subtitle}</p>
           </div>
         </div>
         {isEditing && blogId !== null && (
           <button 
             onClick={addFaq}
-            className="flex items-center gap-2 px-4 py-2 bg-gold/10 border border-gold/30 rounded-lg text-gold text-[10px] font-bold uppercase tracking-widest hover:bg-gold hover:text-background transition-all"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-gold/10 border border-gold/30 rounded-lg text-gold text-[10px] font-bold uppercase tracking-widest hover:bg-gold hover:text-background transition-all"
           >
             <Plus className="w-4 h-4" />
             Add Question
@@ -118,12 +118,12 @@ export function FaqManager({ lang, blogId = null, title = "FAQ MANAGER", subtitl
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-card/40 border border-border/50 rounded-2xl p-6 relative group"
+              className="bg-card/40 border border-border/50 rounded-2xl p-4 sm:p-6 relative group"
             >
               {isEditing && blogId !== null && (
                 <button 
                   onClick={() => deleteFaq(faq.id)}
-                  className="absolute top-6 right-6 text-muted-foreground hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                  className="absolute top-4 right-4 sm:top-6 sm:right-6 text-muted-foreground hover:text-red-500 transition-colors opacity-100 sm:opacity-0 group-hover:opacity-100 p-2"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -178,11 +178,11 @@ export function FaqManager({ lang, blogId = null, title = "FAQ MANAGER", subtitl
 
       {/* Save Button for this section */}
       {isEditing && (
-        <div className="mt-8 flex justify-end">
+        <div className="mt-8 flex justify-center sm:justify-end">
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all shadow-glow ${
+            className={`w-auto flex items-center justify-center gap-2 px-6 py-2.5 sm:py-3.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all shadow-glow ${
               saveSuccess
                 ? "bg-green-500 text-white"
                 : "bg-primary text-background hover:scale-105"

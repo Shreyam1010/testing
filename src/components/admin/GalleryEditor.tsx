@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Trash2, Image as ImageIcon, Video, Camera, Upload, X, Check, Edit2 } from "lucide-react";
 import { initialPerformanceItems, initialWorkshopItems, initialGurukulItems, type GalleryItemType } from "@/lib/galleryData";
@@ -15,6 +15,17 @@ export function GalleryEditor({ isEditing, lang }: GalleryEditorProps) {
   
   const [addingDialog, setAddingDialog] = useState<"performance" | "gurukul" | "workshop" | null>(null);
   const [editingDialog, setEditingDialog] = useState<{ category: "performance" | "gurukul" | "workshop", index: number, item: GalleryItemType } | null>(null);
+
+  useEffect(() => {
+    if (addingDialog || editingDialog) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [addingDialog, editingDialog]);
 
   const handleDelete = (category: "performance" | "gurukul" | "workshop", index: number) => {
     if (category === "performance") {
@@ -50,26 +61,26 @@ export function GalleryEditor({ isEditing, lang }: GalleryEditorProps) {
   };
 
   return (
-    <div className="container mx-auto px-6 py-20 relative z-10">
+    <div className="container mx-auto px-6 pt-8 pb-12 md:py-20 relative z-10">
       <div className="flex items-center justify-between mb-12">
         <div>
-          <h2 className="text-4xl font-display text-primary mb-2">Gallery Management</h2>
-          <p className="text-muted-foreground">Curate the visual journey of the sanctuary</p>
+          <h2 className="text-xl md:text-4xl font-display text-primary mb-1 md:mb-2">Gallery Management</h2>
+          <p className="text-[10px] md:text-base text-muted-foreground">Curate the visual journey of the sanctuary</p>
         </div>
       </div>
 
       {/* PERFORMANCES */}
       <section className="mb-20">
-        <div className="flex items-center justify-between mb-8">
-          <h3 className="text-2xl font-display text-primary border-l-4 border-gold pl-4">
+        <div className="flex items-center justify-between gap-4 mb-6 md:mb-8">
+          <h3 className="text-base md:text-2xl font-display text-primary border-l-4 border-gold pl-3 md:pl-4">
             {lang === "en" ? "Performances" : "ಪ್ರದರ್ಶನಗಳು"}
           </h3>
           {isEditing && (
             <button
               onClick={() => setAddingDialog("performance")}
-              className="flex items-center gap-2 px-4 py-2 bg-gold/10 text-gold rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold/20 transition-all"
+              className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 md:py-2 bg-gold/10 text-gold rounded-full text-[9px] md:text-xs font-bold uppercase tracking-widest hover:bg-gold/20 transition-all shrink-0"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" />
               Add Item
             </button>
           )}
@@ -92,16 +103,16 @@ export function GalleryEditor({ isEditing, lang }: GalleryEditorProps) {
 
       {/* GURUKUL */}
       <section className="mb-20">
-        <div className="flex items-center justify-between mb-8">
-          <h3 className="text-2xl font-display text-primary border-l-4 border-gold pl-4">
+        <div className="flex items-center justify-between gap-4 mb-6 md:mb-8">
+          <h3 className="text-base md:text-2xl font-display text-primary border-l-4 border-gold pl-3 md:pl-4">
             {lang === "en" ? "Gurukul" : "ಗುರುಕುಲ"}
           </h3>
           {isEditing && (
             <button
               onClick={() => setAddingDialog("gurukul")}
-              className="flex items-center gap-2 px-4 py-2 bg-gold/10 text-gold rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold/20 transition-all"
+              className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 md:py-2 bg-gold/10 text-gold rounded-full text-[9px] md:text-xs font-bold uppercase tracking-widest hover:bg-gold/20 transition-all shrink-0"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" />
               Add Item
             </button>
           )}
@@ -124,16 +135,16 @@ export function GalleryEditor({ isEditing, lang }: GalleryEditorProps) {
 
       {/* WORKSHOPS */}
       <section className="mb-20">
-        <div className="flex items-center justify-between mb-8">
-          <h3 className="text-2xl font-display text-primary border-l-4 border-gold pl-4">
+        <div className="flex items-center justify-between gap-4 mb-6 md:mb-8">
+          <h3 className="text-base md:text-2xl font-display text-primary border-l-4 border-gold pl-3 md:pl-4">
             {lang === "en" ? "Workshops" : "ಕಾರ್ಯಾಗಾರಗಳು"}
           </h3>
           {isEditing && (
             <button
               onClick={() => setAddingDialog("workshop")}
-              className="flex items-center gap-2 px-4 py-2 bg-gold/10 text-gold rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold/20 transition-all"
+              className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 md:py-2 bg-gold/10 text-gold rounded-full text-[9px] md:text-xs font-bold uppercase tracking-widest hover:bg-gold/20 transition-all shrink-0"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" />
               Add Item
             </button>
           )}
@@ -208,43 +219,35 @@ function EditorItem({
       )}
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all flex flex-col justify-between p-4">
-        <div className="flex justify-between items-start w-full">
-          {isEditing ? (
-            <>
-              <button
-                onClick={onEdit}
-                className="p-2.5 bg-blue-500/80 text-white rounded-full hover:bg-blue-500 hover:scale-105 transition-all shadow-lg"
-                title="Edit Media"
-              >
-                <Edit2 className="w-4 h-4" />
-              </button>
-              <button
-                onClick={onDelete}
-                className="p-2.5 bg-red-500/80 text-white rounded-full hover:bg-red-500 hover:scale-105 transition-all shadow-lg"
-                title="Delete Media"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </>
-          ) : (
-             <div />
+      <div className={`absolute inset-0 bg-black/40 backdrop-blur-[2px] transition-all flex flex-col justify-between p-3 md:p-4 ${
+        isEditing ? "opacity-100 md:opacity-0 md:group-hover:opacity-100" : "opacity-0 group-hover:opacity-100"
+      }`}>
+        <div className="flex justify-end w-full">
+          {isEditing && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onDelete(); }}
+              className="p-1.5 md:p-2.5 bg-red-500/80 text-white rounded-full hover:bg-red-500 hover:scale-105 transition-all shadow-lg z-20"
+              title="Delete Media"
+            >
+              <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
+            </button>
           )}
         </div>
 
-        <div>
-          <div className="text-white font-display text-xl mb-1">{item.label}</div>
-          <div className="flex items-center gap-2">
-            {item.type === "video" ? (
-              <span className="text-[10px] bg-blue-500/80 text-white px-2 py-0.5 rounded-full uppercase font-bold tracking-tighter shadow-sm">
-                Video
-              </span>
-            ) : (
-              <span className="text-[10px] bg-gold/80 text-background px-2 py-0.5 rounded-full uppercase font-bold tracking-tighter shadow-sm">
-                Photo
-              </span>
-            )}
+        {isEditing && (
+          <div className="absolute inset-0 flex items-center justify-center p-4">
+            <button
+              onClick={(e) => { e.stopPropagation(); onEdit(); }}
+              className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 md:py-2 bg-gold text-background rounded-full font-bold text-[9px] md:text-[10px] uppercase tracking-widest shadow-glow hover:scale-105 transition-all z-10"
+            >
+              <Camera className="w-3 h-3 md:w-3.5 md:h-3.5" />
+              Replace
+            </button>
           </div>
+        )}
+
+        <div className={isEditing ? "opacity-40" : ""}>
+          {/* Label and type badges removed */}
         </div>
       </div>
     </motion.div>
@@ -287,58 +290,58 @@ function ItemDialog({
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        className="relative w-full max-w-xl bg-card border border-border rounded-3xl overflow-hidden shadow-2xl z-10 p-8 flex flex-col"
+        className="relative w-full max-w-xl bg-card border border-border rounded-3xl overflow-hidden shadow-2xl z-10 p-5 md:p-8 flex flex-col"
       >
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-display text-primary">{title}</h2>
+        <div className="flex justify-between items-center mb-4 md:mb-6">
+          <h2 className="text-lg md:text-3xl font-display text-primary">{title}</h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-full bg-background/50 hover:bg-gold hover:text-background transition-colors"
+            className="p-1.5 md:p-2 rounded-full bg-background/50 hover:bg-gold hover:text-background transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4 md:w-5 md:h-5" />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-6">
+        <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4 md:space-y-6">
           {/* Media Type & Upload */}
-          <div className="space-y-4">
-            <label className="text-xs uppercase tracking-widest text-gold font-bold">Media Type</label>
-            <div className="flex gap-4">
+          <div className="space-y-3 md:space-y-4">
+            <label className="text-[10px] md:text-xs uppercase tracking-widest text-gold font-bold">Media Type</label>
+            <div className="flex gap-3 md:gap-4">
               <button
                 onClick={() => setItem({ ...item, type: "image", src: "" })}
-                className={`flex-1 py-3 rounded-xl flex items-center justify-center gap-2 transition-all ${
+                className={`flex-1 py-2 md:py-3 rounded-xl flex items-center justify-center gap-2 text-xs md:text-sm transition-all ${
                   item.type === "image" ? "bg-gold text-background font-bold shadow-glow" : "bg-black/30 text-muted-foreground border border-border hover:bg-black/40"
                 }`}
               >
-                <ImageIcon className="w-4 h-4" /> Photo
+                <ImageIcon className="w-3.5 h-3.5 md:w-4 md:h-4" /> Photo
               </button>
               <button
                 onClick={() => setItem({ ...item, type: "video", src: "" })}
-                className={`flex-1 py-3 rounded-xl flex items-center justify-center gap-2 transition-all ${
+                className={`flex-1 py-2 md:py-3 rounded-xl flex items-center justify-center gap-2 text-xs md:text-sm transition-all ${
                   item.type === "video" ? "bg-blue-500 text-white font-bold shadow-[0_0_15px_rgba(59,130,246,0.5)]" : "bg-black/30 text-muted-foreground border border-border hover:bg-black/40"
                 }`}
               >
-                <Video className="w-4 h-4" /> Video
+                <Video className="w-3.5 h-3.5 md:w-4 md:h-4" /> Video
               </button>
             </div>
 
             <div 
-              className="mt-4 border-2 border-dashed border-border/60 hover:border-gold/50 transition-colors rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer bg-black/20"
+              className="mt-3 md:mt-4 border-2 border-dashed border-border/60 hover:border-gold/50 transition-colors rounded-xl p-4 md:p-8 flex flex-col items-center justify-center cursor-pointer bg-black/20"
               onClick={() => fileInputRef.current?.click()}
             >
               {item.src ? (
                 item.type === "video" ? (
-                  <video src={item.src} className="max-h-56 rounded-lg object-contain shadow-lg" muted />
+                  <video src={item.src} className="max-h-40 md:max-h-56 rounded-lg object-contain shadow-lg" muted />
                 ) : (
-                  <img src={item.src} className="max-h-56 rounded-lg object-contain shadow-lg" alt="Preview" />
+                  <img src={item.src} className="max-h-40 md:max-h-56 rounded-lg object-contain shadow-lg" alt="Preview" />
                 )
               ) : (
-                <div className="flex flex-col items-center py-6 text-center">
-                  <div className="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mb-4">
-                    <Upload className="w-8 h-8 text-gold" />
+                <div className="flex flex-col items-center py-4 md:py-6 text-center">
+                  <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gold/10 flex items-center justify-center mb-3 md:mb-4">
+                    <Upload className="w-6 h-6 md:w-8 md:h-8 text-gold" />
                   </div>
-                  <span className="text-sm font-bold text-primary mb-1">Click to upload {item.type}</span>
-                  <span className="text-xs text-muted-foreground">Select a file from your device</span>
+                  <span className="text-xs md:text-sm font-bold text-primary mb-0.5 md:mb-1">Click to upload {item.type}</span>
+                  <span className="text-[10px] md:text-xs text-muted-foreground">Select a file from your device</span>
                 </div>
               )}
             </div>
@@ -350,34 +353,22 @@ function ItemDialog({
               onChange={handleFileChange}
             />
           </div>
-
-          {/* Label Input */}
-          <div className="space-y-2">
-            <label className="text-xs uppercase tracking-widest text-gold font-bold">Label / Title</label>
-            <input
-              type="text"
-              value={item.label}
-              onChange={(e) => setItem({ ...item, label: e.target.value })}
-              className="w-full bg-black/40 border border-border rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-gold transition-colors"
-              placeholder="e.g., The Warrior"
-            />
-          </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-8 pt-6 border-t border-border flex justify-end gap-4">
+        <div className="mt-4 md:mt-8 pt-4 md:pt-6 border-t border-border flex justify-end gap-3 md:gap-4">
           <button
             onClick={onClose}
-            className="px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-white hover:bg-white/5 transition-all"
+            className="px-4 md:px-6 py-2 md:py-2.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-white hover:bg-white/5 transition-all"
           >
             Cancel
           </button>
           <button
             onClick={() => onSave(item)}
-            disabled={!item.src || !item.label}
-            className="px-8 py-2.5 rounded-full bg-gold text-background text-xs font-bold uppercase tracking-widest disabled:opacity-50 hover:shadow-glow transition-all flex items-center gap-2"
+            disabled={!item.src}
+            className="px-6 md:px-8 py-2 md:py-2.5 rounded-full bg-gold text-background text-[10px] md:text-xs font-bold uppercase tracking-widest disabled:opacity-50 hover:shadow-glow transition-all flex items-center gap-2"
           >
-            <Check className="w-4 h-4" /> Save Item
+            <Check className="w-3.5 h-3.5 md:w-4 md:h-4" /> Save Item
           </button>
         </div>
       </motion.div>

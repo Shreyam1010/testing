@@ -121,10 +121,7 @@ function GalleryItem({ it, i }: { it: any; i: number }) {
         />
       )}
 
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent opacity-0 group-hover:opacity-100 transition" />
-      <div className="absolute bottom-0 inset-x-0 p-5 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition">
-        <div className="font-display text-lg text-primary">{it.label}</div>
-      </div>
+      {/* Overlays removed to show only the photo/video content */}
     </motion.div>
   );
 }

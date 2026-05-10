@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Clock, Loader2, Save, Check, Plus, Trash2, Camera, Calendar, ChevronUp, ChevronDown } from "lucide-react";
+import { User, Clock, Loader2, Save, Check, Plus, Trash2, Camera, Calendar, ChevronUp, ChevronDown, Edit2, X } from "lucide-react";
 import g2 from "@/assets/gallery-2.jpg";
 import g5 from "@/assets/gallery-5.jpg";
 import g4 from "@/assets/gallery-4.jpg";
@@ -317,6 +317,18 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [editingImageIndex, setEditingImageIndex] = useState<number | null>(null);
+  const [editingDialogIndex, setEditingDialogIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (editingDialogIndex !== null) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [editingDialogIndex]);
 
   const [events, setEvents] = useState<any[]>([
     {
@@ -386,7 +398,6 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
 
   const handleAddEvent = () => {
     setEvents((prev) => [
-      ...prev,
       {
         title: { en: "New Event", kn: "ಹೊಸ ಕಾರ್ಯಕ್ರಮ" },
         teacher: { en: "Teacher Name", kn: "ಗುರುಗಳ ಹೆಸರು" },
@@ -395,6 +406,7 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
         badge: { en: "", kn: "" },
         status: "coming_soon",
       },
+      ...prev,
     ]);
   };
 
@@ -453,23 +465,27 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
         accept="image/*" 
         onChange={handleFileChange}
       />
-      <div className="flex flex-col items-center mb-8 md:mb-12 relative">
-        <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-4 text-primary">
-          <EditableText
-            value={lang === "en" ? "Upcoming Events" : "ಮುಂಬರುವ ಕಾರ್ಯಕ್ರಮಗಳು"}
-            onChange={() => {}}
-            isEditing={isEditing}
-            tag="span"
-          />
-        </h2>
-        <div className="ornament-divider w-24 mx-auto" />
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 md:mb-12 relative">
+        <div className="flex flex-col items-center md:items-start">
+          <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-2 md:mb-4 text-primary">
+            <EditableText
+              value={lang === "en" ? "Upcoming Events" : "ಮುಂಬರುವ ಕಾರ್ಯಕ್ರಮಗಳು"}
+              onChange={() => {}}
+              isEditing={isEditing}
+              tag="span"
+              className="hidden md:inline"
+            />
+            <span className="md:hidden">{lang === "en" ? "Upcoming Events" : "ಮುಂಬರುವ ಕಾರ್ಯಕ್ರಮಗಳು"}</span>
+          </h2>
+          <div className="ornament-divider w-24 md:mx-0 mx-auto" />
+        </div>
         
         {isEditing && (
           <button
             onClick={handleAddEvent}
-            className="absolute right-0 top-0 flex items-center gap-2 px-4 py-2 bg-gold/10 text-gold rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold/20 transition-all"
+            className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 md:py-2 bg-gold/10 text-gold rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest hover:bg-gold/20 transition-all shrink-0"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" />
             Add Event
           </button>
         )}
@@ -504,24 +520,39 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
                 {(ev.badge?.[lang] || isEditing) && (
-                  <span className="absolute top-4 right-4 z-10 bg-gold text-[#0a0a0a] text-[8px] md:text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-sm">
+                  <span className="absolute top-4 right-4 z-20 bg-gold text-[#0a0a0a] text-[8px] md:text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-sm hidden md:block">
                     <EditableText
                       value={ev.badge?.[lang] || (isEditing ? "Badge Text" : "")}
                       onChange={(v) => updateEvent(i, "badge", v)}
                       isEditing={isEditing}
+                      className="hidden md:inline"
                     />
+                    <span className="md:hidden">{ev.badge?.[lang] || (isEditing ? "Badge Text" : "")}</span>
                   </span>
                 )}
                 
                 {isEditing && (
-                  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-100 md:opacity-0 md:group-hover:opacity-100 flex items-center justify-center transition-all cursor-pointer z-10">
-                    <button 
-                      onClick={() => handleImageClick(i)}
-                      className="flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-gold text-background rounded-full font-bold text-[8px] md:text-[10px] uppercase tracking-widest shadow-glow hover:scale-105 transition-all"
-                    >
-                      <Camera className="w-3 h-3" />
-                      Replace
-                    </button>
+                  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all z-10">
+                    <div className="absolute top-2 right-2 z-20 flex gap-2">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setEditingDialogIndex(i); }}
+                        className="p-2 bg-blue-500/80 text-white rounded-full hover:bg-blue-500 transition-all md:hidden"
+                        title="Edit Event"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                    
+                    {/* Desktop-only replace button */}
+                    <div className="hidden md:flex items-center justify-center w-full h-full">
+                      <button 
+                        onClick={() => handleImageClick(i)}
+                        className="flex items-center gap-2 px-4 py-2 bg-gold text-background rounded-full font-bold text-[10px] uppercase tracking-widest shadow-glow hover:scale-105 transition-all"
+                      >
+                        <Camera className="w-3 h-3" />
+                        Replace
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -533,7 +564,9 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
                     onChange={(v) => updateEvent(i, "title", v)}
                     isEditing={isEditing}
                     tag="span"
+                    className="hidden md:inline"
                   />
+                  <span className="md:hidden">{ev.title[lang]}</span>
                 </h3>
 
                 <div className="space-y-1 md:space-y-3 text-[10px] md:text-sm text-foreground/70 mb-4 md:mb-8 flex-grow">
@@ -543,7 +576,9 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
                       value={ev.teacher[lang]}
                       onChange={(v) => updateEvent(i, "teacher", v)}
                       isEditing={isEditing}
+                      className="hidden md:inline"
                     />
+                    <span className="md:hidden">{ev.teacher[lang]}</span>
                   </div>
                   <div className="flex items-center gap-2 md:gap-3 relative">
                     <Calendar size={12} className="text-gold shrink-0 md:w-3.5 md:h-3.5" />
@@ -551,10 +586,11 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
                       <div className="relative flex-grow">
                         <button
                           onClick={() => setShowDatePicker(showDatePicker === i ? null : i)}
-                          className="text-left w-full text-[9px] md:text-xs text-primary hover:text-gold transition-colors"
+                          className="text-left w-full text-[9px] md:text-xs text-primary hover:text-gold transition-colors hidden md:block"
                         >
                           {ev.date || "Select Date"}
                         </button>
+                        <span className="md:hidden text-[9px] text-primary">{ev.date || "TBD"}</span>
                         {showDatePicker === i && (
                           <CustomCalendarPicker
                             value={ev.date || ""}
@@ -573,10 +609,11 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
                       <div className="relative flex-grow">
                         <button
                           onClick={() => setShowTimePicker(showTimePicker === i ? null : i)}
-                          className="text-left w-full text-[9px] md:text-xs text-primary hover:text-gold transition-colors"
+                          className="text-left w-full text-[9px] md:text-xs text-primary hover:text-gold transition-colors hidden md:block"
                         >
                           {ev.time?.[lang] || "Select Time"}
                         </button>
+                        <span className="md:hidden text-[9px] text-primary">{ev.time?.[lang] || "TBD"}</span>
                         {showTimePicker === i && (
                           <TimeScrollPicker
                             value={ev.time?.[lang] || "6:00 PM"}
@@ -586,26 +623,30 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
                         )}
                       </div>
                     ) : (
-                      <EditableText
-                        value={ev.time[lang]}
-                        onChange={(v) => updateEvent(i, "time", v)}
-                        isEditing={isEditing}
-                      />
+                      <div className="flex-grow">
+                        <EditableText
+                          value={ev.time[lang]}
+                          onChange={(v) => updateEvent(i, "time", v)}
+                          isEditing={isEditing}
+                          className="hidden md:inline"
+                        />
+                        <span className="md:hidden">{ev.time[lang]}</span>
+                      </div>
                     )}
                   </div>
                 </div>
 
                 {ev.status === "booking" ? (
                   <div 
-                    onClick={() => isEditing && toggleStatus(i)}
-                    className={`block w-full text-center py-2 md:py-3 px-4 border border-border/50 text-[9px] md:text-xs font-bold uppercase tracking-widest text-primary hover:border-gold/50 hover:bg-gold/5 transition-colors rounded-sm ${isEditing ? "cursor-pointer" : "cursor-pointer"}`}
+                    onClick={() => isEditing && !window.matchMedia("(max-width: 768px)").matches && toggleStatus(i)}
+                    className={`block w-full text-center py-2 md:py-3 px-4 border border-border/50 text-[9px] md:text-xs font-bold uppercase tracking-widest text-primary hover:border-gold/50 hover:bg-gold/5 transition-colors rounded-sm ${isEditing ? "md:cursor-pointer" : "cursor-pointer"}`}
                   >
                     {lang === "en" ? "BOOKING" : "ಬುಕಿಂಗ್"}
                   </div>
                 ) : (
                   <div 
-                    onClick={() => isEditing && toggleStatus(i)}
-                    className={`block w-full text-center py-2 md:py-3 px-4 border border-border/30 text-[9px] md:text-xs font-bold uppercase tracking-widest text-foreground/40 bg-background/20 rounded-sm ${isEditing ? "cursor-pointer hover:border-gold/50 hover:text-primary transition-colors" : "cursor-not-allowed"}`}
+                    onClick={() => isEditing && !window.matchMedia("(max-width: 768px)").matches && toggleStatus(i)}
+                    className={`block w-full text-center py-2 md:py-3 px-4 border border-border/30 text-[9px] md:text-xs font-bold uppercase tracking-widest text-foreground/40 bg-background/20 rounded-sm ${isEditing ? "md:cursor-pointer md:hover:border-gold/50 md:hover:text-primary transition-colors" : "cursor-not-allowed"}`}
                   >
                     {lang === "en" ? "COMING SOON" : "ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ"}
                   </div>
@@ -639,6 +680,195 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
           </button>
         </div>
       )}
+
+      <AnimatePresence>
+        {editingDialogIndex !== null && (
+          <EventDialog
+            event={events[editingDialogIndex]}
+            lang={lang}
+            onClose={() => setEditingDialogIndex(null)}
+            onSave={(updated) => {
+              setEvents(prev => prev.map((ev, i) => i === editingDialogIndex ? updated : ev));
+              setEditingDialogIndex(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </section>
+  );
+}
+
+function EventDialog({
+  event,
+  lang,
+  onClose,
+  onSave
+}: {
+  event: any;
+  lang: "en" | "kn";
+  onClose: () => void;
+  onSave: (updated: any) => void;
+}) {
+  const [data, setData] = useState(event);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+
+  return (
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:hidden">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="absolute inset-0 bg-background/95 backdrop-blur-sm"
+      />
+      
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+        className="relative w-full max-w-xl bg-card border border-border rounded-3xl overflow-hidden shadow-2xl z-10 p-4 flex flex-col max-h-[90vh]"
+      >
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="text-base font-display text-primary">Edit Event Details</h2>
+          <button onClick={onClose} className="p-1 rounded-full bg-background/50 text-foreground">
+            <X size={18} />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-3 pb-3">
+          {/* Image */}
+          <div className="space-y-1.5">
+            <label className="text-[9px] uppercase tracking-widest text-gold font-bold">Event Image</label>
+            <div 
+              onClick={() => fileInputRef.current?.click()}
+              className="relative aspect-video rounded-xl overflow-hidden border border-border/50 bg-black/20 group cursor-pointer"
+            >
+              <img src={data.image} className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                <Camera className="text-white w-5 h-5" />
+              </div>
+            </div>
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              className="hidden" 
+              accept="image/*" 
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) setData({...data, image: URL.createObjectURL(file)});
+              }} 
+            />
+          </div>
+
+          {/* Title */}
+          <div className="space-y-1.5">
+            <label className="text-[9px] uppercase tracking-widest text-gold font-bold">Title ({lang.toUpperCase()})</label>
+            <input
+              className="w-full bg-black/40 border border-border rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-gold"
+              value={data.title[lang]}
+              onChange={(e) => setData({...data, title: {...data.title, [lang]: e.target.value}})}
+            />
+          </div>
+
+          {/* Teacher */}
+          <div className="space-y-1.5">
+            <label className="text-[9px] uppercase tracking-widest text-gold font-bold">Teacher ({lang.toUpperCase()})</label>
+            <input
+              className="w-full bg-black/40 border border-border rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-gold"
+              value={data.teacher[lang]}
+              onChange={(e) => setData({...data, teacher: {...data.teacher, [lang]: e.target.value}})}
+            />
+          </div>
+
+          {/* Schedule Row */}
+          <div className="grid grid-cols-2 gap-3">
+            {/* Date Picker */}
+            <div className="space-y-1.5 relative">
+              <label className="text-[9px] uppercase tracking-widest text-gold font-bold">Date</label>
+              <button
+                onClick={() => { setShowDatePicker(!showDatePicker); setShowTimePicker(false); }}
+                className="w-full bg-black/40 border border-border rounded-xl px-4 py-2.5 text-xs text-primary flex items-center gap-2 hover:border-gold transition-colors"
+              >
+                <Calendar size={12} className="text-gold" />
+                {data.date || "Select Date"}
+              </button>
+              {showDatePicker && (
+                <div className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-[210]">
+                  <CustomCalendarPicker
+                    value={data.date || ""}
+                    onChange={(v) => setData({...data, date: v})}
+                    onClose={() => setShowDatePicker(false)}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Time Picker */}
+            <div className="space-y-1.5 relative">
+              <label className="text-[9px] uppercase tracking-widest text-gold font-bold">Time</label>
+              <button
+                onClick={() => { setShowTimePicker(!showTimePicker); setShowDatePicker(false); }}
+                className="w-full bg-black/40 border border-border rounded-xl px-4 py-2.5 text-xs text-primary flex items-center gap-2 hover:border-gold transition-colors"
+              >
+                <Clock size={12} className="text-gold" />
+                {data.time[lang] || "Select Time"}
+              </button>
+              {showTimePicker && (
+                <div className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-[210] flex justify-center">
+                  <TimeScrollPicker
+                    value={data.time[lang] || "06:00 PM"}
+                    onChange={(v) => setData({...data, time: {...data.time, [lang]: v}})}
+                    onClose={() => setShowTimePicker(false)}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Badge */}
+          <div className="space-y-1.5">
+            <label className="text-[9px] uppercase tracking-widest text-gold font-bold">Badge ({lang.toUpperCase()})</label>
+            <input
+              className="w-full bg-black/40 border border-border rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-gold"
+              value={data.badge?.[lang] || ""}
+              onChange={(e) => setData({...data, badge: {...(data.badge || {}), [lang]: e.target.value}})}
+            />
+          </div>
+
+          {/* Status */}
+          <div className="space-y-1.5">
+            <label className="text-[9px] uppercase tracking-widest text-gold font-bold">Status</label>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => setData({...data, status: 'booking'})}
+                className={`flex-1 py-2.5 rounded-xl text-[10px] font-bold transition-all ${data.status === 'booking' ? 'bg-gold text-background' : 'bg-black/30 text-muted-foreground border border-border'}`}
+              >
+                BOOKING
+              </button>
+              <button 
+                onClick={() => setData({...data, status: 'coming_soon'})}
+                className={`flex-1 py-2.5 rounded-xl text-[10px] font-bold transition-all ${data.status === 'coming_soon' ? 'bg-gold text-background' : 'bg-black/30 text-muted-foreground border border-border'}`}
+              >
+                COMING SOON
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-3 pt-3 border-t border-border flex justify-end gap-2">
+          <button onClick={onClose} className="px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            Cancel
+          </button>
+          <button 
+            onClick={() => onSave(data)}
+            className="px-6 py-2 rounded-full bg-gold text-background text-[10px] font-bold uppercase tracking-widest shadow-glow"
+          >
+            Update Event
+          </button>
+        </div>
+      </motion.div>
+    </div>
   );
 }
