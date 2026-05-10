@@ -1,6 +1,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "yakshagana-app",
+	"account_id": "824915e0a535de27e592b90032f8a726",
 	"main": "src/worker.ts",
 	"compatibility_date": "2025-05-01",
 	"compatibility_flags": [

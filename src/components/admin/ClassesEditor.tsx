@@ -488,7 +488,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                     )}
                   </div>
                   <h3 className="font-display text-xl text-primary leading-tight mb-5">
-                    <EditableText value={c.topic} onChange={(v) => updateClass(originalIndex, "topic", v)} isEditing={isEditing} tag="h3" />
+                    <EditableText value={c.topic} onChange={(v) => updateClass(originalIndex, "topic", v)} isEditing={isEditing} />
                   </h3>
                   <div className="space-y-3 text-sm text-foreground/70 flex-grow">
                     <div className="flex items-center gap-3">
