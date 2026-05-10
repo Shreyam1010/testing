@@ -140,6 +140,13 @@
     border-radius: 10px;
     opacity: 0.5;
   }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 @keyframes float-slow {
@@ -153,10 +160,11 @@
 @keyframes spin-slow {
   to { transform: rotate(360deg); }
 }
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+@keyframes bounce-horizontal {
+  0%, 100% { transform: translate(-25%, -50%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }
+  50% { transform: translate(0, -50%); animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }
 }
 .animate-float-slow { animation: float-slow 6s ease-in-out infinite; }
 .animate-float-subtle { animation: float-subtle 4s ease-in-out infinite; }
 .animate-spin-slow { animation: spin-slow 60s linear infinite; }
+.animate-bounce-horizontal { animation: bounce-horizontal 1s infinite; }

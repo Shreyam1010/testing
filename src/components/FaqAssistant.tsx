@@ -71,7 +71,7 @@ export function FaqAssistant({ blogId = null }: FaqAssistantProps) {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 bg-gold rounded-full shadow-glow flex items-center justify-center text-background transition-colors hover:bg-gold-soft z-[201] relative"
+        className="w-11 h-11 sm:w-14 sm:h-14 bg-gold rounded-full shadow-glow flex items-center justify-center text-background transition-colors hover:bg-gold-soft z-[201] relative"
       >
         <AnimatePresence mode="wait">
           {isOpen ? (
@@ -81,7 +81,7 @@ export function FaqAssistant({ blogId = null }: FaqAssistantProps) {
               animate={{ rotate: 0, opacity: 1 }}
               exit={{ rotate: 90, opacity: 0 }}
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5 sm:w-6 sm:h-6" />
             </motion.div>
           ) : (
             <motion.div
@@ -90,7 +90,7 @@ export function FaqAssistant({ blogId = null }: FaqAssistantProps) {
               animate={{ rotate: 0, opacity: 1 }}
               exit={{ rotate: -90, opacity: 0 }}
             >
-              <HelpCircle className="w-6 h-6" />
+              <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6" />
             </motion.div>
           )}
         </AnimatePresence>
@@ -100,37 +100,37 @@ export function FaqAssistant({ blogId = null }: FaqAssistantProps) {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95, x: 20 }}
-            animate={{ opacity: 1, y: 0, scale: 1, x: 0 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95, x: 20 }}
-            className="absolute bottom-20 right-0 w-[320px] sm:w-[400px] max-h-[80vh] bg-card border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col"
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            className="fixed bottom-24 left-4 right-4 sm:left-auto sm:right-6 sm:w-[380px] max-h-[70vh] bg-card/95 backdrop-blur-xl border border-white/10 rounded-[2rem] shadow-2xl overflow-hidden flex flex-col z-[200]"
           >
             {/* Header */}
-            <div className="p-6 bg-gradient-to-br from-crimson/20 to-card border-b border-white/5 relative shrink-0">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gold/10 rounded-2xl flex items-center justify-center border border-gold/20">
-                  <img src={logoImg} alt="Logo" className="w-8 h-8 object-contain opacity-80" />
+            <div className="p-5 sm:p-6 bg-gradient-to-br from-crimson/10 to-card border-b border-white/5 relative shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gold/10 rounded-xl flex items-center justify-center border border-gold/20">
+                  <img src={logoImg} alt="Logo" className="w-6 h-6 sm:w-7 sm:h-7 object-contain" />
                 </div>
                 <div>
-                  <h3 className="font-display text-lg text-gold leading-tight">{labels.title}</h3>
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
+                  <h3 className="font-display text-base sm:text-lg text-gold leading-tight">{labels.title}</h3>
+                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
                     {labels.subtitle}
                   </p>
                 </div>
               </div>
               <button 
                 onClick={() => setIsOpen(false)}
-                className="absolute top-4 right-4 text-muted-foreground hover:text-white transition-colors"
+                className="absolute top-5 right-5 text-muted-foreground hover:text-white transition-colors"
               >
-                <X className="w-4 h-4" />
+                <X size={16} />
               </button>
             </div>
 
             {/* Content Area */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-5 sm:p-6">
               {loading ? (
                 <div className="flex items-center justify-center py-12">
-                  <div className="w-6 h-6 border-2 border-gold border-t-transparent rounded-full animate-spin" />
+                  <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : filteredFaqs.length > 0 ? (
                 <Accordion type="single" collapsible className="space-y-3">
@@ -138,12 +138,12 @@ export function FaqAssistant({ blogId = null }: FaqAssistantProps) {
                     <AccordionItem 
                       key={faq.id} 
                       value={`item-${i}`}
-                      className="border border-white/5 bg-white/5 rounded-2xl px-4 overflow-hidden hover:bg-white/[0.08] transition-colors"
+                      className="border border-white/5 bg-white/5 rounded-xl px-4 overflow-hidden hover:bg-white/[0.08] transition-colors"
                     >
-                      <AccordionTrigger className="text-left text-sm font-medium py-4 hover:no-underline text-foreground/90 group">
+                      <AccordionTrigger className="text-left text-sm sm:text-base font-medium py-4 hover:no-underline text-foreground/90 group leading-snug">
                         <span className="flex-1 pr-4">{faq.question}</span>
                       </AccordionTrigger>
-                      <AccordionContent className="text-xs text-muted-foreground leading-relaxed pb-4">
+                      <AccordionContent className="text-xs sm:text-sm text-muted-foreground leading-relaxed pb-4">
                         {faq.answer}
                       </AccordionContent>
                     </AccordionItem>
@@ -156,8 +156,10 @@ export function FaqAssistant({ blogId = null }: FaqAssistantProps) {
               )}
             </div>
 
-            {/* Footer decoration */}
-            <div className="h-2 bg-gradient-to-r from-gold/40 via-gold to-gold/40 opacity-30" />
+            {/* Bottom Chevron Decoration */}
+            <div className="flex justify-center py-2 bg-card/50 border-t border-white/5">
+              <ChevronDown className="text-gold/30 animate-bounce" size={20} />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -48,6 +48,7 @@ function Classes() {
 
   const dbTeachers = data?.teachers || [];
   const classesData = data?.siteContent?.classes || {};
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   return (
     <Layout>
@@ -76,9 +77,15 @@ function Classes() {
         {/* Scrolling Content */}
         <div className="relative z-10">
           {/* Spacer to allow hero image visibility */}
-          <div className="h-[65vh]" />
+          <motion.div 
+            animate={{ 
+              height: isFilterOpen ? "20vh" : "40vh"
+            }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="md:!h-[65vh]" 
+          />
 
-          <section className="relative bg-background/95 backdrop-blur-[32px] pt-24 pb-32 shadow-[0_-50px_150px_rgba(0,0,0,1)]">
+          <section className="relative bg-background/95 backdrop-blur-[32px] pt-10 md:pt-20 pb-32 shadow-[0_-50px_150px_rgba(0,0,0,1)]">
             {/* Superior Blend Gradient */}
             <div className="absolute inset-x-0 top-0 h-64 -translate-y-full bg-gradient-to-t from-background/95 via-background/60 to-transparent pointer-events-none" />
             
@@ -89,9 +96,9 @@ function Classes() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
-                className="text-center mb-20"
+                className="text-center mb-8 md:mb-24"
               >
-                <h1 className="text-[26px] sm:text-3xl md:text-5xl font-display text-primary tracking-[0.25em] uppercase leading-none mb-6">
+                <h1 className="text-4xl md:text-6xl font-display text-primary tracking-[0.3em] uppercase leading-none mb-6">
                   {classesData.title || (lang === "en" ? "Classes" : "ಗುರುಕುಲ")}
                 </h1>
                 <div className="h-0.5 w-16 md:w-24 bg-gold/50 mx-auto rounded-full shadow-glow" />
@@ -105,7 +112,7 @@ function Classes() {
                 transition={{ duration: 1, delay: 0.2 }}
                 className="mb-48"
               >
-                <ClassesSchedule />
+                <ClassesSchedule onFilterToggle={setIsFilterOpen} />
               </motion.div>
 
               {/* TEACHERS / GURUS SECTION */}

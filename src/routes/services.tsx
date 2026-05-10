@@ -169,13 +169,14 @@ export const Route = createFileRoute("/services")({
               </p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
+            <div className="flex flex-wrap justify-center gap-4">
               {loading ? (
                 Array.from({ length: 7 }).map((_, i) => (
-                  <div key={i} className="aspect-[4/5] rounded-2xl bg-white/5 animate-pulse" />
+                  <div key={i} className="aspect-[4/5] rounded-2xl bg-white/5 animate-pulse w-[calc((100%-1rem)/2)] sm:w-[calc((100%-3rem)/4)] lg:w-[calc((100%-9rem)/7)]" />
                 ))
               ) : (
                 socialLinks.slice(0, 21).map((social: any) => {
+                  const hasText = social.title[lang] || social.description[lang];
                   return (
                     <motion.a
                       key={social.id}
@@ -183,22 +184,30 @@ export const Route = createFileRoute("/services")({
                       target="_blank"
                       rel="noopener noreferrer"
                       whileHover={{ y: -10 }}
-                      className="relative rounded-2xl overflow-hidden border border-border group aspect-[4/5] flex flex-col justify-end p-4"
+                      className="relative rounded-2xl overflow-hidden border border-border group aspect-[4/5] flex flex-col justify-end p-4 w-[calc((100%-1rem)/2)] sm:w-[calc((100%-3rem)/4)] lg:w-[calc((100%-9rem)/7)]"
                     >
                       <img 
                         src={social.image || "/images/gallery-1.jpg"} 
-                        alt={social.title[lang]}
+                        alt={social.title[lang] || "Social post"}
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
-                      <div className="relative z-10">
-                        <h3 className="text-sm font-display text-primary mb-1">
-                          {social.title[lang]}
-                        </h3>
-                        <p className="text-[10px] text-muted-foreground line-clamp-2 leading-tight">
-                          {social.description[lang]}
-                        </p>
-                      </div>
+                      {hasText && (
+                        <>
+                          <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
+                          <div className="relative z-10">
+                            {social.title[lang] && (
+                              <h3 className="text-sm font-display text-primary mb-1">
+                                {social.title[lang]}
+                              </h3>
+                            )}
+                            {social.description[lang] && (
+                              <p className="text-[10px] text-muted-foreground line-clamp-2 leading-tight">
+                                {social.description[lang]}
+                              </p>
+                            )}
+                          </div>
+                        </>
+                      )}
                     </motion.a>
                   );
                 })

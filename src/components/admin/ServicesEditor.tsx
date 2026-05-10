@@ -2,8 +2,9 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Globe, Plus, Trash2, Save, Check, Loader2, 
-  Image as ImageIcon, Link as LinkIcon, Edit3, Type, AlignLeft, Star, ArrowRight, X, Upload
+  Image as ImageIcon, Link as LinkIcon, Edit3, Type, AlignLeft, Star, ArrowRight, X, Upload, Crop
 } from "lucide-react";
+import Cropper from "react-easy-crop";
 import { useDbContent } from "@/hooks/useDb";
 import sticker0 from "@/assets/stickers/sticker_0.png";
 import sticker5 from "@/assets/stickers/sticker_5.png";
@@ -11,6 +12,33 @@ import sticker5 from "@/assets/stickers/sticker_5.png";
 interface ServicesEditorProps {
   isEditing: boolean;
   lang: "en" | "kn";
+}
+
+async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> {
+  const image = new Image();
+  image.src = imageSrc;
+  await new Promise((resolve) => (image.onload = resolve));
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return "";
+
+  canvas.width = pixelCrop.width;
+  canvas.height = pixelCrop.height;
+
+  ctx.drawImage(
+    image,
+    pixelCrop.x,
+    pixelCrop.y,
+    pixelCrop.width,
+    pixelCrop.height,
+    0,
+    0,
+    pixelCrop.width,
+    pixelCrop.height
+  );
+
+  return canvas.toDataURL("image/jpeg", 0.9);
 }
 
 function EditableText({
@@ -77,6 +105,24 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
 
   const [socialLinks, setSocialLinks] = useState<any[]>([]);
   const [editingLink, setEditingLink] = useState<any>(null);
+
+  // Cropping state
+  const [tempImage, setTempImage] = useState<string | null>(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+
+  const onCropComplete = useCallback((_croppedArea: any, croppedAreaPixels: any) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  const handleApplyCrop = async () => {
+    if (tempImage && croppedAreaPixels) {
+      const cropped = await getCroppedImg(tempImage, croppedAreaPixels);
+      setEditingLink((prev: any) => ({ ...prev, image: cropped }));
+      setTempImage(null);
+    }
+  };
 
   useEffect(() => {
     if (dbData) {
@@ -264,17 +310,21 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
               />
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
+            <div className="flex flex-wrap justify-center gap-4">
               {socialLinks.map((social) => (
-                <div
+                <div 
                   key={social.id}
-                  className="relative rounded-2xl overflow-hidden border border-border group aspect-[4/5] flex flex-col justify-end p-4"
+                  className="relative rounded-2xl overflow-hidden border border-border group aspect-[4/5] flex flex-col justify-end p-4 w-[calc((100%-1rem)/2)] sm:w-[calc((100%-3rem)/4)] lg:w-[calc((100%-9rem)/7)]"
                 >
                   <img src={social.image} className="absolute inset-0 w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
-                  <div className="relative z-10">
-                    <h3 className="text-sm font-display text-primary mb-1 line-clamp-1">{social.title[lang]}</h3>
-                    <p className="text-[10px] text-muted-foreground line-clamp-2 leading-tight">{social.description[lang]}</p>
+                  <div className="relative z-10 min-h-[40px] flex flex-col justify-end">
+                    {social.title[lang] && (
+                      <h3 className="text-sm font-display text-primary mb-1 line-clamp-1">{social.title[lang]}</h3>
+                    )}
+                    {social.description[lang] && (
+                      <p className="text-[10px] text-muted-foreground line-clamp-2 leading-tight">{social.description[lang]}</p>
+                    )}
                   </div>
                   
                   {isEditing && (
@@ -301,14 +351,14 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
                   onClick={() => {
                     const newLink = {
                       id: "social_" + Date.now(),
-                      title: { en: "New Link", kn: "ಹೊಸ ಲಿಂಕ್" },
-                      description: { en: "Description", kn: "ವಿವರಣೆ" },
+                      title: { en: "", kn: "" },
+                      description: { en: "", kn: "" },
                       link: "https://",
                       image: "/images/gallery-1.jpg",
                     };
                     setEditingLink(newLink);
                   }}
-                  className="aspect-[4/5] border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-gold/30 hover:text-gold transition-all"
+                  className="aspect-[4/5] border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-gold/30 hover:text-gold transition-all w-[calc((100%-1rem)/2)] sm:w-[calc((100%-3rem)/4)] lg:w-[calc((100%-9rem)/7)]"
                 >
                   <Plus className="w-6 h-6" />
                   <span className="text-[10px] uppercase tracking-widest font-bold">Add Card</span>
@@ -355,7 +405,7 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
                         accept="image/*" 
                         onChange={(e) => {
                           if (e.target.files?.[0]) {
-                            setEditingLink({ ...editingLink, image: URL.createObjectURL(e.target.files[0]) });
+                            setTempImage(URL.createObjectURL(e.target.files[0]));
                           }
                         }}
                       />
@@ -417,6 +467,75 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
                 >
                   Confirm Changes
                 </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Cropping Modal */}
+      <AnimatePresence>
+        {tempImage && (
+          <div className="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-black/90 backdrop-blur-md">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative w-full max-w-xl bg-card border border-border rounded-3xl overflow-hidden"
+            >
+              <div className="p-6 border-b border-border flex items-center justify-between">
+                <h3 className="text-xl font-display text-primary flex items-center gap-2">
+                  <Crop className="w-5 h-5 text-gold" />
+                  Crop Card Image
+                </h3>
+                <button onClick={() => setTempImage(null)} className="text-muted-foreground hover:text-white transition-colors">
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="relative h-[300px] sm:h-[400px] bg-black">
+                <Cropper
+                  image={tempImage}
+                  crop={crop}
+                  zoom={zoom}
+                  aspect={4 / 5}
+                  onCropChange={setCrop}
+                  onCropComplete={onCropComplete}
+                  onZoomChange={setZoom}
+                />
+              </div>
+
+              <div className="p-6 space-y-6">
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                    <span>Zoom</span>
+                    <span>{Math.round(zoom * 100)}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    value={zoom}
+                    min={1}
+                    max={3}
+                    step={0.1}
+                    onChange={(e) => setZoom(Number(e.target.value))}
+                    className="w-full h-1.5 bg-border rounded-lg appearance-none cursor-pointer accent-gold"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-4">
+                  <button
+                    onClick={() => setTempImage(null)}
+                    className="px-6 py-2 rounded-xl border border-border text-muted-foreground hover:text-white transition-colors text-xs font-bold uppercase tracking-widest"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleApplyCrop}
+                    className="px-8 py-2 rounded-xl bg-gold text-background hover:scale-105 transition-transform text-xs font-bold uppercase tracking-widest shadow-glow"
+                  >
+                    Apply Crop
+                  </button>
+                </div>
               </div>
             </motion.div>
           </div>

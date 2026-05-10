@@ -445,7 +445,7 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
   };
 
   return (
-    <section className="container mx-auto px-6 py-24">
+    <section className="container mx-auto px-6 pt-8 pb-12 md:py-24">
       <input 
         type="file" 
         ref={fileInputRef} 
@@ -453,7 +453,7 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
         accept="image/*" 
         onChange={handleFileChange}
       />
-      <div className="flex flex-col items-center mb-12 relative">
+      <div className="flex flex-col items-center mb-8 md:mb-12 relative">
         <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-4 text-primary">
           <EditableText
             value={lang === "en" ? "Upcoming Events" : "ಮುಂಬರುವ ಕಾರ್ಯಕ್ರಮಗಳು"}
@@ -475,7 +475,7 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
         <AnimatePresence>
           {events.map((ev, i) => (
             <motion.article
@@ -490,7 +490,7 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
               {isEditing && (
                 <button
                   onClick={() => handleDeleteEvent(i)}
-                  className="absolute top-2 left-2 z-10 p-2 bg-red-500/80 text-white rounded-full hover:bg-red-500 transition-all"
+                  className="absolute top-2 left-2 z-20 p-2 bg-red-500/80 text-white rounded-full hover:bg-red-500 transition-all"
                   title="Remove Event"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -504,7 +504,7 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
                 {(ev.badge?.[lang] || isEditing) && (
-                  <span className="absolute top-4 right-4 z-10 bg-gold text-[#0a0a0a] text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-sm">
+                  <span className="absolute top-4 right-4 z-10 bg-gold text-[#0a0a0a] text-[8px] md:text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-sm">
                     <EditableText
                       value={ev.badge?.[lang] || (isEditing ? "Badge Text" : "")}
                       onChange={(v) => updateEvent(i, "badge", v)}
@@ -514,10 +514,10 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
                 )}
                 
                 {isEditing && (
-                  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all cursor-pointer">
+                  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-100 md:opacity-0 md:group-hover:opacity-100 flex items-center justify-center transition-all cursor-pointer z-10">
                     <button 
                       onClick={() => handleImageClick(i)}
-                      className="flex items-center gap-2 px-4 py-2 bg-gold text-background rounded-full font-bold text-[10px] uppercase tracking-widest shadow-glow hover:scale-105 transition-all"
+                      className="flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-gold text-background rounded-full font-bold text-[8px] md:text-[10px] uppercase tracking-widest shadow-glow hover:scale-105 transition-all"
                     >
                       <Camera className="w-3 h-3" />
                       Replace
@@ -526,8 +526,8 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
                 )}
               </div>
 
-              <div className="p-6 flex flex-col flex-grow">
-                <h3 className="font-display text-xl text-primary mb-4 leading-tight">
+              <div className="p-3 md:p-6 flex flex-col flex-grow">
+                <h3 className="font-display text-sm md:text-xl text-primary mb-2 md:mb-4 leading-tight">
                   <EditableText
                     value={ev.title[lang]}
                     onChange={(v) => updateEvent(i, "title", v)}
@@ -536,22 +536,22 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
                   />
                 </h3>
 
-                <div className="space-y-3 text-sm text-foreground/70 mb-8 flex-grow">
-                  <div className="flex items-center gap-3">
-                    <User size={14} className="text-gold shrink-0" />
+                <div className="space-y-1 md:space-y-3 text-[10px] md:text-sm text-foreground/70 mb-4 md:mb-8 flex-grow">
+                  <div className="flex items-center gap-2 md:gap-3">
+                    <User size={12} className="text-gold shrink-0 md:w-3.5 md:h-3.5" />
                     <EditableText
                       value={ev.teacher[lang]}
                       onChange={(v) => updateEvent(i, "teacher", v)}
                       isEditing={isEditing}
                     />
                   </div>
-                  <div className="flex items-center gap-3 relative">
-                    <Calendar size={14} className="text-gold shrink-0" />
+                  <div className="flex items-center gap-2 md:gap-3 relative">
+                    <Calendar size={12} className="text-gold shrink-0 md:w-3.5 md:h-3.5" />
                     {isEditing ? (
                       <div className="relative flex-grow">
                         <button
                           onClick={() => setShowDatePicker(showDatePicker === i ? null : i)}
-                          className="text-left w-full text-xs text-primary hover:text-gold transition-colors"
+                          className="text-left w-full text-[9px] md:text-xs text-primary hover:text-gold transition-colors"
                         >
                           {ev.date || "Select Date"}
                         </button>
@@ -567,13 +567,13 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
                       <span>{ev.date || (lang === "en" ? "TBD" : "ಶೀಘ್ರದಲ್ಲೇ")}</span>
                     )}
                   </div>
-                  <div className="flex items-center gap-3 relative">
-                    <Clock size={14} className="text-gold shrink-0" />
+                  <div className="flex items-center gap-2 md:gap-3 relative">
+                    <Clock size={12} className="text-gold shrink-0 md:w-3.5 md:h-3.5" />
                     {isEditing ? (
                       <div className="relative flex-grow">
                         <button
                           onClick={() => setShowTimePicker(showTimePicker === i ? null : i)}
-                          className="text-left w-full text-xs text-primary hover:text-gold transition-colors"
+                          className="text-left w-full text-[9px] md:text-xs text-primary hover:text-gold transition-colors"
                         >
                           {ev.time?.[lang] || "Select Time"}
                         </button>
@@ -598,14 +598,14 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
                 {ev.status === "booking" ? (
                   <div 
                     onClick={() => isEditing && toggleStatus(i)}
-                    className={`block w-full text-center py-3 px-4 border border-border/50 text-xs font-bold uppercase tracking-widest text-primary hover:border-gold/50 hover:bg-gold/5 transition-colors rounded-sm ${isEditing ? "cursor-pointer" : "cursor-pointer"}`}
+                    className={`block w-full text-center py-2 md:py-3 px-4 border border-border/50 text-[9px] md:text-xs font-bold uppercase tracking-widest text-primary hover:border-gold/50 hover:bg-gold/5 transition-colors rounded-sm ${isEditing ? "cursor-pointer" : "cursor-pointer"}`}
                   >
                     {lang === "en" ? "BOOKING" : "ಬುಕಿಂಗ್"}
                   </div>
                 ) : (
                   <div 
                     onClick={() => isEditing && toggleStatus(i)}
-                    className={`block w-full text-center py-3 px-4 border border-border/30 text-xs font-bold uppercase tracking-widest text-foreground/40 bg-background/20 rounded-sm ${isEditing ? "cursor-pointer hover:border-gold/50 hover:text-primary transition-colors" : "cursor-not-allowed"}`}
+                    className={`block w-full text-center py-2 md:py-3 px-4 border border-border/30 text-[9px] md:text-xs font-bold uppercase tracking-widest text-foreground/40 bg-background/20 rounded-sm ${isEditing ? "cursor-pointer hover:border-gold/50 hover:text-primary transition-colors" : "cursor-not-allowed"}`}
                   >
                     {lang === "en" ? "COMING SOON" : "ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ"}
                   </div>

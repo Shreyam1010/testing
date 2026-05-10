@@ -139,9 +139,10 @@ function BlogPage() {
                         {selectedBlog.excerpt[lang]}
                       </p>
                       
-                      <div className="space-y-6 whitespace-pre-wrap text-[17px]">
-                        {selectedBlog.content?.[lang] || selectedBlog.excerpt?.[lang] || "No content available."}
-                      </div>
+                      <div 
+                        className="text-[17px] prose prose-invert prose-gold max-w-none [&>h1]:text-3xl [&>h1]:font-display [&>h1]:text-primary [&>h1]:mt-8 [&>h1]:mb-4 [&>h2]:text-2xl [&>h2]:font-display [&>h2]:text-primary [&>h2]:mt-6 [&>h2]:mb-3 [&>blockquote]:border-l-4 [&>blockquote]:border-gold [&>blockquote]:pl-6 [&>blockquote]:italic [&>ul]:list-disc [&>ul]:ml-6 [&>ol]:list-decimal [&>ol]:ml-6 [&>p]:mb-4 [&>p]:leading-relaxed [&>a]:text-gold [&>a]:underline hover:[&>a]:text-gold/80"
+                        dangerouslySetInnerHTML={{ __html: selectedBlog.content?.[lang] || selectedBlog.excerpt?.[lang] || "No content available." }}
+                      />
                     </div>
                   </div>
                 </div>
