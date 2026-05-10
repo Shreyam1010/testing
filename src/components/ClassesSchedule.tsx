@@ -164,11 +164,12 @@ export function ClassesSchedule({ onFilterToggle }: { onFilterToggle?: (isOpen: 
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-        {filtered.map((c: any) => (
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+        {filtered.map((c: any, index: number) => (
           <ClassCard
             key={c.id}
             item={c}
+            index={index}
             isExpanded={expandedId === c.id}
             onToggle={() => setExpandedId(prev => prev === c.id ? null : c.id)}
           />
