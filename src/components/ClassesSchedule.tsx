@@ -13,9 +13,34 @@ export function ClassesSchedule() {
   const dbTeachers = data?.teachers || [];
 
   const days = useMemo(() => {
+    const DAY_ORDER = [
+      "all days",
+      "tomorrow",
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+      "sunday"
+    ];
+
     const set = new Map<string, { en: string; kn: string }>();
     dbClasses.forEach((c: any) => set.set(c.day.en, c.day));
-    return Array.from(set.values());
+    
+    const uniqueDays = Array.from(set.values());
+    
+    uniqueDays.sort((a, b) => {
+      const indexA = DAY_ORDER.indexOf(a.en.toLowerCase());
+      const indexB = DAY_ORDER.indexOf(b.en.toLowerCase());
+      
+      if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+      if (indexA !== -1) return -1;
+      if (indexB !== -1) return 1;
+      return a.en.localeCompare(b.en);
+    });
+    
+    return uniqueDays;
   }, [dbClasses]);
 
   const filtered = dbClasses.filter((c: any) => {

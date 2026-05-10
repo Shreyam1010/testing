@@ -277,28 +277,35 @@ function Index() {
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3 md:gap-6 grid-flow-dense">
                 {galleryItems.map((it, i) => (
-                  <motion.div
+                  <Link
                     key={i}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: (i % 3) * 0.1 }}
-                    className={`group relative overflow-hidden rounded-2xl border border-border hover:border-gold/50 transition ${i === 0 || i === 4
+                    to="/gallery"
+                    hash="performances"
+                    className={`block ${
+                      i === 0 || i === 4
                         ? "md:row-span-2 aspect-[3/4] md:aspect-auto"
                         : "aspect-square"
-                      }`}
+                    }`}
                   >
-                    <img
-                      src={it.src}
-                      alt={it.label}
-                      loading="lazy"
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent opacity-0 group-hover:opacity-100 transition" />
-                    <div className="absolute bottom-0 inset-x-0 p-5 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition">
-                      <div className="font-display text-lg text-primary">{it.label}</div>
-                    </div>
-                  </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: (i % 3) * 0.1 }}
+                      className="w-full h-full group relative overflow-hidden rounded-2xl border border-border hover:border-gold/50 transition cursor-pointer"
+                    >
+                      <img
+                        src={it.src}
+                        alt={it.label}
+                        loading="lazy"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent opacity-0 group-hover:opacity-100 transition" />
+                      <div className="absolute bottom-0 inset-x-0 p-5 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition">
+                        <div className="font-display text-lg text-primary">{it.label}</div>
+                      </div>
+                    </motion.div>
+                  </Link>
                 ))}
               </div>
             </div>
