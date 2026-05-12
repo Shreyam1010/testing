@@ -3,13 +3,7 @@ import { motion } from "framer-motion";
 import { Star, ArrowRight } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { useLang } from "@/contexts/LanguageContext";
-import g1 from "@/assets/gallery-1.jpg";
-import g2 from "@/assets/gallery-2.jpg";
-import g3 from "@/assets/gallery-3.jpg";
-import g4 from "@/assets/gallery-4.jpg";
-import g5 from "@/assets/gallery-5.jpg";
-import g6 from "@/assets/gallery-6.jpg";
-import sticker0 from "@/assets/stickers/sticker_0.png";
+
 import sticker5 from "@/assets/stickers/sticker_5.png";
 import { useDbContent } from "@/hooks/useDb";
 
@@ -28,8 +22,6 @@ export const Route = createFileRoute("/services")({
 
   const pageTitle = servicesMap.title || t.services.title;
   const pageSubtitle = servicesMap.subtitle || t.services.subtitle;
-  const socialTitle = servicesMap.social_title || t.services.social.title;
-  const socialSubtitle = servicesMap.social_subtitle || t.services.social.subtitle;
 
   const sections = [
     {
@@ -39,13 +31,7 @@ export const Route = createFileRoute("/services")({
       buttonText: servicesMap.perf_btn || t.services.performance.buttonText,
       images: ["/images/gallery-1.jpg", "/images/gallery-2.jpg", "/images/gallery-4.jpg", "/images/gallery-5.jpg", "/images/gallery-6.jpg"],
     },
-    {
-      id: "classes",
-      title: servicesMap.class_title || t.services.classes.title,
-      desc: servicesMap.class_desc || t.services.classes.desc,
-      buttonText: servicesMap.class_btn || t.services.classes.buttonText,
-      images: ["/images/gallery-3.jpg", "/images/gallery-5.jpg", "/images/gallery-6.jpg", "/images/gallery-1.jpg", "/images/gallery-2.jpg"],
-    },
+
     {
       id: "workshops",
       title: servicesMap.work_title || t.services.workshops.title,
@@ -55,7 +41,7 @@ export const Route = createFileRoute("/services")({
     }
   ];
 
-  const socialLinks = data?.socialLinks || [];
+
 
   return (
     <Layout>
@@ -161,68 +147,6 @@ export const Route = createFileRoute("/services")({
             </motion.div>
           ))}
 
-          {/* Social Media Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="pt-10"
-          >
-            <div className="text-center max-w-2xl mx-auto mb-10">
-              <h2 className="text-xl sm:text-2xl md:text-4xl font-display text-primary mb-4 flex items-center justify-center gap-4">
-                <img src={sticker0} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
-                {socialTitle}
-              </h2>
-              <p className="text-base text-muted-foreground">
-                {socialSubtitle}
-              </p>
-            </div>
-
-            <div className="flex flex-wrap justify-center gap-4">
-              {loading ? (
-                Array.from({ length: 7 }).map((_, i) => (
-                  <div key={i} className="aspect-[4/5] rounded-2xl bg-white/5 animate-pulse w-[calc((100%-1rem)/2)] sm:w-[calc((100%-3rem)/4)] lg:w-[calc((100%-9rem)/7)]" />
-                ))
-              ) : (
-                socialLinks.slice(0, 21).map((social: any) => {
-                  const hasText = social.title[lang] || social.description[lang];
-                  return (
-                    <motion.a
-                      key={social.id}
-                      href={social.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ y: -10 }}
-                      className="relative rounded-2xl overflow-hidden border border-border group aspect-[4/5] flex flex-col justify-end p-4 w-[calc((100%-1rem)/2)] sm:w-[calc((100%-3rem)/4)] lg:w-[calc((100%-9rem)/7)]"
-                    >
-                      <img 
-                        src={social.image || "/images/gallery-1.jpg"} 
-                        alt={social.title[lang] || "Social post"}
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-                      {hasText && (
-                        <>
-                          <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
-                          <div className="relative z-10">
-                            {social.title[lang] && (
-                              <h3 className="text-sm font-display text-primary mb-1">
-                                {social.title[lang]}
-                              </h3>
-                            )}
-                            {social.description[lang] && (
-                              <p className="text-[10px] text-muted-foreground line-clamp-2 leading-tight">
-                                {social.description[lang]}
-                              </p>
-                            )}
-                          </div>
-                        </>
-                      )}
-                    </motion.a>
-                  );
-                })
-              )}
-            </div>
-          </motion.div>
         </div>
       </section>
     </Layout>

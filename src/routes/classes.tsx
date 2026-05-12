@@ -101,7 +101,43 @@ function Classes() {
                 <h1 className="text-4xl md:text-6xl font-display text-primary tracking-[0.3em] uppercase leading-none mb-6">
                   {classesData.title || (lang === "en" ? "Classes" : "ಗುರುಕುಲ")}
                 </h1>
-                <div className="h-0.5 w-16 md:w-24 bg-gold/50 mx-auto rounded-full shadow-glow" />
+                <div className="h-0.5 w-16 md:w-24 bg-gold/50 mx-auto rounded-full shadow-glow mb-12" />
+                
+                <div className="max-w-3xl mx-auto text-center space-y-8">
+                  <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+                    {lang === "en" 
+                      ? "Immerse yourself in the sacred circle of learning with our authentic training programs. Our Gurukul provides deep, unparalleled insights into every nuance of this majestic art form through specialized instruction in:"
+                      : "ನಮ್ಮ ಅಧಿಕೃತ ತರಬೇತಿ ಕಾರ್ಯಕ್ರಮಗಳೊಂದಿಗೆ ಕಲಿಕೆಯ ಪವಿತ್ರ ವಲಯವನ್ನು ಪ್ರವೇಶಿಸಿ. ನಮ್ಮ ಗುರುಕುಲವು ಈ ಭವ್ಯ ಕಲಾ ಪ್ರಕಾರದ ಪ್ರತಿಯೊಂದು ಸೂಕ್ಷ್ಮತೆಯ ಬಗ್ಗೆ ಆಳವಾದ ಒಳನೋಟಗಳನ್ನು ಈ ಕೆಳಗಿನ ವಿಭಾಗಗಳಲ್ಲಿ ನೀಡುತ್ತದೆ:"}
+                  </p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left max-w-2xl mx-auto">
+                    {[
+                      { 
+                        en: "Traditional Dance (Tenkutittu & Badagutittu)", 
+                        kn: "ಸಾಂಪ್ರದಾಯಿಕ ನೃತ್ಯ (ತೆಂಕುತಿಟ್ಟು ಮತ್ತು ಬಡಗುತಿಟ್ಟು)" 
+                      },
+                      { 
+                        en: "Narrative Singing (Bhagavatike)", 
+                        kn: "ಭಾಗವತಿಕೆ (ಗಾಯನ ಸಂಪ್ರದಾಯ)" 
+                      },
+                      { 
+                        en: "Rhythmic Percussion (Chande & Maddale)", 
+                        kn: "ಲಯವಾದ್ಯಗಳು (ಚಂಡೆ ಮತ್ತು ಮದ್ದಲೆ)" 
+                      },
+                      { 
+                        en: "Character Makeup & Costume Art", 
+                        kn: "ರಂಗಾಲಂಕಾರ ಮತ್ತು ವೇಷಭೂಷಣ ಕಲೆ" 
+                      }
+                    ].map((item, idx) => (
+                      <div key={idx} className="flex items-center gap-3 group">
+                        <div className="w-1.5 h-1.5 rounded-full bg-gold shadow-glow" />
+                        <span className="text-sm md:text-base text-foreground/80 group-hover:text-gold transition-colors duration-300">
+                          {item[lang]}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </motion.div>
 
               {/* Classes Schedule Section */}

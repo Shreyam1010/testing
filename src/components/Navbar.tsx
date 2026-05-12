@@ -14,6 +14,7 @@ export function Navbar() {
     { to: "/about", label: t.nav.about },
     { to: "/services", label: t.nav.services },
     { to: "/classes", label: t.nav.classes },
+    { to: "/gallery", label: lang === "en" ? "Gallery" : "ಗ್ಯಾಲರಿ" },
     { to: "/blog", label: lang === "en" ? "Blog" : "ಬ್ಲಾಗ್" },
     { to: "/admin", label: t.nav.admin },
     { to: "/contact", label: t.nav.contact },
