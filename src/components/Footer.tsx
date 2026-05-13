@@ -1,28 +1,29 @@
 import { Link } from "@tanstack/react-router";
 import { useLang } from "@/contexts/LanguageContext";
-import { Facebook, Instagram, Twitter, Mail, MessageCircle } from "lucide-react";
-
+import { Facebook, Instagram, Twitter, Mail } from "lucide-react";
 
 export function Footer() {
   const { t } = useLang();
   return (
     <footer className="relative border-t border-white/10 bg-background/60 backdrop-blur-2xl">
       <div className="ornament-divider" />
-      <div className="container mx-auto px-6 py-12 grid md:grid-cols-3 gap-12 text-center md:text-left">
-        <div className="flex flex-col items-center md:items-start">
-          <div className="font-display text-xl text-gradient-gold mb-3">KatheGaararu</div>
-          <p className="font-display text-sm text-muted-foreground leading-relaxed" dangerouslySetInnerHTML={{ __html: t.footer.made }} />
+      <div className="container mx-auto px-8 py-16 grid md:grid-cols-3 gap-12 text-center md:text-left">
+        <div className="flex flex-col items-center md:items-start space-y-4">
+          <div className="font-display text-2xl text-gradient-gold">KatheGaararu</div>
+          <p className="font-display text-xs text-muted-foreground leading-relaxed uppercase tracking-[0.2em] opacity-70 max-w-[240px]" dangerouslySetInnerHTML={{ __html: t.footer.made }} />
         </div>
-        <div className="flex flex-col items-center md:items-start text-sm text-muted-foreground space-y-2">
-          <div className="text-foreground font-medium mb-3">{t.nav.contact}</div>
-          <div>{t.contact.address}</div>
-          <div>{t.contact.phone}</div>
-          <div>{t.contact.email}</div>
+        
+        <div className="flex flex-col items-center md:items-start text-sm text-muted-foreground space-y-3">
+          <div className="text-foreground font-semibold uppercase tracking-widest text-xs opacity-50 mb-2">{t.nav.contact}</div>
+          <div className="hover:text-primary transition-colors cursor-default">{t.contact.address}</div>
+          <div className="hover:text-primary transition-colors cursor-default">{t.contact.phone}</div>
+          <div className="hover:text-primary transition-colors cursor-default">{t.contact.email}</div>
         </div>
+
         <div className="flex flex-col items-center md:items-start text-sm">
-          <div className="text-foreground font-medium mb-3 uppercase tracking-widest text-xs opacity-70">Explore</div>
-          <div className="flex flex-col md:flex-row gap-8 md:gap-32 items-center md:items-start">
-            <div className="flex flex-col gap-2 text-muted-foreground items-center md:items-start">
+          <div className="text-foreground font-semibold uppercase tracking-widest text-xs opacity-50 mb-5">Explore</div>
+          <div className="flex flex-col lg:flex-row gap-10 lg:gap-14 items-center lg:items-start w-full">
+            <div className="flex flex-col gap-3 text-muted-foreground items-center md:items-start whitespace-nowrap">
               <Link to="/classes" className="hover:text-primary transition-colors">
                 {t.nav.classes}
               </Link>
@@ -33,21 +34,21 @@ export function Footer() {
                 {t.nav.contact}
               </Link>
             </div>
-            <div className="flex gap-7 text-muted-foreground pt-1 justify-center md:justify-start">
+            <div className="flex gap-6 text-muted-foreground items-center justify-center md:justify-start">
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-all hover:scale-110 active:scale-95" aria-label="Facebook">
-                <Facebook size={22} />
+                <Facebook size={20} />
               </a>
               <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-all hover:scale-110 active:scale-95" aria-label="Instagram">
-                <Instagram size={22} />
+                <Instagram size={20} />
               </a>
               <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-all hover:scale-110 active:scale-95" aria-label="Twitter">
-                <Twitter size={22} />
+                <Twitter size={20} />
               </a>
               <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-all hover:scale-110 active:scale-95" aria-label="WhatsApp">
                 <svg
                   viewBox="0 0 24 24"
-                  width="22"
-                  height="22"
+                  width="20"
+                  height="20"
                   stroke="currentColor"
                   strokeWidth="2"
                   fill="none"
@@ -59,7 +60,7 @@ export function Footer() {
                 </svg>
               </a>
               <a href={`mailto:${t.contact.email}`} className="hover:text-primary transition-all hover:scale-110 active:scale-95" aria-label="Email">
-                <Mail size={22} />
+                <Mail size={20} />
               </a>
             </div>
           </div>
