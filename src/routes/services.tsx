@@ -1,10 +1,11 @@
   import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Star, ArrowRight } from "lucide-react";
+import { useState, useRef } from "react";
 import { Layout } from "@/components/Layout";
 import { useLang } from "@/contexts/LanguageContext";
 
-import sticker5 from "@/assets/stickers/sticker_5.png";
+
 import { useDbContent } from "@/hooks/useDb";
 
 export const Route = createFileRoute("/services")({
@@ -14,7 +15,100 @@ export const Route = createFileRoute("/services")({
     ],
   }),
   component: Services,
-});function Services() {
+});
+
+function PhotoCarousel({ images, title }: { images: string[], title: string }) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [showArrow, setShowArrow] = useState(true);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = () => {
+    if (!scrollRef.current) return;
+    const container = scrollRef.current;
+    const scrollLeft = container.scrollLeft;
+    
+    if (scrollLeft > 20 && showArrow) {
+      setShowArrow(false);
+    }
+
+    const itemWidth = container.scrollWidth / images.length;
+    const index = Math.round(scrollLeft / itemWidth);
+    if (index !== activeIndex && index >= 0 && index < images.length) {
+      setActiveIndex(index);
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="w-full overflow-hidden">
+        <div 
+          ref={scrollRef}
+          onScroll={handleScroll}
+          className="flex flex-nowrap gap-2 lg:gap-4 overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        >
+          {images.map((img, imgIdx) => {
+            const isLast = imgIdx === images.length - 1;
+            const isThird = imgIdx === 2;
+            const cardClasses = "shrink-0 w-[calc((100%-1rem)/2.5)] sm:w-[calc((100%-2rem)/3.5)] lg:w-[calc((100%-6rem)/4.5)] relative aspect-[4/5] rounded-2xl overflow-hidden border border-border shadow-xl group snap-start";
+            
+            return isLast ? (
+              <Link 
+                key={imgIdx}
+                to="/gallery"
+                className={`${cardClasses} block cursor-pointer`}
+              >
+                <img 
+                  src={img} 
+                  alt="View more in gallery"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-black/50 flex flex-col justify-center pl-[25%] transition-all group-hover:bg-black/70">
+                  <ArrowRight className="w-8 h-8 text-white transition-transform group-hover:translate-x-1" />
+                  <span className="text-xs font-bold uppercase tracking-widest text-white mt-2 opacity-0 group-hover:opacity-100 transition-opacity">More</span>
+                </div>
+              </Link>
+            ) : (
+              <motion.div 
+                key={imgIdx}
+                whileHover={{ y: -10 }}
+                className={cardClasses}
+              >
+                <img 
+                  src={img} 
+                  alt={`${title} image ${imgIdx + 1}`}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                
+                {isThird && showArrow && (
+                  <div className="absolute inset-0 flex items-center justify-start pl-4 pointer-events-none">
+                    <motion.div 
+                      className="bg-black/40 rounded-full p-1.5 backdrop-blur-sm"
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ repeat: Infinity, duration: 1.5 }}
+                    >
+                      <ArrowRight className="w-4 h-4 text-white" />
+                    </motion.div>
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Swipe Indicator Dots */}
+      <div className="flex justify-center gap-1.5">
+        {images.map((_, dotIdx) => (
+          <div 
+            key={dotIdx} 
+            className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${dotIdx === activeIndex ? 'bg-gold' : 'bg-white/20'}`} 
+          />
+        ))}
+      </div>
+    </div>
+  );
+}function Services() {
   const { t, lang } = useLang();
   const { data, loading } = useDbContent();
 
@@ -46,19 +140,7 @@ export const Route = createFileRoute("/services")({
   return (
     <Layout>
       <section className="container mx-auto px-6 pt-10 pb-16 min-h-screen">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center max-w-2xl mx-auto mb-10"
-        >
-          <div className="ornament-divider w-24 mx-auto mb-6" />
-          <h1 className="text-2xl sm:text-3xl md:text-5xl font-display mb-4 text-primary">
-            {pageTitle}
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            {pageSubtitle}
-          </p>
-        </motion.div>
+
 
         <div className="flex flex-col gap-16">
           {sections.map((section) => (
@@ -73,66 +155,18 @@ export const Route = createFileRoute("/services")({
             >
               <div className="text-center max-w-4xl mx-auto">
                 <h2 className="text-xl sm:text-2xl md:text-4xl font-display text-primary mb-4 flex items-center justify-center gap-4">
-                  <img src={sticker5} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                   {section.title}
                 </h2>
-                <p className="text-base text-muted-foreground leading-relaxed">
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
                   {section.desc}
                 </p>
               </div>
 
               {/* Photos Sequence + Dots Wrapper */}
-              <div className="flex flex-col gap-2">
-                <div className="w-full overflow-hidden">
-                  <div className="flex flex-nowrap gap-4 lg:gap-6 overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                    {section.images.map((img, imgIdx) => {
-                      const isLast = imgIdx === 4;
-                      const cardClasses = "shrink-0 w-[calc((100%-1rem)/2.5)] sm:w-[calc((100%-2rem)/3.5)] lg:w-[calc((100%-6rem)/4.5)] relative aspect-[4/5] rounded-2xl overflow-hidden border border-border shadow-xl group snap-start";
-                      
-                      return isLast ? (
-                        <Link 
-                          key={imgIdx}
-                          to="/gallery"
-                          className={`${cardClasses} block cursor-pointer`}
-                        >
-                          <img 
-                            src={img} 
-                            alt="View more in gallery"
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                          />
-                          <div className="absolute inset-0 bg-black/50 flex flex-col justify-center pl-[25%] transition-all group-hover:bg-black/70">
-                            <ArrowRight className="w-8 h-8 text-white transition-transform group-hover:translate-x-1" />
-                            <span className="text-xs font-bold uppercase tracking-widest text-white mt-2 opacity-0 group-hover:opacity-100 transition-opacity">More</span>
-                          </div>
-                        </Link>
-                      ) : (
-                        <motion.div 
-                          key={imgIdx}
-                          whileHover={{ y: -10 }}
-                          className={cardClasses}
-                        >
-                          <img 
-                            src={img} 
-                            alt={`${section.title} image ${imgIdx + 1}`}
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Swipe Indicator Dots */}
-                <div className="flex justify-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-gold" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
-                </div>
-              </div>
+              <PhotoCarousel images={section.images} title={section.title} />
 
               {/* Book Demo Button */}
-              <div className="flex justify-center mt-4">
+              <div className="flex justify-center mt-0">
                 <Link 
                   to="/contact" 
                   className="group relative flex items-center justify-center gap-2 px-6 py-3 bg-gold text-background rounded-full font-bold uppercase tracking-widest text-xs shadow-glow hover:scale-105 transition-all overflow-hidden"

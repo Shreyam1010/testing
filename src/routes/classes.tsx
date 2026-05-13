@@ -9,7 +9,7 @@ import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
 import g3 from "@/assets/gallery-3.jpg";
 import classHero from "@/assets/testing1.png.jpeg";
-import sticker1 from "@/assets/stickers/sticker_1.png";
+
 import { useDbContent } from "@/hooks/useDb";
 
 export const Route = createFileRoute("/classes")({
@@ -59,35 +59,12 @@ function Classes() {
           </div>
         ) : (
           <>
-            {/* Sticky Hero Image Background */}
-            <div className="fixed inset-0 w-full h-screen z-0 pointer-events-none">
-          <motion.div 
-            style={{ opacity, scale, filter: `blur(${blur})` }}
-            className="relative w-full h-full"
-          >
-            <motion.img
-              src={classesData.image || "/images/testing1.png.jpeg"}
-              alt="Yakshagana student practicing"
-              className="w-full h-full object-cover"
-            /><div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
-            <div className="absolute inset-0 bg-black/40" />
-          </motion.div>
-        </div>
-
         {/* Scrolling Content */}
         <div className="relative z-10">
-          {/* Spacer to allow hero image visibility */}
-          <motion.div 
-            animate={{ 
-              height: isFilterOpen ? "20vh" : "40vh"
-            }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="md:!h-[65vh]" 
-          />
 
-          <section className="relative bg-background/95 backdrop-blur-[32px] pt-10 md:pt-20 pb-32 shadow-[0_-50px_150px_rgba(0,0,0,1)]">
+          <section className="relative bg-[oklch(0.25_0.08_20)] pt-10 md:pt-20 pb-32 shadow-[0_-50px_150px_rgba(0,0,0,1)]">
             {/* Superior Blend Gradient */}
-            <div className="absolute inset-x-0 top-0 h-64 -translate-y-full bg-gradient-to-t from-background/95 via-background/60 to-transparent pointer-events-none" />
+            <div className="absolute inset-x-0 top-0 h-32 md:h-64 -translate-y-full bg-gradient-to-t from-[oklch(0.25_0.08_20)] to-transparent pointer-events-none" />
             
             <div className="container mx-auto px-6">
               {/* Integrated Title Section */}
@@ -98,13 +75,13 @@ function Classes() {
                 transition={{ duration: 1.2, ease: "easeOut" }}
                 className="text-center mb-8 md:mb-24"
               >
-                <h1 className="text-4xl md:text-6xl font-display text-primary tracking-[0.3em] uppercase leading-none mb-6">
+                <h1 className="text-4xl md:text-6xl font-display text-primary uppercase leading-none mb-6">
                   {classesData.title || (lang === "en" ? "Classes" : "ಗುರುಕುಲ")}
                 </h1>
                 <div className="h-0.5 w-16 md:w-24 bg-gold/50 mx-auto rounded-full shadow-glow mb-12" />
                 
-                <div className="max-w-3xl mx-auto text-center space-y-8">
-                  <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+                <div className="max-w-3xl mx-auto text-center space-y-8 bg-card/50 border border-border/50 rounded-2xl p-6 md:p-10 shadow-xl backdrop-blur-sm">
+                   <p className="text-sm md:text-xl text-muted-foreground leading-relaxed">
                     {lang === "en" 
                       ? "Immerse yourself in the sacred circle of learning with our authentic training programs. Our Gurukul provides deep, unparalleled insights into every nuance of this majestic art form through specialized instruction in:"
                       : "ನಮ್ಮ ಅಧಿಕೃತ ತರಬೇತಿ ಕಾರ್ಯಕ್ರಮಗಳೊಂದಿಗೆ ಕಲಿಕೆಯ ಪವಿತ್ರ ವಲಯವನ್ನು ಪ್ರವೇಶಿಸಿ. ನಮ್ಮ ಗುರುಕುಲವು ಈ ಭವ್ಯ ಕಲಾ ಪ್ರಕಾರದ ಪ್ರತಿಯೊಂದು ಸೂಕ್ಷ್ಮತೆಯ ಬಗ್ಗೆ ಆಳವಾದ ಒಳನೋಟಗಳನ್ನು ಈ ಕೆಳಗಿನ ವಿಭಾಗಗಳಲ್ಲಿ ನೀಡುತ್ತದೆ:"}
@@ -146,7 +123,7 @@ function Classes() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 1, delay: 0.2 }}
-                className="mb-48"
+                className="mb-16"
               >
                 <ClassesSchedule onFilterToggle={setIsFilterOpen} />
               </motion.div>
@@ -161,7 +138,6 @@ function Classes() {
               >
                 <div className="text-center mb-16">
                   <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-4 text-primary flex items-center justify-center gap-4">
-                    <img src={sticker1} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                     {lang === "en" ? "Our Gurus" : "ನಮ್ಮ ಗುರುಗಳು"}
                   </h2>
                   <p className="text-muted-foreground">
@@ -169,7 +145,7 @@ function Classes() {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <div className="flex flex-wrap justify-center gap-4 md:gap-6 max-w-6xl mx-auto">
                   {dbTeachers.map((teacher: any, i: number) => (
                     <TeacherCard key={teacher.id} teacher={teacher} index={i} />
                   ))}
@@ -206,7 +182,7 @@ function TeacherCard({ teacher, index }: { teacher: any; index: number }) {
         viewport={{ once: true }}
         transition={{ delay: index * 0.1 }}
         onClick={() => setShowModal(true)}
-        className="group relative aspect-[3/4] rounded-[32px] overflow-hidden cursor-pointer border border-white/5 shadow-2xl hover:shadow-[0_0_40px_rgba(255,255,255,0.05)] transition-all duration-500"
+        className="group relative w-[calc(50%-0.5rem)] md:w-[calc(33.333%-1rem)] aspect-[3/4] rounded-[32px] overflow-hidden cursor-pointer border border-white/5 shadow-2xl hover:shadow-[0_0_40px_rgba(255,255,255,0.05)] transition-all duration-500"
       >
         <img
           src={displayImage}
@@ -215,11 +191,8 @@ function TeacherCard({ teacher, index }: { teacher: any; index: number }) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
         
-        <div className="absolute bottom-0 inset-x-0 p-8">
-          <span className="text-[10px] uppercase tracking-[0.2em] text-gold font-bold mb-1 block">
-            {teacher.expertise?.[lang]?.split("•")[0] || ""}
-          </span>
-          <h3 className="font-display text-2xl text-primary group-hover:text-gold transition-colors">
+        <div className="absolute bottom-0 inset-x-0 p-4">
+          <h3 className="font-display text-base text-primary group-hover:text-gold transition-colors">
             {teacher.name?.[lang] || teacher.name}
           </h3>
         </div>
@@ -240,16 +213,33 @@ function TeacherCard({ teacher, index }: { teacher: any; index: number }) {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-5xl bg-card border border-border rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row"
+              className="relative w-[90vw] md:w-full max-w-md md:max-w-5xl bg-card border border-border rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row"
             >
               <button
                 onClick={() => setShowModal(false)}
-                className="absolute top-6 right-6 z-10 p-2 rounded-full bg-background/50 hover:bg-gold hover:text-background transition-colors"
+                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-background/50 hover:bg-gold hover:text-background transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="md:w-2/5 aspect-[3/4] md:aspect-auto">
+              {/* Mobile Header: Photo + Name */}
+              <div className="flex flex-row md:hidden items-center gap-4 border-b border-border/50">
+                <div className="w-24 h-32 shrink-0 overflow-hidden">
+                  <img
+                    src={displayImage}
+                    alt={teacher.name?.[lang] || teacher.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="py-4 pr-4">
+                  <h2 className="font-display text-lg text-primary leading-tight">
+                    {teacher.name?.[lang] || teacher.name}
+                  </h2>
+                </div>
+              </div>
+
+              {/* Desktop Image (hidden on mobile) */}
+              <div className="hidden md:block md:w-2/5 aspect-[3/4] md:aspect-auto">
                 <img
                   src={displayImage}
                   alt={teacher.name?.[lang] || teacher.name}
@@ -257,24 +247,32 @@ function TeacherCard({ teacher, index }: { teacher: any; index: number }) {
                 />
               </div>
 
-              <div className="md:w-3/5 p-8 md:p-14 flex flex-col justify-center">
-                <span className="text-xs uppercase tracking-[0.3em] text-gold font-bold mb-4 block">
-                  {teacher.expertise?.[lang] || teacher.expertise}
-                </span>
-                <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-primary mb-8 leading-tight">
-                  {teacher.name?.[lang] || teacher.name}
-                </h2>
-                <div className="h-1 w-20 bg-gold mb-8 rounded-full" />
-                <p className="text-lg md:text-xl text-muted-foreground leading-relaxed italic">
+              {/* Content Area */}
+              <div className="md:w-3/5 p-5 md:p-14 flex flex-col justify-center">
+                {/* Desktop Title (hidden on mobile) */}
+                <div className="hidden md:block">
+                  <span className="text-xs uppercase tracking-[0.3em] text-gold font-bold mb-2 md:mb-4 block">
+                    {teacher.expertise?.[lang] || teacher.expertise}
+                  </span>
+                  <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-primary mb-4 md:mb-8 leading-tight">
+                    {teacher.name?.[lang] || teacher.name}
+                  </h2>
+                  <div className="h-1 w-20 bg-gold mb-4 md:mb-8 rounded-full" />
+                </div>
+
+                {/* Common Bio */}
+                <p className="text-sm md:text-xl text-muted-foreground leading-relaxed italic">
+                  <span className="text-gold font-bold not-italic mr-2 md:hidden">{teacher.expertise?.[lang] || teacher.expertise} •</span>
                   "{teacher.bio?.[lang] || teacher.bio}"
                 </p>
                 
-                <div className="mt-12 flex gap-4">
-                  <div className="px-6 py-3 rounded-full border border-gold/30 text-gold text-xs font-bold uppercase tracking-widest">
+                {/* Common Badges */}
+                <div className="mt-4 md:mt-12 flex flex-wrap gap-2 md:gap-4">
+                  <div className="px-2 py-1 md:px-6 md:py-3 rounded-full border border-gold/30 text-gold text-[10px] md:text-xs font-bold uppercase tracking-widest">
                     {lang === 'en' ? 'Expert Guru' : 'ನುರಿತ ಗುರುಗಳು'}
                   </div>
-                  <div className="px-6 py-3 rounded-full border border-gold/30 text-gold text-xs font-bold uppercase tracking-widest">
-                    {lang === 'en' ? '20+ Years Exp' : '೨೦+ ವರ್ಷಗಳ ಅನುಭವ'}
+                  <div className="px-2 py-1 md:px-6 md:py-3 rounded-full border border-gold/30 text-gold text-[10px] md:text-xs font-bold uppercase tracking-widest">
+                    {lang === 'en' ? '20+ Years Exp' : '೨೨+ ವರ್ಷಗಳ ಅನುಭವ'}
                   </div>
                 </div>
               </div>

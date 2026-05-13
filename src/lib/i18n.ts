@@ -6,7 +6,7 @@ export const translations = {
       home: "Home",
       about: "About",
       classes: "Classes",
-      services: "Services",
+      services: "Performances",
       schedule: "Schedule",
       gallery: "Gallery",
       contact: "Contact",
@@ -170,14 +170,14 @@ export const translations = {
         sent: "Thank you — we will be in touch.",
       },
     },
-    footer: { rights: "All rights reserved.", made: "Crafted in honour of tradition" },
+    footer: { rights: "All rights reserved.", made: "CENTRE FOR YAKSHAGANA PERFORMANCE,<br />TRAINING & RESEARCH" },
   },
   kn: {
     nav: {
       home: "ಮುಖಪುಟ",
       about: "ನಮ್ಮ ಬಗ್ಗೆ",
       classes: "ಗುರುಕುಲ",
-      services: "ಸೇವೆಗಳು",
+      services: "ಪ್ರದರ್ಶನಗಳು",
       schedule: "ವೇಳಾಪಟ್ಟಿ",
       gallery: "ಗ್ಯಾಲರಿ",
       contact: "ಸಂಪರ್ಕ",
@@ -332,7 +332,7 @@ export const translations = {
         sent: "ಧನ್ಯವಾದ — ನಾವು ಸಂಪರ್ಕದಲ್ಲಿರುತ್ತೇವೆ.",
       },
     },
-    footer: { rights: "ಎಲ್ಲಾ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.", made: "ಪರಂಪರೆಯ ಗೌರವಾರ್ಥ ರಚನೆ" },
+    footer: { rights: "ಎಲ್ಲಾ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.", made: "ಯಕ್ಷಗಾನ ಪ್ರದರ್ಶನ,<br />ತರಬೇತಿ ಮತ್ತು ಸಂಶೋಧನಾ ಕೇಂದ್ರ" },
   },
 } as const;
 

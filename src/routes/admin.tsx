@@ -156,7 +156,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
     <div className="min-h-screen relative overflow-hidden bg-background">
       <div className="relative z-10 flex flex-col min-h-screen">
         {/* TOP HEADER */}
-        <header className="h-16 md:h-20 border-b border-border bg-card/50 backdrop-blur-xl flex items-center px-4 md:px-8 sticky top-0 z-[60] w-full justify-between gap-4">
+        <header className="h-16 md:h-20 border-b border-border bg-card/50 backdrop-blur-xl flex items-center px-4 md:px-8 fixed top-0 left-0 right-0 z-[60] justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link to="/admin" className="flex items-center gap-2 group">
               <div className="w-8 h-8 bg-gold rounded-xl flex items-center justify-center font-display font-bold text-background text-sm shadow-glow group-hover:scale-110 transition-transform">ಯ</div>
@@ -180,7 +180,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
                 }`}
               >
                 <item.icon className="w-3.5 h-3.5" />
-                <span>{item.label}</span>
+                <span className="font-display">{item.label}</span>
               </button>
             ))}
           </nav>
@@ -272,7 +272,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
                           }`}
                         >
                           <item.icon size={16} />
-                          <span className="text-[7px] font-bold uppercase tracking-tighter">{item.label}</span>
+                          <span className="font-display text-[7px] font-bold uppercase tracking-tighter">{item.label}</span>
                         </button>
                       ))}
                     </div>
@@ -290,7 +290,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
                           }`}
                         >
                           <item.icon size={16} />
-                          <span className="text-[7px] font-bold uppercase tracking-tighter">{item.label}</span>
+                          <span className="font-display text-[7px] font-bold uppercase tracking-tighter">{item.label}</span>
                         </button>
                       ))}
                     </div>
@@ -335,7 +335,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
         </AnimatePresence>
 
         {/* Main Canvas Area */}
-        <main className="flex-1 overflow-auto custom-scrollbar">
+        <main className="flex-1 overflow-auto custom-scrollbar pt-16 md:pt-20">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab + view + editLang}

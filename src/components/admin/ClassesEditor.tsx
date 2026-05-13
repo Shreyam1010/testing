@@ -213,6 +213,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
   const [editingTeacherIndex, setEditingTeacherIndex] = useState<number | null>(null);
 
   const [showTimePicker, setShowTimePicker] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const [data, setData] = useState({
     en: {
@@ -448,55 +449,53 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
 
   return (
     <div className="container mx-auto px-6 py-20 relative z-10">
-      {/* Immersive Hero Section */}
-      <div className="relative h-[85vh] w-full overflow-hidden rounded-b-[4rem] mb-24 -mt-10 border-x border-b border-white/5">
-        <motion.img 
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1.5 }}
-          src={current.heroImage || "/images/testing1.png.jpeg"} 
-          alt="Classes Hero" 
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/10 to-transparent" />
-        <div className="absolute inset-0 bg-black/20" />
+      {/* Integrated Title Section (Replicated from user side) */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.2, ease: "easeOut" }}
+        className="text-center mb-8 md:mb-24"
+      >
+        <h1 className="text-4xl md:text-6xl font-display text-primary uppercase leading-none mb-6">
+          <EditableText value={current.title} onChange={(v) => update("title", v)} isEditing={isEditing} tag="span" />
+        </h1>
+        <div className="h-0.5 w-16 md:w-24 bg-gold/50 mx-auto rounded-full shadow-glow mb-12" />
         
-        {isEditing && (
-          <div className="absolute top-10 left-10 z-20">
-            <button 
-              onClick={() => {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-                input.onchange = (e) => {
-                  const file = (e.target as any).files?.[0];
-                  if (file) {
-                    const url = URL.createObjectURL(file);
-                    update("heroImage", url);
-                  }
-                };
-                input.click();
-              }}
-              className="flex items-center gap-3 px-6 py-3 bg-black/60 backdrop-blur-xl border border-white/10 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold hover:text-background transition-all shadow-2xl"
-            >
-              <Camera className="w-4 h-4" /> Change Hero Image
-            </button>
+        <div className="max-w-3xl mx-auto text-center space-y-8 bg-card/50 border border-border/50 rounded-2xl p-6 md:p-10 shadow-xl backdrop-blur-sm">
+           <p className="text-sm md:text-xl text-muted-foreground leading-relaxed">
+            <EditableText value={current.intro} onChange={(v) => update("intro", v)} isEditing={isEditing} tag="span" />
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left max-w-2xl mx-auto">
+            {[
+              { 
+                en: "Traditional Dance (Tenkutittu & Badagutittu)", 
+                kn: "ಸಾಂಪ್ರದಾಯಿಕ ನೃತ್ಯ (ತೆಂಕುತಿಟ್ಟು ಮತ್ತು ಬಡಗುತಿಟ್ಟು)" 
+              },
+              { 
+                en: "Narrative Singing (Bhagavatike)", 
+                kn: "ಭಾಗವತಿಕೆ (ಗಾಯನ ಸಂಪ್ರದಾಯ)" 
+              },
+              { 
+                en: "Rhythmic Percussion (Chande & Maddale)", 
+                kn: "ಲಯವಾದ್ಯಗಳು (ಚಂಡೆ ಮತ್ತು ಮದ್ದಲೆ)" 
+              },
+              { 
+                en: "Character Makeup & Costume Art", 
+                kn: "ರಂಗಾಲಂಕಾರ ಮತ್ತು ವೇಷಭೂಷಣ ಕಲೆ" 
+              }
+            ].map((item, idx) => (
+              <div key={idx} className="flex items-center gap-3 group">
+                <div className="w-1.5 h-1.5 rounded-full bg-gold shadow-glow" />
+                <span className="text-sm md:text-base text-foreground/80 group-hover:text-gold transition-colors duration-300">
+                  {item[lang]}
+                </span>
+              </div>
+            ))}
           </div>
-        )}
-
-        <div className="absolute bottom-[10%] left-0 w-full text-center px-6 z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.3 }}
-          >
-            <h1 className="text-[26px] sm:text-3xl md:text-5xl font-display text-primary tracking-[0.25em] uppercase leading-none mb-6">
-              <EditableText value={current.title} onChange={(v) => update("title", v)} isEditing={isEditing} tag="span" />
-            </h1>
-            <div className="h-0.5 w-16 md:w-24 bg-gold/50 mx-auto rounded-full shadow-glow" />
-          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Schedule Filters */}
       <div className="w-full mb-12">
@@ -563,19 +562,37 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
               const teacher = current.teachers.find(t => t.id === c.teacherId);
               const originalIndex = current.classes.findIndex(cls => cls.id === c.id);
               return (
-                <motion.article layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} key={c.id} className="h-full group relative bg-card/40 border border-border/50 p-7 rounded-2xl transition-all hover:border-gold/40 flex flex-col">
+                <motion.article
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  key={c.id}
+                  onClick={() => {
+                    if (!isEditing && window.innerWidth < 768) {
+                      setExpandedId(expandedId === c.id ? null : c.id);
+                    }
+                  }}
+                  className={`h-full group relative bg-card/40 border ${
+                    isEditing ? "border-border/50" : "border-white/10"
+                  } p-7 rounded-2xl transition-all hover:border-gold/40 flex flex-col ${
+                    !isEditing && expandedId === c.id ? "col-span-2 md:col-span-1" : "col-span-1"
+                  }`}
+                >
                   {isEditing && (
                     <button
-                      onClick={() => handleDeleteClass(c.id)}
+                      onClick={(e) => { e.stopPropagation(); handleDeleteClass(c.id); }}
                       className="absolute top-2 right-2 z-10 p-2 bg-red-500/80 text-white rounded-full hover:bg-red-500 transition-all"
                       title="Remove Class"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   )}
-                  <div className="flex items-center gap-2 text-[10px] text-gold/80 uppercase tracking-[0.2em] mb-4 mt-2">
-                    {isEditing ? (
-                      <>
+
+                  {isEditing ? (
+                    /* Editor View */
+                    <>
+                      <div className="flex items-center gap-2 text-[10px] text-gold/80 uppercase tracking-[0.2em] mb-4 mt-2">
                         <select
                           value={c.day}
                           onChange={(e) => updateClass(originalIndex, "day", e.target.value)}
@@ -631,83 +648,139 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                             </>
                           )}
                         </select>
-                      </>
-                    ) : (
-                      <>
-                        <span>{c.day}</span>
-                        {c.level && c.level !== "None" && c.level !== "ಯಾವುದು ಇಲ್ಲ" && (
-                          <>
-                            <span className="text-border">•</span>
-                            <span>{c.level}</span>
-                          </>
-                        )}
-                      </>
-                    )}
-                  </div>
-                  <h3 className="font-display text-xl text-primary leading-tight mb-5">
-                    <EditableText value={c.topic} onChange={(v) => updateClass(originalIndex, "topic", v)} isEditing={isEditing} />
-                  </h3>
-                  <div className="space-y-3 text-sm text-foreground/70 flex-grow">
-                    <div className="flex items-center gap-3">
-                      <User size={14} className="text-gold shrink-0" />
-                      {isEditing ? (
-                         <select 
-                           value={c.teacherId}
-                           onChange={(e) => updateClass(originalIndex, "teacherId", e.target.value)}
-                           className="bg-black/40 border border-border/50 rounded px-2 py-1 outline-none focus:border-gold"
-                         >
-                           {current.teachers.map(t => (
-                             <option key={t.id} value={t.id}>{t.name}</option>
-                           ))}
-                         </select>
-                      ) : (
-                         <span>{lang === "en" ? "with" : "ಜೊತೆಗೆ"} {teacher?.name}</span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-3 relative">
-                      <Clock size={14} className="text-gold shrink-0" />
-                      {isEditing ? (
-                        <div className="relative flex-grow">
-                          <button
-                            onClick={() => setShowTimePicker(showTimePicker === c.id ? null : c.id)}
-                            className="text-left w-full text-xs text-primary hover:text-gold transition-colors"
+                      </div>
+
+                      <h3 className="font-display text-xl text-primary leading-tight mb-5">
+                        <EditableText value={c.topic} onChange={(v) => updateClass(originalIndex, "topic", v)} isEditing={true} />
+                      </h3>
+
+                      <div className="space-y-3 text-sm text-foreground/70 flex-grow">
+                        <div className="flex items-center gap-3">
+                          <User size={14} className="text-gold shrink-0" />
+                          <select 
+                            value={c.teacherId}
+                            onChange={(e) => updateClass(originalIndex, "teacherId", e.target.value)}
+                            className="bg-black/40 border border-border/50 rounded px-2 py-1 outline-none focus:border-gold"
                           >
-                            {c.time || "Select Time"}
-                          </button>
-                          {showTimePicker === c.id && (
-                            <TimeScrollPicker
-                              value={c.time || "6:00 PM"}
-                              onChange={(v) => {
-                                updateClass(originalIndex, "time", v);
-                              }}
-                              onClose={() => setShowTimePicker(null)}
-                            />
-                          )}
+                            {current.teachers.map(t => (
+                              <option key={t.id} value={t.id}>{t.name}</option>
+                            ))}
+                          </select>
                         </div>
-                      ) : (
-                        <span>{c.time}</span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <BookOpen size={14} className="text-gold shrink-0" />
-                      {isEditing ? (
-                        <EditableText 
-                          value={teacher?.expertise || ""} 
-                          onChange={(v) => {
-                            const newTeachers = [...current.teachers];
-                            const tIdx = newTeachers.findIndex(t => t.id === c.teacherId);
-                            if (tIdx !== -1) {
-                              newTeachers[tIdx] = { ...newTeachers[tIdx], expertise: v };
-                              update("teachers", newTeachers);
-                            }
-                          }} 
-                          isEditing={true} 
-                        />
-                      ) : (
-                        <span>{teacher?.expertise}</span>
-                      )}
-                    </div>
-                  </div>
+
+                        <div className="flex items-center gap-3 relative">
+                          <Clock size={14} className="text-gold shrink-0" />
+                          <div className="relative flex-grow">
+                            <button
+                              onClick={() => setShowTimePicker(showTimePicker === c.id ? null : c.id)}
+                              className="text-left w-full text-xs text-primary hover:text-gold transition-colors"
+                            >
+                              {c.time || "Select Time"}
+                            </button>
+                            {showTimePicker === c.id && (
+                              <TimeScrollPicker
+                                value={c.time || "6:00 PM"}
+                                onChange={(v) => {
+                                  updateClass(originalIndex, "time", v);
+                                }}
+                                onClose={() => setShowTimePicker(null)}
+                              />
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <BookOpen size={14} className="text-gold shrink-0" />
+                          <EditableText 
+                            value={teacher?.expertise || ""} 
+                            onChange={(v) => {
+                              const newTeachers = [...current.teachers];
+                              const tIdx = newTeachers.findIndex(t => t.id === c.teacherId);
+                              if (tIdx !== -1) {
+                                newTeachers[tIdx] = { ...newTeachers[tIdx], expertise: v };
+                                update("teachers", newTeachers);
+                              }
+                            }} 
+                            isEditing={true} 
+                          />
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    /* Preview View (Matching ClassCard) */
+                    <>
+                      <div className="flex items-center justify-between gap-4 mb-4">
+                        <div className="flex items-center gap-2 text-[10px] md:text-xs text-gold font-bold uppercase tracking-[0.2em]">
+                          <span>{c.day}</span>
+                          <span className={`${expandedId === c.id ? "inline" : "hidden md:inline"} text-white/10`}>•</span>
+                          <span className={expandedId === c.id ? "inline" : "hidden md:inline"}>{c.level}</span>
+                        </div>
+                        <div className="md:hidden">
+                          <motion.div
+                            animate={{ rotate: expandedId === c.id ? 180 : 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-gold/40"
+                          >
+                            <ChevronDown size={14} />
+                          </motion.div>
+                        </div>
+                      </div>
+
+                      <h3 className="font-display text-sm md:text-2xl text-primary leading-tight mb-2 md:mb-6">{c.topic}</h3>
+
+                      <div className="hidden md:block space-y-4 text-sm text-foreground/80 flex-grow">
+                        <div className="flex items-start gap-3 group/row">
+                          <div className="mt-1 text-gold transition-transform group-hover/row:scale-110">
+                            <User size={14} />
+                          </div>
+                          <span className="leading-tight">
+                            <span className="opacity-50 mr-1">{lang === "en" ? "with" : "ಜೊತೆಗೆ"}</span>
+                            {teacher?.name}
+                          </span>
+                        </div>
+                        <div className="flex items-start gap-3 group/row">
+                          <div className="mt-1 text-gold transition-transform group-hover/row:scale-110">
+                            <Clock size={14} />
+                          </div>
+                          <span className="leading-tight">{c.time}</span>
+                        </div>
+                        <div className="flex items-start gap-3 group/row">
+                          <div className="mt-1 text-gold transition-transform group-hover/row:scale-110">
+                            <BookOpen size={14} />
+                          </div>
+                          <span className="leading-tight">{teacher?.expertise}</span>
+                        </div>
+                      </div>
+
+                      <AnimatePresence>
+                        {expandedId === c.id && (
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="md:hidden pt-4 border-t border-white/5 space-y-4 text-sm text-foreground/80"
+                          >
+                            <div className="flex items-start gap-3">
+                              <User size={14} className="text-gold mt-1" />
+                              <span>
+                                <span className="opacity-50 mr-1">{lang === "en" ? "with" : "ಜೊತೆಗೆ"}</span>
+                                {teacher?.name}
+                              </span>
+                            </div>
+                            <div className="flex items-start gap-3">
+                              <Clock size={14} className="text-gold mt-1" />
+                              <span>{c.time}</span>
+                            </div>
+                            <div className="flex items-start gap-3">
+                              <BookOpen size={14} className="text-gold mt-1" />
+                              <span>{teacher?.expertise}</span>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </>
+                  )}
                 </motion.article>
               );
             })}

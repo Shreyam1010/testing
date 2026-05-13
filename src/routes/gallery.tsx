@@ -3,10 +3,7 @@ import { motion } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { useLang } from "@/contexts/LanguageContext";
 import { initialPerformanceItems, initialWorkshopItems, initialGurukulItems } from "@/lib/galleryData";
-import sticker2 from "@/assets/stickers/sticker_2.png";
-import sticker3 from "@/assets/stickers/sticker_3.png";
-import sticker4 from "@/assets/stickers/sticker_4.png";
-import sticker0 from "@/assets/stickers/sticker_0.png";
+
 import { useDbContent } from "@/hooks/useDb";
 
 export const Route = createFileRoute("/gallery")({
@@ -56,7 +53,6 @@ function Gallery() {
         {/* PERFORMANCES */}
         <div id="performances" className="mb-24 scroll-mt-24">
           <h2 className="text-3xl font-display mb-10 text-primary flex items-center gap-3">
-            <img src={sticker2} alt="" className="w-10 h-10 object-contain drop-shadow-md" />
             {lang === "en" ? "Performances" : "ಪ್ರದರ್ಶನಗಳು"}
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 grid-flow-dense">
@@ -69,7 +65,6 @@ function Gallery() {
         {/* GURUKUL (CLASSES) */}
         <div id="gurukul" className="mb-24 scroll-mt-24">
           <h2 className="text-3xl font-display mb-10 text-primary flex items-center gap-3">
-            <img src={sticker3} alt="" className="w-10 h-10 object-contain drop-shadow-md" />
             {lang === "en" ? "Classes" : "ಗುರುಕುಲ"}
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 grid-flow-dense">
@@ -82,7 +77,6 @@ function Gallery() {
         {/* WORKSHOPS */}
         <div id="workshops" className="mb-24 scroll-mt-24">
           <h2 className="text-3xl font-display mb-10 text-primary flex items-center gap-3">
-            <img src={sticker4} alt="" className="w-10 h-10 object-contain drop-shadow-md" />
             {lang === "en" ? "Workshops" : "ಕಾರ್ಯಾಗಾರಗಳು"}
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 grid-flow-dense">
@@ -101,7 +95,6 @@ function Gallery() {
         >
           <div className="text-center max-w-2xl mx-auto mb-10">
             <h2 className="text-xl sm:text-2xl md:text-4xl font-display text-primary mb-4 flex items-center justify-center gap-4">
-              <img src={sticker0} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
               {socialTitle}
             </h2>
             <p className="text-base text-muted-foreground">

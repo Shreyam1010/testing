@@ -42,7 +42,7 @@ export function Navbar() {
             <Link
               key={l.to}
               to={l.to}
-              className={`relative px-4 py-2 text-sm transition-colors ${
+              className={`font-display relative px-4 py-2 text-sm transition-colors ${
                 path === l.to ? "text-primary" : "text-foreground/80 hover:text-primary"
               }`}
             >
@@ -92,7 +92,7 @@ export function Navbar() {
                   key={l.to}
                   to={l.to}
                   onClick={() => setOpen(false)}
-                  className={`px-3 py-2 rounded-md text-sm ${
+                  className={`font-display px-3 py-2 rounded-md text-sm ${
                     path === l.to ? "text-primary bg-muted" : "text-foreground/80"
                   }`}
                 >

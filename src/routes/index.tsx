@@ -597,7 +597,7 @@ function OurStorySection({ aboutData, aboutImg, sticker1, lang, t }: any) {
   ];
 
   return (
-    <section className="relative overflow-hidden min-h-[70vh] lg:min-h-[80vh] flex items-stretch border-y border-gold/10 mt-0 md:mt-0 bg-background">
+    <section className="relative overflow-hidden flex items-stretch mt-0 md:mt-0 bg-[oklch(0.2_0.05_20)]">
       <div className="grid lg:grid-cols-[45%_55%] w-full">
         <motion.div
           initial={window.innerWidth < 1024 ? { opacity: 0, y: 20 } : { opacity: 0, x: -40 }}
@@ -606,7 +606,7 @@ function OurStorySection({ aboutData, aboutImg, sticker1, lang, t }: any) {
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="relative lg:block flex justify-center pt-8 lg:pt-0 overflow-hidden lg:border-r lg:border-gold/10 lg:h-auto"
         >
-          <div className="relative h-full w-full flex justify-center lg:block">
+          <div className="relative h-full w-full flex justify-center items-center lg:block">
             <img
               src={aboutData.image || aboutImg}
               alt="Yakshagana performer"
@@ -617,7 +617,7 @@ function OurStorySection({ aboutData, aboutImg, sticker1, lang, t }: any) {
         </motion.div>
 
         {/* Text Content */}
-        <div className="flex flex-col justify-center px-6 py-12 lg:py-20 md:px-16 lg:px-24 text-center lg:text-left">
+        <div className="flex flex-col justify-center px-6 py-6 lg:py-20 md:px-16 lg:px-24 text-center lg:text-left">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -626,7 +626,6 @@ function OurStorySection({ aboutData, aboutImg, sticker1, lang, t }: any) {
           >
             <span className="text-gold font-display tracking-[0.3em] uppercase text-[10px] md:text-sm mb-2 block">Our Story</span>
             <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-6 md:mb-10 text-primary flex items-center justify-center lg:justify-start gap-3">
-              <img src={sticker1} alt="" className="w-8 h-8 md:w-12 md:h-12 object-contain" />
               {lang === "en" ? "ABOUT US" : "ನಮ್ಮ ಬಗ್ಗೆ"}
             </h2>
             
@@ -800,7 +799,7 @@ function Index() {
               </motion.div>
             </div>
 
-            <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-b from-transparent to-background pointer-events-none" />
+            <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-b from-transparent to-[oklch(0.2_0.05_20)] pointer-events-none" />
           </section>
 
           {/* OUR STORY */}
@@ -813,7 +812,8 @@ function Index() {
           />
 
           {/* HIGHLIGHTS */}
-          <section className="container mx-auto px-6 pt-20 pb-4 md:pb-20 relative overflow-hidden">
+          <section className="container mx-auto px-6 pt-10 pb-4 md:pb-20 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-[oklch(0.2_0.05_20)] to-transparent pointer-events-none" />
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -821,11 +821,10 @@ function Index() {
               transition={{ duration: 0.6 }}
               className="text-center max-w-2xl mx-auto mb-16"
             >
-              <div className="ornament-divider w-24 mx-auto mb-6" />
               <h2 className="text-[22px] xs:text-26px sm:text-3xl md:text-5xl font-display mb-4 flex items-center justify-center gap-3 md:gap-4 leading-tight">
-                <img src={sticker1} alt="" className="w-8 h-8 md:w-12 md:h-12 object-contain" />
                 {t.highlights.title}
               </h2>
+              <div className="h-0.5 w-40 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mb-4" style={{ boxShadow: "0 0 15px oklch(0.82 0.17 85)" }} />
               <p className="text-muted-foreground text-sm md:text-base">{t.highlights.subtitle}</p>
             </motion.div>
 
@@ -905,7 +904,6 @@ function Index() {
             {/* PERFORMANCES */}
             <div id="performances-details" className="scroll-mt-32">
               <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
-                <img src={sticker2} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                 {t.highlights.items[2].title}
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3 md:gap-6">
@@ -941,7 +939,6 @@ function Index() {
             {/* CLASSES */}
             <div id="classes-details" className="scroll-mt-32">
               <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
-                <img src={sticker3} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                 {t.highlights.items[0].title}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-8">
@@ -976,7 +973,6 @@ function Index() {
             {/* WORKSHOPS */}
             <div id="workshops-details" className="scroll-mt-32">
               <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display mb-12 text-center text-primary flex items-center justify-center gap-4">
-                <img src={sticker4} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                 {t.highlights.items[1].title}
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
@@ -1010,7 +1006,6 @@ function Index() {
             <div id="blog-preview" className="scroll-mt-32">
               <div className="relative flex items-center justify-center mb-12">
                 <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display text-center text-primary flex items-center justify-center gap-4">
-                  <img src={sticker0} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                   {lang === "en" ? "Latest Insights" : "ಇತ್ತೀಚಿನ ಒಳನೋಟಗಳು"}
                 </h2>
                 <Link

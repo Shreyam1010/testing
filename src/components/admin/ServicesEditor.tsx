@@ -198,7 +198,6 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
 
   const sections = [
     { id: "perf", label: "Performances", imgs: JSON.parse(pageContent.perf_imgs) },
-    { id: "class", label: "Gurukul", imgs: JSON.parse(pageContent.class_imgs) },
     { id: "work", label: "Workshops", imgs: JSON.parse(pageContent.work_imgs) }
   ];
 
@@ -206,14 +205,14 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       {/* Header */}
       <section className="container mx-auto px-6 py-20 relative z-10">
-        <div className="text-center max-w-2xl mx-auto mb-24">
+        <div className="text-center max-w-4xl mx-auto mb-24">
           <div className="ornament-divider w-24 mx-auto mb-6" />
           <EditableText 
             value={pageContent.title} 
             onChange={(v) => setPageContent({ ...pageContent, title: v })} 
             isEditing={isEditing} 
             tag="h1" 
-            className="text-3xl sm:text-4xl md:text-6xl font-display mb-4 text-primary"
+            className="text-2xl sm:text-3xl md:text-5xl font-display mb-4 text-primary"
           />
           <EditableText 
             value={pageContent.subtitle} 
@@ -224,12 +223,11 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
           />
         </div>
 
-        <div className="flex flex-col gap-32">
+        <div className="flex flex-col gap-16">
           {sections.map((sec) => (
             <div key={sec.id} className="flex flex-col gap-12">
               <div className="text-center max-w-4xl mx-auto">
-                <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display text-primary mb-6 flex items-center justify-center gap-4">
-                  <img src={sticker5} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
+                <h2 className="text-xl sm:text-2xl md:text-4xl font-display text-primary mb-4 flex items-center justify-center gap-4">
                   <EditableText 
                     value={(pageContent as any)[`${sec.id}_title`]} 
                     onChange={(v) => setPageContent({ ...pageContent, [`${sec.id}_title`]: v })} 
@@ -242,7 +240,7 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
                   onChange={(v) => setPageContent({ ...pageContent, [`${sec.id}_desc`]: v })} 
                   isEditing={isEditing} 
                   tag="p" 
-                  className="text-xl text-muted-foreground leading-relaxed"
+                  className="text-sm md:text-base text-muted-foreground leading-relaxed"
                 />
               </div>
 
@@ -276,7 +274,7 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
               </div>
 
               <div className="flex justify-center mt-4">
-                <div className="flex items-center gap-3 px-10 py-5 bg-gold text-background rounded-full font-bold uppercase tracking-widest text-sm shadow-glow">
+                <div className="flex items-center gap-2 px-6 py-3 bg-gold text-background rounded-full font-bold uppercase tracking-widest text-xs shadow-glow">
                   <Star className="w-4 h-4" />
                   <EditableText 
                     value={(pageContent as any)[`${sec.id}_btn`]} 
@@ -290,7 +288,7 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
           ))}
 
           {/* Socials Section */}
-          <div className="pt-20">
+          <div className="pt-4">
             <div className="text-center max-w-2xl mx-auto mb-16">
               <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display text-primary mb-6 flex items-center justify-center gap-4">
                 <img src={sticker0} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />

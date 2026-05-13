@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { useLang } from "@/contexts/LanguageContext";
 import aboutImg from "@/assets/about-performer.jpg";
-import sticker1 from "@/assets/stickers/sticker_1.png";
+
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -45,13 +45,12 @@ function About() {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="relative lg:block flex justify-center pt-16 lg:pt-0 overflow-hidden border-r border-gold/10 lg:h-auto"
             >
-              <div className="relative h-full w-full">
+              <div className="relative h-full w-full flex justify-center items-center lg:block">
                 <img
                   src={aboutData.image || aboutImg}
                   alt="Yakshagana performer"
-                  className="w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] lg:w-full lg:h-full object-cover object-top rounded-full lg:rounded-none border border-gold/20 lg:border-none shadow-glow lg:shadow-none"
+                  className="w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] lg:w-full lg:h-full object-cover object-top rounded-full lg:rounded-none border border-gold/20 lg:border-none lg:shadow-none"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent to-background/30 lg:to-background/60 rounded-full lg:rounded-none" />
               </div>
             </motion.div>
 
@@ -66,7 +65,6 @@ function About() {
                   {lang === "en" ? "OUR STORY" : "ನಮ್ಮ ಕಥೆ"}
                 </span>
                 <h1 className="font-display text-[26px] sm:text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-6 lg:mb-10 text-foreground flex items-center justify-center lg:justify-start gap-4 md:gap-6">
-                  <img src={sticker1} alt="" className="w-10 h-10 md:w-16 md:h-16 object-contain drop-shadow-md" />
                   {aboutData.title}
                 </h1>
                 
