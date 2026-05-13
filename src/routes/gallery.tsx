@@ -94,12 +94,9 @@ function Gallery() {
           className="pt-10 border-t border-border/30 mt-20"
         >
           <div className="text-center max-w-2xl mx-auto mb-10">
-            <h2 className="text-xl sm:text-2xl md:text-4xl font-display text-primary mb-4 flex items-center justify-center gap-4">
-              {socialTitle}
+            <h2 className="text-xl sm:text-2xl md:text-4xl font-display text-primary mb-4 flex items-center justify-center gap-4 uppercase tracking-wider">
+              {lang === "en" ? "Follow our journey on social media" : "ಸಾಮಾಜಿಕ ಜಾಲತಾಣಗಳಲ್ಲಿ ನಮ್ಮ ಪ್ರಯಾಣವನ್ನು ಅನುಸರಿಸಿ"}
             </h2>
-            <p className="text-base text-muted-foreground">
-              {socialSubtitle}
-            </p>
           </div>
 
           <div className="flex flex-wrap justify-center gap-4">

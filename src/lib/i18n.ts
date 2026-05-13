@@ -131,8 +131,8 @@ export const translations = {
         buttonText: "Book the Show"
       },
       social: {
-        title: "Echoes of Yakshagana Awaits",
-        subtitle: "Follow our journey on social media",
+        title: "Follow our journey on social media",
+        subtitle: "",
         facebook: {
           title: "Facebook",
           desc: "Join our community and stay updated with our latest events and performances.",
@@ -176,7 +176,7 @@ export const translations = {
     nav: {
       home: "ಮುಖಪುಟ",
       about: "ನಮ್ಮ ಬಗ್ಗೆ",
-      classes: "ಗುರುಕುಲ",
+      classes: "ತರಗತಿಗಳು",
       services: "ಪ್ರದರ್ಶನಗಳು",
       schedule: "ವೇಳಾಪಟ್ಟಿ",
       gallery: "ಗ್ಯಾಲರಿ",
@@ -293,8 +293,8 @@ export const translations = {
         buttonText: "ಪ್ರದರ್ಶನ ಬುಕ್ ಮಾಡಿ"
       },
       social: {
-        title: "ಯಕ್ಷಗಾನದ ಪ್ರತಿಧ್ವನಿಗಳು ಕಾದಿವೆ",
-        subtitle: "ಸಾಮಾಜಿಕ ಜಾಲತಾಣಗಳಲ್ಲಿ ನಮ್ಮ ಪ್ರಯಾಣವನ್ನು ಅನುಸರಿಸಿ",
+        title: "ಸಾಮಾಜಿಕ ಜಾಲತಾಣಗಳಲ್ಲಿ ನಮ್ಮ ಪ್ರಯಾಣವನ್ನು ಅನುಸರಿಸಿ",
+        subtitle: "",
         facebook: {
           title: "ಫೇಸ್ಬುಕ್",
           desc: "ನಮ್ಮ ಸಮುದಾಯಕ್ಕೆ ಸೇರಿ ಮತ್ತು ನಮ್ಮ ಇತ್ತೀಚಿನ ಕಾರ್ಯಕ್ರಮಗಳ ಮಾಹಿತಿಯನ್ನು ಪಡೆಯಿರಿ.",

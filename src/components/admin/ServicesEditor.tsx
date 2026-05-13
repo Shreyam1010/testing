@@ -90,7 +90,7 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
     perf_title: "Performances",
     perf_desc: "Experience the awe-inspiring magic of Yakshagana with our year-round stage events. We celebrate ancient epics through powerful storytelling, bringing the rich, vibrant heritage of coastal Karnataka directly to your venue. Every performance is a complete cultural immersion featuring authentic, elaborately crafted costumes, mesmerizing live traditional music, and seasoned veteran artists who breathe life into mythological legends.",
     perf_btn: "Host the Show",
-    perf_imgs: JSON.stringify(["/images/gallery-1.jpg", "/images/gallery-2.jpg", "/images/gallery-4.jpg", "/images/gallery-5.jpg", "/images/gallery-6.jpg"]),
+    perf_imgs: JSON.stringify(["/images/gallery-1.jpg", "/images/gallery-2.jpg", "/images/gallery-4.jpg", "/images/gallery-6.jpg", "/images/gallery-5.jpg", "/images/gallery-3.jpg"]),
     class_title: "Classes",
     class_desc: "Step into the sacred circle of learning with our authentic training programs. We offer comprehensive, gurukula-style instruction in traditional dance, intricate footwork, classical music (Bhagavatike), and powerful dialogue delivery, guided by highly experienced veteran gurus.",
     class_btn: "Book Demo",
@@ -99,8 +99,8 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
     work_desc: "Dive deep into the world of Yakshagana with our intensive, seasonal workshops designed for performers, dedicated students, and passionate enthusiasts. Join our weekend crash courses or immersive week-long retreats to learn the subtle, complex nuances of traditional face-painting.",
     work_btn: "Book the Show",
     work_imgs: JSON.stringify(["/images/gallery-4.jpg", "/images/gallery-1.jpg", "/images/gallery-3.jpg", "/images/gallery-6.jpg", "/images/gallery-5.jpg"]),
-    social_title: "Echoes of Yakshagana Awaits",
-    social_subtitle: "Follow our journey on social media",
+    social_title: "Follow our journey on social media",
+    social_subtitle: "",
   });
 
   const [socialLinks, setSocialLinks] = useState<any[]>([]);
@@ -203,26 +203,7 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      {/* Header */}
-      <section className="container mx-auto px-6 py-20 relative z-10">
-        <div className="text-center max-w-4xl mx-auto mb-24">
-          <div className="ornament-divider w-24 mx-auto mb-6" />
-          <EditableText 
-            value={pageContent.title} 
-            onChange={(v) => setPageContent({ ...pageContent, title: v })} 
-            isEditing={isEditing} 
-            tag="h1" 
-            className="text-2xl sm:text-3xl md:text-5xl font-display mb-4 text-primary"
-          />
-          <EditableText 
-            value={pageContent.subtitle} 
-            onChange={(v) => setPageContent({ ...pageContent, subtitle: v })} 
-            isEditing={isEditing} 
-            tag="p" 
-            className="text-muted-foreground text-lg"
-          />
-        </div>
-
+      <section className="container mx-auto px-6 pt-10 pb-16 relative z-10">
         <div className="flex flex-col gap-16">
           {sections.map((sec) => (
             <div key={sec.id} className="flex flex-col gap-12">
@@ -244,13 +225,18 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
                 />
               </div>
 
-              <div className="w-full overflow-hidden pb-4">
-                <div className="flex flex-nowrap gap-4 lg:gap-6 overflow-x-auto snap-x snap-mandatory no-scrollbar">
+              {sec.id === "perf" ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3 md:gap-6 max-w-6xl mx-auto w-full">
                   {sec.imgs.map((img: string, idx: number) => (
-                    <div key={idx} className="group shrink-0 w-[calc((100%-1rem)/2.5)] sm:w-[calc((100%-2rem)/3.5)] lg:w-[calc((100%-6rem)/4.5)] relative aspect-[4/5] rounded-2xl overflow-hidden border border-border shadow-xl">
-                      <img src={img} className="w-full h-full object-cover" alt="" />
+                    <div 
+                      key={idx} 
+                      className={`group relative overflow-hidden rounded-2xl border border-border transition aspect-square ${
+                        (idx === 0 || idx === 4) ? "md:row-span-2 md:aspect-auto" : ""
+                      }`}
+                    >
+                      <img src={img} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="" />
                       {isEditing && (
-                        <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 text-white font-bold text-[10px] uppercase tracking-widest cursor-pointer">
+                        <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 text-white font-bold text-[10px] uppercase tracking-widest cursor-pointer z-20">
                           <Upload className="w-4 h-4 text-gold" /> Replace Photo
                           <input 
                             type="file" 
@@ -262,16 +248,40 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
                           />
                         </label>
                       )}
-                      {idx === 4 && !isEditing && (
-                        <div className="absolute inset-0 bg-black/50 flex flex-col justify-center pl-[25%]">
-                          <ArrowRight className="w-8 h-8 text-white" />
-                          <span className="text-xs font-bold uppercase tracking-widest text-white mt-2">More</span>
-                        </div>
-                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-0 group-hover:opacity-60 transition pointer-events-none" />
                     </div>
                   ))}
                 </div>
-              </div>
+              ) : (
+                <div className="w-full overflow-hidden pb-4">
+                  <div className="flex flex-nowrap gap-4 lg:gap-6 overflow-x-auto snap-x snap-mandatory no-scrollbar">
+                    {sec.imgs.map((img: string, idx: number) => (
+                      <div key={idx} className="group shrink-0 w-[calc((100%-1rem)/2.5)] sm:w-[calc((100%-2rem)/3.5)] lg:w-[calc((100%-6rem)/4.5)] relative aspect-[4/5] rounded-2xl overflow-hidden border border-border shadow-xl">
+                        <img src={img} className="w-full h-full object-cover" alt="" />
+                        {isEditing && (
+                          <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 text-white font-bold text-[10px] uppercase tracking-widest cursor-pointer">
+                            <Upload className="w-4 h-4 text-gold" /> Replace Photo
+                            <input 
+                              type="file" 
+                              className="hidden" 
+                              accept="image/*" 
+                              onChange={(e) => {
+                                if (e.target.files?.[0]) handleUpdateImage(sec.id, idx, e.target.files[0]);
+                              }}
+                            />
+                          </label>
+                        )}
+                        {idx === 4 && !isEditing && (
+                          <div className="absolute inset-0 bg-black/50 flex flex-col justify-center pl-[25%]">
+                            <ArrowRight className="w-8 h-8 text-white" />
+                            <span className="text-xs font-bold uppercase tracking-widest text-white mt-2">More</span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="flex justify-center mt-4">
                 <div className="flex items-center gap-2 px-6 py-3 bg-gold text-background rounded-full font-bold uppercase tracking-widest text-xs shadow-glow">
@@ -290,22 +300,10 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
           {/* Socials Section */}
           <div className="pt-4">
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display text-primary mb-6 flex items-center justify-center gap-4">
+              <h2 className="text-[26px] sm:text-3xl md:text-5xl font-display text-primary mb-6 flex items-center justify-center gap-4 whitespace-nowrap">
                 <img src={sticker0} alt="" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
-                <EditableText 
-                  value={pageContent.social_title} 
-                  onChange={(v) => setPageContent({ ...pageContent, social_title: v })} 
-                  isEditing={isEditing} 
-                  tag="span" 
-                />
+                {lang === "en" ? "Follow our journey on social media" : "ಸಾಮಾಜಿಕ ಜಾಲತಾಣಗಳಲ್ಲಿ ನಮ್ಮ ಪ್ರಯಾಣವನ್ನು ಅನುಸರಿಸಿ"}
               </h2>
-              <EditableText 
-                value={pageContent.social_subtitle} 
-                onChange={(v) => setPageContent({ ...pageContent, social_subtitle: v })} 
-                isEditing={isEditing} 
-                tag="p" 
-                className="text-xl text-muted-foreground"
-              />
             </div>
 
             <div className="flex flex-wrap justify-center gap-4">

@@ -80,35 +80,47 @@ function Classes() {
                 </h1>
                 <div className="h-0.5 w-16 md:w-24 bg-gold/50 mx-auto rounded-full shadow-glow mb-12" />
                 
-                <div className="max-w-3xl mx-auto text-center space-y-8 bg-card/50 border border-border/50 rounded-2xl p-6 md:p-10 shadow-xl backdrop-blur-sm">
-                   <p className="text-sm md:text-xl text-muted-foreground leading-relaxed">
+                <div className="max-w-4xl mx-auto text-center space-y-10 bg-[#0a0a0a]/80 border border-gold/20 rounded-[2.5rem] p-8 md:p-14 shadow-2xl backdrop-blur-md relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-gold/5 via-transparent to-crimson/5 opacity-50" />
+                  
+                   <p className="relative z-10 text-base md:text-xl text-primary/90 leading-relaxed font-medium">
                     {lang === "en" 
-                      ? "Immerse yourself in the sacred circle of learning with our authentic training programs. Our Gurukul provides deep, unparalleled insights into every nuance of this majestic art form through specialized instruction in:"
-                      : "ನಮ್ಮ ಅಧಿಕೃತ ತರಬೇತಿ ಕಾರ್ಯಕ್ರಮಗಳೊಂದಿಗೆ ಕಲಿಕೆಯ ಪವಿತ್ರ ವಲಯವನ್ನು ಪ್ರವೇಶಿಸಿ. ನಮ್ಮ ಗುರುಕುಲವು ಈ ಭವ್ಯ ಕಲಾ ಪ್ರಕಾರದ ಪ್ರತಿಯೊಂದು ಸೂಕ್ಷ್ಮತೆಯ ಬಗ್ಗೆ ಆಳವಾದ ಒಳನೋಟಗಳನ್ನು ಈ ಕೆಳಗಿನ ವಿಭಾಗಗಳಲ್ಲಿ ನೀಡುತ್ತದೆ:"}
+                      ? "Step into the sacred circle of learning where tradition meets discipline. Our classes are designed to provide a comprehensive understanding of Yakshagana, from the foundational rhythms to the complex expressions of the epics. Beyond the physical movements, we delve into the literary and musical heritage, ensuring each student becomes a custodian of the art's soul. Join us in this journey of rhythm, expression, and divinity."
+                      : "ಪರಂಪರೆ ಮತ್ತು ಶಿಸ್ತು ಸಂಗಮಿಸುವ ಈ ಪವಿತ್ರ ಕಲಿಕಾ ವಲಯಕ್ಕೆ ಹೆಜ್ಜೆ ಇಡಿ. ಯಕ್ಷಗಾನದ ಮೂಲ ಲಯಗಳಿಂದ ಹಿಡಿದು ಪುರಾಣಗಳ ಸಂಕೀರ್ಣ ಅಭಿವ್ಯಕ್ತಿಗಳವರೆಗೆ ಸಮಗ್ರ ತಿಳುವಳಿಕೆಯನ್ನು ನೀಡಲು ನಮ್ಮ ತರಗತಿಗಳನ್ನು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ. ದೈಹಿಕ ಚಲನೆಗಳ ಹೊರತಾಗಿ, ನಾವು ಸಾಹಿತ್ಯ ಮತ್ತು ಸಂಗೀತದ ಪರಂಪರೆಯನ್ನು ಆಳವಾಗಿ ಅಧ್ಯಯನ ಮಾಡುತ್ತೇವೆ, ಪ್ರತಿ ವಿದ್ಯಾರ್ಥಿಯು ಈ ಕಲೆಯ ಆತ್ಮದ ಸಂರಕ್ಷಕನಾಗುವುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳುತ್ತೇವೆ. ಲಯ, ಅಭಿವ್ಯಕ್ತಿ ಮತ್ತು ದೈವಿಕತೆಯ ಈ ಪ್ರಯಾಣದಲ್ಲಿ ನಮ್ಮೊಂದಿಗೆ ಸೇರಿ."}
                   </p>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left max-w-2xl mx-auto">
+                  <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 text-left max-w-3xl mx-auto mt-10">
                     {[
                       { 
-                        en: "Traditional Dance (Tenkutittu & Badagutittu)", 
-                        kn: "ಸಾಂಪ್ರದಾಯಿಕ ನೃತ್ಯ (ತೆಂಕುತಿಟ್ಟು ಮತ್ತು ಬಡಗುತಿಟ್ಟು)" 
+                        en: "Authentic Gurukula style training", 
+                        kn: "ಅಪ್ಪಟ ಗುರುಕುಲ ಶೈಲಿಯ ತರಬೇತಿ" 
                       },
                       { 
-                        en: "Narrative Singing (Bhagavatike)", 
-                        kn: "ಭಾಗವತಿಕೆ (ಗಾಯನ ಸಂಪ್ರದಾಯ)" 
+                        en: "Focus on both theory and practice", 
+                        kn: "ಸೈದ್ಧಾಂತಿಕ ಮತ್ತು ಪ್ರಾಯೋಗಿಕ ಕಲಿಕೆಗೆ ಒತ್ತು" 
                       },
                       { 
-                        en: "Rhythmic Percussion (Chande & Maddale)", 
-                        kn: "ಲಯವಾದ್ಯಗಳು (ಚಂಡೆ ಮತ್ತು ಮದ್ದಲೆ)" 
+                        en: "Personalized attention from veteran gurus", 
+                        kn: "ಅನುಭವಿ ಗುರುಗಳಿಂದ ವೈಯಕ್ತಿಕ ಗಮನ" 
                       },
                       { 
-                        en: "Character Makeup & Costume Art", 
-                        kn: "ರಂಗಾಲಂಕಾರ ಮತ್ತು ವೇಷಭೂಷಣ ಕಲೆ" 
+                        en: "Opportunities for performances", 
+                        kn: "ರಂಗ ಪ್ರದರ್ಶನಗಳಿಗೆ ಅವಕಾಶಗಳು" 
+                      },
+                      { 
+                        en: "Comprehensive curriculum for all levels", 
+                        kn: "ಎಲ್ಲಾ ಹಂತದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಸಮಗ್ರ ಪಠ್ಯಕ್ರಮ" 
+                      },
+                      { 
+                        en: "In-depth study of Bhagavata literature and music", 
+                        kn: "ಭಾಗವತ ಸಾಹಿತ್ಯ ಮತ್ತು ಸಂಗೀತದ ಆಳವಾದ ಅಧ್ಯಯನ" 
                       }
                     ].map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-3 group">
-                        <div className="w-1.5 h-1.5 rounded-full bg-gold shadow-glow" />
-                        <span className="text-sm md:text-base text-foreground/80 group-hover:text-gold transition-colors duration-300">
+                      <div key={idx} className="flex items-center gap-4 group/item">
+                        <div className="w-8 h-8 md:w-10 md:h-10 shrink-0 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center group-hover/item:scale-110 group-hover/item:bg-gold/20 transition-all duration-300">
+                          <span className="text-gold font-kannada text-lg md:text-xl font-bold">ಯ</span>
+                        </div>
+                        <span className="text-sm md:text-base text-foreground/80 group-hover/item:text-primary transition-colors duration-300 leading-tight">
                           {item[lang]}
                         </span>
                       </div>
@@ -182,19 +194,22 @@ function TeacherCard({ teacher, index }: { teacher: any; index: number }) {
         viewport={{ once: true }}
         transition={{ delay: index * 0.1 }}
         onClick={() => setShowModal(true)}
-        className="group relative w-[calc(50%-0.5rem)] md:w-[calc(33.333%-1rem)] aspect-[3/4] rounded-[32px] overflow-hidden cursor-pointer border border-white/5 shadow-2xl hover:shadow-[0_0_40px_rgba(255,255,255,0.05)] transition-all duration-500"
+        className="group relative w-[calc(50%-0.5rem)] md:w-64 lg:w-72 aspect-[3/4] rounded-[32px] overflow-hidden cursor-pointer border border-white/5 shadow-2xl hover:shadow-[0_0_40px_rgba(255,255,255,0.05)] transition-all duration-500"
       >
         <img
           src={displayImage}
           alt={teacher.name?.[lang] || teacher.name}
           className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent pointer-events-none" />
         
-        <div className="absolute bottom-0 inset-x-0 p-4">
-          <h3 className="font-display text-base text-primary group-hover:text-gold transition-colors">
+        <div className="absolute bottom-0 inset-x-0 p-6">
+          <h3 className="font-display text-xl md:text-2xl text-primary group-hover:text-gold transition-colors leading-tight">
             {teacher.name?.[lang] || teacher.name}
           </h3>
+          <p className="text-xs md:text-sm text-gold/80 font-medium uppercase tracking-[0.1em] mt-1">
+            {teacher.expertise?.[lang] || teacher.expertise}
+          </p>
         </div>
       </motion.div>
 
@@ -254,17 +269,19 @@ function TeacherCard({ teacher, index }: { teacher: any; index: number }) {
                   <span className="text-xs uppercase tracking-[0.3em] text-gold font-bold mb-2 md:mb-4 block">
                     {teacher.expertise?.[lang] || teacher.expertise}
                   </span>
-                  <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-primary mb-4 md:mb-8 leading-tight">
+                  <h2 className="font-display text-3xl md:text-4xl text-primary mb-4 md:mb-8 leading-tight">
                     {teacher.name?.[lang] || teacher.name}
                   </h2>
                   <div className="h-1 w-20 bg-gold mb-4 md:mb-8 rounded-full" />
                 </div>
 
-                {/* Common Bio */}
-                <p className="text-sm md:text-xl text-muted-foreground leading-relaxed italic">
-                  <span className="text-gold font-bold not-italic mr-2 md:hidden">{teacher.expertise?.[lang] || teacher.expertise} •</span>
-                  "{teacher.bio?.[lang] || teacher.bio}"
-                </p>
+                {/* Common Bio with Scroll */}
+                <div className="max-h-52 md:max-h-64 overflow-y-auto pr-4 custom-scrollbar">
+                  <div className="text-sm md:text-xl text-muted-foreground leading-relaxed italic">
+                    <span className="text-gold font-bold not-italic mr-2 md:hidden">{teacher.expertise?.[lang] || teacher.expertise} •</span>
+                    "{teacher.bio?.[lang] || teacher.bio}"
+                  </div>
+                </div>
                 
                 {/* Common Badges */}
                 <div className="mt-4 md:mt-12 flex flex-wrap gap-2 md:gap-4">

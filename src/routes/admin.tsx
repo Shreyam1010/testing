@@ -145,7 +145,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
     { id: "classes", label: "Classes", icon: BookOpen },
     { id: "gallery", label: "Gallery", icon: ImageIcon },
     { id: "blog", label: "Insights", icon: Edit3 },
-    { id: "services", label: "Services", icon: Globe },
+    { id: "services", label: "Performances", icon: Globe },
     { id: "contact", label: "Contact", icon: Mail },
   ];
 

@@ -462,33 +462,45 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
         </h1>
         <div className="h-0.5 w-16 md:w-24 bg-gold/50 mx-auto rounded-full shadow-glow mb-12" />
         
-        <div className="max-w-3xl mx-auto text-center space-y-8 bg-card/50 border border-border/50 rounded-2xl p-6 md:p-10 shadow-xl backdrop-blur-sm">
-           <p className="text-sm md:text-xl text-muted-foreground leading-relaxed">
+        <div className="max-w-4xl mx-auto text-center space-y-10 bg-[#0a0a0a]/80 border border-gold/20 rounded-[2.5rem] p-8 md:p-14 shadow-2xl backdrop-blur-md relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-br from-gold/5 via-transparent to-crimson/5 opacity-50" />
+          
+           <p className="relative z-10 text-base md:text-xl text-primary/90 leading-relaxed font-medium">
             <EditableText value={current.intro} onChange={(v) => update("intro", v)} isEditing={isEditing} tag="span" />
           </p>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left max-w-2xl mx-auto">
+          <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 text-left max-w-3xl mx-auto mt-10">
             {[
               { 
-                en: "Traditional Dance (Tenkutittu & Badagutittu)", 
-                kn: "ಸಾಂಪ್ರದಾಯಿಕ ನೃತ್ಯ (ತೆಂಕುತಿಟ್ಟು ಮತ್ತು ಬಡಗುತಿಟ್ಟು)" 
+                en: "Authentic Gurukula style training", 
+                kn: "ಅಪ್ಪಟ ಗುರುಕುಲ ಶೈಲಿಯ ತರಬೇತಿ" 
               },
               { 
-                en: "Narrative Singing (Bhagavatike)", 
-                kn: "ಭಾಗವತಿಕೆ (ಗಾಯನ ಸಂಪ್ರದಾಯ)" 
+                en: "Focus on both theory and practice", 
+                kn: "ಸೈದ್ಧಾಂತಿಕ ಮತ್ತು ಪ್ರಾಯೋಗಿಕ ಕಲಿಕೆಗೆ ಒತ್ತು" 
               },
               { 
-                en: "Rhythmic Percussion (Chande & Maddale)", 
-                kn: "ಲಯವಾದ್ಯಗಳು (ಚಂಡೆ ಮತ್ತು ಮದ್ದಲೆ)" 
+                en: "Personalized attention from veteran gurus", 
+                kn: "ಅನುಭವಿ ಗುರುಗಳಿಂದ ವೈಯಕ್ತಿಕ ಗಮನ" 
               },
               { 
-                en: "Character Makeup & Costume Art", 
-                kn: "ರಂಗಾಲಂಕಾರ ಮತ್ತು ವೇಷಭೂಷಣ ಕಲೆ" 
+                en: "Opportunities for performances", 
+                kn: "ರಂಗ ಪ್ರದರ್ಶನಗಳಿಗೆ ಅವಕಾಶಗಳು" 
+              },
+              { 
+                en: "Comprehensive curriculum for all levels", 
+                kn: "ಎಲ್ಲಾ ಹಂತದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಸಮಗ್ರ ಪಠ್ಯಕ್ರಮ" 
+              },
+              { 
+                en: "In-depth study of Bhagavata literature and music", 
+                kn: "ಭಾಗವತ ಸಾಹಿತ್ಯ ಮತ್ತು ಸಂಗೀತದ ಆಳವಾದ ಅಧ್ಯಯನ" 
               }
             ].map((item, idx) => (
-              <div key={idx} className="flex items-center gap-3 group">
-                <div className="w-1.5 h-1.5 rounded-full bg-gold shadow-glow" />
-                <span className="text-sm md:text-base text-foreground/80 group-hover:text-gold transition-colors duration-300">
+              <div key={idx} className="flex items-center gap-4 group/item">
+                <div className="w-8 h-8 md:w-10 md:h-10 shrink-0 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center group-hover/item:scale-110 group-hover/item:bg-gold/20 transition-all duration-300">
+                  <span className="text-gold font-kannada text-lg md:text-xl font-bold">ಯ</span>
+                </div>
+                <span className="text-sm md:text-base text-foreground/80 group-hover/item:text-primary transition-colors duration-300 leading-tight">
                   {item[lang]}
                 </span>
               </div>
@@ -809,22 +821,30 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
           </button>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="flex flex-wrap justify-center gap-4 md:gap-6 max-w-6xl mx-auto">
           <AnimatePresence>
             {current.teachers.map((teacher, i) => (
-              <motion.div layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} key={teacher.id} className="group relative aspect-[3/4] rounded-2xl overflow-hidden border border-border/50 bg-card/40">
+              <motion.div 
+                layout 
+                initial={{ opacity: 0, scale: 0.9 }} 
+                animate={{ opacity: 1, scale: 1 }} 
+                exit={{ opacity: 0, scale: 0.9 }} 
+                key={teacher.id} 
+                onClick={() => setEditingTeacherIndex(i)}
+                className="group relative w-[calc(50%-0.5rem)] md:w-64 lg:w-72 aspect-[3/4] rounded-[32px] overflow-hidden cursor-pointer border border-border/50 bg-card/40"
+              >
                 {isEditing && (
                   <>
                     <button
                       onClick={() => setEditingTeacherIndex(i)}
-                      className="absolute top-4 left-4 z-10 p-3 bg-blue-500/80 text-white rounded-full hover:bg-blue-500 transition-all"
+                      className="absolute top-4 left-4 z-10 p-3 bg-blue-500/80 text-white rounded-full hover:bg-blue-500 transition-all shadow-lg"
                       title="Edit Guru"
                     >
                       <Edit2 className="w-5 h-5" />
                     </button>
                     <button
                       onClick={() => handleDeleteTeacher(i)}
-                      className="absolute top-4 right-4 z-10 p-3 bg-red-500/80 text-white rounded-full hover:bg-red-500 transition-all"
+                      className="absolute top-4 right-4 z-10 p-3 bg-red-500/80 text-white rounded-full hover:bg-red-500 transition-all shadow-lg"
                       title="Delete Guru"
                     >
                       <Trash2 className="w-5 h-5" />
@@ -832,14 +852,14 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                   </>
                 )}
                 <img src={teacher.image} alt="" className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
-                <div className="absolute bottom-0 inset-x-0 p-8 pointer-events-none">
-                  <span className="text-[10px] uppercase tracking-[0.2em] text-gold font-bold mb-1 block">
-                    {teacher.expertise}
-                  </span>
-                  <h3 className="font-display text-2xl text-primary group-hover:text-gold transition-colors">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent pointer-events-none" />
+                <div className="absolute bottom-0 inset-x-0 p-6 pointer-events-none">
+                  <h3 className="font-display text-xl md:text-2xl text-primary group-hover:text-gold transition-colors leading-tight">
                     {teacher.name}
                   </h3>
+                  <p className="text-xs md:text-sm text-gold/80 font-medium uppercase tracking-[0.1em] mt-1">
+                    {teacher.expertise}
+                  </p>
                 </div>
               </motion.div>
             ))}
@@ -902,7 +922,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                     update("teachers", newTeachers);
                   }} isEditing={true} />
                 </span>
-                <h2 className="font-display text-[26px] sm:text-3xl md:text-5xl lg:text-6xl text-primary mb-8 leading-tight">
+                <h2 className="font-display text-[22px] sm:text-2xl md:text-4xl text-primary mb-8 leading-tight">
                   <EditableText value={current.teachers[editingTeacherIndex].name} onChange={(v) => {
                     const newTeachers = [...current.teachers];
                     newTeachers[editingTeacherIndex] = { ...newTeachers[editingTeacherIndex], name: v };
@@ -910,12 +930,15 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                   }} isEditing={true} />
                 </h2>
                 <div className="h-1 w-20 bg-gold mb-8 rounded-full" />
-                <div className="text-lg md:text-xl text-muted-foreground leading-relaxed italic">
-                  "<EditableText tag="span" value={current.teachers[editingTeacherIndex].bio} onChange={(v) => {
-                    const newTeachers = [...current.teachers];
-                    newTeachers[editingTeacherIndex] = { ...newTeachers[editingTeacherIndex], bio: v };
-                    update("teachers", newTeachers);
-                  }} isEditing={true} />"
+                
+                <div className="max-h-52 md:max-h-64 overflow-y-auto pr-4 custom-scrollbar">
+                  <div className="text-lg md:text-xl text-muted-foreground leading-relaxed italic">
+                    "<EditableText tag="span" value={current.teachers[editingTeacherIndex].bio} onChange={(v) => {
+                      const newTeachers = [...current.teachers];
+                      newTeachers[editingTeacherIndex] = { ...newTeachers[editingTeacherIndex], bio: v };
+                      update("teachers", newTeachers);
+                    }} isEditing={true} />"
+                  </div>
                 </div>
                 
                 <div className="mt-12 flex flex-wrap gap-4">
