@@ -36,12 +36,10 @@ export function ClassCard({
 
   return (
     <motion.article
-      layout
-      transition={{ layout: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } }}
       onClick={() => {
         if (window.innerWidth < 768 && onToggle) onToggle();
       }}
-      className={`relative bg-card/60 border ${featured ? "border-gold/60 shadow-glow" : "border-white/10"} p-4 md:p-8 rounded-2xl md:rounded-[2rem] transition-all duration-300 hover:border-gold/30 hover:bg-card/80 flex flex-col cursor-pointer md:cursor-default h-fit ${isExpanded ? "col-span-2 md:col-span-1" : "col-span-1"}`}
+      className={`relative bg-card/60 border ${featured ? "border-gold/60 shadow-glow" : "border-border"} p-4 md:p-8 rounded-2xl md:rounded-[2rem] transition-all duration-300 hover:border-gold/30 hover:bg-card/80 flex flex-col cursor-pointer md:cursor-default h-fit ${isExpanded ? "col-span-2 md:col-span-1" : "col-span-1"}`}
       style={{ order }}
     >
       {featured && (
@@ -54,7 +52,7 @@ export function ClassCard({
       <div className="flex items-center justify-between gap-4 mb-4">
         <div className="flex items-center gap-2 text-[10px] md:text-xs text-gold font-bold uppercase tracking-[0.2em]">
           <span>{day}</span>
-          <span className={`${isExpanded ? "inline" : "hidden md:inline"} text-white/10`}>•</span>
+          <span className={`${isExpanded ? "inline" : "hidden md:inline"} text-gold/30`}>•</span>
           <span className={isExpanded ? "inline" : "hidden md:inline"}>{level}</span>
         </div>
         {/* Mobile-only Chevron */}
@@ -62,7 +60,7 @@ export function ClassCard({
           <motion.div
             animate={{ rotate: isExpanded ? 180 : 0 }}
             transition={{ duration: 0.3 }}
-            className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-gold/40"
+            className="w-6 h-6 rounded-full bg-muted/40 flex items-center justify-center text-gold/40"
           >
             <ChevronDown size={14} />
           </motion.div>
@@ -78,18 +76,20 @@ export function ClassCard({
         <DetailRow icon={<BookOpen size={14} />} value={teacher.expertise[lang]} />
       </div>
 
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {isExpanded && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="md:hidden pt-4 border-t border-white/5 space-y-4 text-sm text-foreground/80"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="md:hidden overflow-hidden"
           >
-            <DetailRow icon={<User size={14} />} label={lang === "en" ? "with" : "ಜೊತೆಗೆ"} value={teacher.name[lang]} />
-            <DetailRow icon={<Clock size={14} />} value={item.time} />
-            <DetailRow icon={<BookOpen size={14} />} value={teacher.expertise[lang]} />
+            <div className="pt-4 border-t border-border/50 space-y-4 text-sm text-foreground/80 mt-4">
+              <DetailRow icon={<User size={14} />} label={lang === "en" ? "with" : "ಜೊತೆಗೆ"} value={teacher.name[lang]} />
+              <DetailRow icon={<Clock size={14} />} value={item.time} />
+              <DetailRow icon={<BookOpen size={14} />} value={teacher.expertise[lang]} />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

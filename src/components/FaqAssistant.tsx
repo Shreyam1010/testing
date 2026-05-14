@@ -103,10 +103,10 @@ export function FaqAssistant({ blogId = null }: FaqAssistantProps) {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-24 left-4 right-4 sm:left-auto sm:right-6 sm:w-[380px] max-h-[70vh] bg-card/95 backdrop-blur-xl border border-white/10 rounded-[2rem] shadow-2xl overflow-hidden flex flex-col z-[200]"
+            className="fixed bottom-24 left-4 right-4 sm:left-auto sm:right-6 sm:w-[380px] max-h-[70vh] bg-card/95 backdrop-blur-xl border border-border rounded-[2rem] shadow-2xl overflow-hidden flex flex-col z-[200]"
           >
             {/* Header */}
-            <div className="p-5 sm:p-6 bg-gradient-to-br from-crimson/10 to-card border-b border-white/5 relative shrink-0">
+            <div className="p-5 sm:p-6 bg-gradient-to-br from-crimson/10 to-card border-b border-border/50 relative shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gold/10 rounded-xl flex items-center justify-center border border-gold/20">
                   <img src={logoImg} alt="Logo" className="w-6 h-6 sm:w-7 sm:h-7 object-contain" />
@@ -120,7 +120,7 @@ export function FaqAssistant({ blogId = null }: FaqAssistantProps) {
               </div>
               <button 
                 onClick={() => setIsOpen(false)}
-                className="absolute top-5 right-5 text-muted-foreground hover:text-white transition-colors"
+                className="absolute top-5 right-5 text-muted-foreground hover:text-foreground transition-colors"
               >
                 <X size={16} />
               </button>
@@ -138,7 +138,7 @@ export function FaqAssistant({ blogId = null }: FaqAssistantProps) {
                     <AccordionItem 
                       key={faq.id} 
                       value={`item-${i}`}
-                      className="border border-white/5 bg-white/5 rounded-xl px-4 overflow-hidden hover:bg-white/[0.08] transition-colors"
+                      className="border border-border/50 bg-muted/40 rounded-xl px-4 overflow-hidden hover:bg-muted/60 transition-colors"
                     >
                       <AccordionTrigger className="text-left text-sm sm:text-base font-medium py-4 hover:no-underline text-foreground/90 group leading-snug">
                         <span className="flex-1 pr-4">{faq.question}</span>
@@ -157,7 +157,7 @@ export function FaqAssistant({ blogId = null }: FaqAssistantProps) {
             </div>
 
             {/* Bottom Chevron Decoration */}
-            <div className="flex justify-center py-2 bg-card/50 border-t border-white/5">
+            <div className="flex justify-center py-2 bg-card/50 border-t border-border/50">
               <ChevronDown className="text-gold/30 animate-bounce" size={20} />
             </div>
           </motion.div>

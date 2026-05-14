@@ -6,8 +6,9 @@ import {
 } from "lucide-react";
 import Cropper from "react-easy-crop";
 import { useDbContent } from "@/hooks/useDb";
-import sticker0 from "@/assets/stickers/sticker_0.png";
-import sticker5 from "@/assets/stickers/sticker_5.png";
+import { apiUrl } from "@/lib/api";
+import sticker0 from "@/assets/stickers/Asset 1.png";
+import sticker5 from "@/assets/stickers/Asset 5.png";
 
 interface ServicesEditorProps {
   isEditing: boolean;
@@ -68,7 +69,7 @@ function EditableText({
       contentEditable
       suppressContentEditableWarning
       onBlur={handleBlur}
-      className={`${className} outline-none cursor-text hover:bg-white/5 rounded px-1 transition-colors`}
+      className={`${className} outline-none cursor-text hover:bg-muted/40 rounded px-1 transition-colors`}
       style={{
         caretColor: "var(--gold)",
       }}
@@ -126,9 +127,9 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
 
   useEffect(() => {
     if (dbData) {
-      const servicesContent = dbData.siteContent.filter(c => c.section === "services");
+      const servicesContent = dbData.siteContent.filter((c: any) => c.section === "services");
       const contentMap: any = {};
-      servicesContent.forEach(c => {
+      servicesContent.forEach((c: any) => {
         contentMap[c.content_key] = c.content_value;
       });
 
@@ -166,7 +167,7 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
-      await fetch(window.location.origin + "/api/save", {
+      await fetch(apiUrl("/api/save"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -176,7 +177,7 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
         })
       });
 
-      await fetch(window.location.origin + "/api/save", {
+      await fetch(apiUrl("/api/save"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -225,63 +226,34 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
                 />
               </div>
 
-              {sec.id === "perf" ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3 md:gap-6 max-w-6xl mx-auto w-full">
+              <div className="w-full overflow-hidden pb-4">
+                <div className="flex flex-nowrap gap-4 lg:gap-6 overflow-x-auto snap-x snap-mandatory no-scrollbar">
                   {sec.imgs.map((img: string, idx: number) => (
-                    <div 
-                      key={idx} 
-                      className={`group relative overflow-hidden rounded-2xl border border-border transition aspect-square ${
-                        (idx === 0 || idx === 4) ? "md:row-span-2 md:aspect-auto" : ""
-                      }`}
-                    >
-                      <img src={img} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="" />
+                    <div key={idx} className="group shrink-0 w-[calc((100%-1rem)/2.5)] sm:w-[calc((100%-2rem)/3.5)] lg:w-[calc((100%-6rem)/4.5)] relative aspect-[4/5] rounded-2xl overflow-hidden border border-border shadow-xl">
+                      <img src={img} className="w-full h-full object-cover" alt="" />
                       {isEditing && (
-                        <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 text-white font-bold text-[10px] uppercase tracking-widest cursor-pointer z-20">
+                        <label className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 text-foreground font-bold text-[10px] uppercase tracking-widest cursor-pointer">
                           <Upload className="w-4 h-4 text-gold" /> Replace Photo
-                          <input 
-                            type="file" 
-                            className="hidden" 
-                            accept="image/*" 
+                          <input
+                            type="file"
+                            className="hidden"
+                            accept="image/*"
                             onChange={(e) => {
                               if (e.target.files?.[0]) handleUpdateImage(sec.id, idx, e.target.files[0]);
                             }}
                           />
                         </label>
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-0 group-hover:opacity-60 transition pointer-events-none" />
+                      {idx === 4 && !isEditing && (
+                        <div className="absolute inset-0 bg-background/70 flex flex-col justify-center pl-[25%]">
+                          <ArrowRight className="w-8 h-8 text-foreground" />
+                          <span className="text-xs font-bold uppercase tracking-widest text-foreground mt-2">More</span>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
-              ) : (
-                <div className="w-full overflow-hidden pb-4">
-                  <div className="flex flex-nowrap gap-4 lg:gap-6 overflow-x-auto snap-x snap-mandatory no-scrollbar">
-                    {sec.imgs.map((img: string, idx: number) => (
-                      <div key={idx} className="group shrink-0 w-[calc((100%-1rem)/2.5)] sm:w-[calc((100%-2rem)/3.5)] lg:w-[calc((100%-6rem)/4.5)] relative aspect-[4/5] rounded-2xl overflow-hidden border border-border shadow-xl">
-                        <img src={img} className="w-full h-full object-cover" alt="" />
-                        {isEditing && (
-                          <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 text-white font-bold text-[10px] uppercase tracking-widest cursor-pointer">
-                            <Upload className="w-4 h-4 text-gold" /> Replace Photo
-                            <input 
-                              type="file" 
-                              className="hidden" 
-                              accept="image/*" 
-                              onChange={(e) => {
-                                if (e.target.files?.[0]) handleUpdateImage(sec.id, idx, e.target.files[0]);
-                              }}
-                            />
-                          </label>
-                        )}
-                        {idx === 4 && !isEditing && (
-                          <div className="absolute inset-0 bg-black/50 flex flex-col justify-center pl-[25%]">
-                            <ArrowRight className="w-8 h-8 text-white" />
-                            <span className="text-xs font-bold uppercase tracking-widest text-white mt-2">More</span>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+              </div>
 
               <div className="flex justify-center mt-4">
                 <div className="flex items-center gap-2 px-6 py-3 bg-gold text-background rounded-full font-bold uppercase tracking-widest text-xs shadow-glow">
@@ -327,13 +299,13 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
                     <>
                       <button 
                         onClick={() => setEditingLink({ ...social })}
-                        className="absolute top-2 left-2 p-1.5 bg-black/60 rounded-lg text-gold hover:bg-gold hover:text-background transition-all"
+                        className="absolute top-2 left-2 p-1.5 bg-background/75 rounded-lg text-gold hover:bg-gold hover:text-background transition-all"
                       >
                         <Edit3 className="w-3 h-3" />
                       </button>
                       <button 
                         onClick={() => setSocialLinks(prev => prev.filter(s => s.id !== social.id))}
-                        className="absolute top-2 right-2 p-1.5 bg-black/60 rounded-lg text-red-400 hover:bg-red-500 hover:text-white transition-all"
+                        className="absolute top-2 right-2 p-1.5 bg-background/75 rounded-lg text-destructive hover:bg-destructive hover:text-foreground transition-all"
                       >
                         <Trash2 className="w-3 h-3" />
                       </button>
@@ -354,7 +326,7 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
                     };
                     setEditingLink(newLink);
                   }}
-                  className="aspect-[4/5] border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-gold/30 hover:text-gold transition-all w-[calc((100%-1rem)/2)] sm:w-[calc((100%-3rem)/4)] lg:w-[calc((100%-9rem)/7)]"
+                  className="aspect-[4/5] border-2 border-dashed border-border rounded-2xl flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-gold/30 hover:text-gold transition-all w-[calc((100%-1rem)/2)] sm:w-[calc((100%-3rem)/4)] lg:w-[calc((100%-9rem)/7)]"
                 >
                   <Plus className="w-6 h-6" />
                   <span className="text-[10px] uppercase tracking-widest font-bold">Add Card</span>
@@ -368,7 +340,7 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
       {/* Edit Modal */}
       <AnimatePresence>
         {editingLink && (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm overflow-hidden">
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-background/85 backdrop-blur-sm overflow-hidden">
             <motion.div 
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               className="absolute inset-0"
@@ -382,7 +354,7 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
             >
               <div className="flex items-center justify-between border-b border-border pb-4">
                 <h3 className="text-xl font-display text-primary uppercase tracking-wider">Edit Social Card</h3>
-                <button onClick={() => setEditingLink(null)} className="p-2 text-muted-foreground hover:text-white transition-colors">
+                <button onClick={() => setEditingLink(null)} className="p-2 text-muted-foreground hover:text-foreground transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -391,9 +363,9 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
                 {/* Image Upload Style */}
                 <div className="space-y-2">
                   <label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold ml-1">Card Image</label>
-                  <div className="relative h-40 rounded-2xl overflow-hidden border border-white/10 group">
+                  <div className="relative h-40 rounded-2xl overflow-hidden border border-border group">
                     <img src={editingLink.image} className="w-full h-full object-cover" alt="" />
-                    <label className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-2 text-white font-bold text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                    <label className="absolute inset-0 bg-background/75 flex flex-col items-center justify-center gap-2 text-foreground font-bold text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
                       <Upload className="w-5 h-5 text-gold" /> Change Image
                       <input 
                         type="file" 
@@ -412,11 +384,11 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
                 <div className="space-y-2">
                   <label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold ml-1">Heading ({lang.toUpperCase()})</label>
                   <div className="relative group">
-                    <Type className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-gold transition-colors" />
+                    <Type className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-gold transition-colors" />
                     <input 
                       value={editingLink.title[lang]}
                       onChange={(e) => setEditingLink({ ...editingLink, title: { ...editingLink.title, [lang]: e.target.value } })}
-                      className="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-gold/50 transition-all font-display text-primary"
+                      className="w-full bg-background/60 border border-border rounded-xl py-3 pl-12 pr-4 text-foreground focus:outline-none focus:border-gold/50 transition-all font-display text-primary"
                     />
                   </div>
                 </div>
@@ -424,12 +396,12 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
                 <div className="space-y-2">
                   <label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold ml-1">Description ({lang.toUpperCase()})</label>
                   <div className="relative group">
-                    <AlignLeft className="absolute left-4 top-4 w-4 h-4 text-white/20 group-focus-within:text-gold transition-colors" />
+                    <AlignLeft className="absolute left-4 top-4 w-4 h-4 text-muted-foreground group-focus-within:text-gold transition-colors" />
                     <textarea 
                       value={editingLink.description[lang]}
                       onChange={(e) => setEditingLink({ ...editingLink, description: { ...editingLink.description, [lang]: e.target.value } })}
                       rows={3}
-                      className="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-gold/50 transition-all resize-none text-sm"
+                      className="w-full bg-background/60 border border-border rounded-xl py-3 pl-12 pr-4 text-foreground focus:outline-none focus:border-gold/50 transition-all resize-none text-sm"
                     />
                   </div>
                 </div>
@@ -437,11 +409,11 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
                 <div className="space-y-2">
                   <label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold ml-1">Link URL</label>
                   <div className="relative group">
-                    <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-gold transition-colors" />
+                    <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-gold transition-colors" />
                     <input 
                       value={editingLink.link}
                       onChange={(e) => setEditingLink({ ...editingLink, link: e.target.value })}
-                      className="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-gold/50 transition-all"
+                      className="w-full bg-background/60 border border-border rounded-xl py-3 pl-12 pr-4 text-foreground focus:outline-none focus:border-gold/50 transition-all"
                       placeholder="https://..."
                     />
                   </div>
@@ -472,7 +444,7 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
       {/* Cropping Modal */}
       <AnimatePresence>
         {tempImage && (
-          <div className="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-black/90 backdrop-blur-md">
+          <div className="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-background/95 backdrop-blur-md">
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -484,12 +456,12 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
                   <Crop className="w-5 h-5 text-gold" />
                   Crop Card Image
                 </h3>
-                <button onClick={() => setTempImage(null)} className="text-muted-foreground hover:text-white transition-colors">
+                <button onClick={() => setTempImage(null)} className="text-muted-foreground hover:text-foreground transition-colors">
                   <X className="w-6 h-6" />
                 </button>
               </div>
 
-              <div className="relative h-[300px] sm:h-[400px] bg-black">
+              <div className="relative h-[300px] sm:h-[400px] bg-background">
                 <Cropper
                   image={tempImage}
                   crop={crop}
@@ -521,7 +493,7 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
                 <div className="flex justify-end gap-4">
                   <button
                     onClick={() => setTempImage(null)}
-                    className="px-6 py-2 rounded-xl border border-border text-muted-foreground hover:text-white transition-colors text-xs font-bold uppercase tracking-widest"
+                    className="px-6 py-2 rounded-xl border border-border text-muted-foreground hover:text-foreground transition-colors text-xs font-bold uppercase tracking-widest"
                   >
                     Cancel
                   </button>
@@ -545,7 +517,7 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
             onClick={handleSave}
             disabled={isSaving}
             className={`flex items-center gap-3 px-8 py-4 rounded-full font-bold text-xs uppercase tracking-widest transition-all shadow-glow ${
-              saveSuccess ? "bg-green-500 text-white" : "bg-gold text-background hover:scale-105"
+              saveSuccess ? "bg-primary text-foreground" : "bg-gold text-background hover:scale-105"
             }`}
           >
             {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : saveSuccess ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}

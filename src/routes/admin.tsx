@@ -9,6 +9,7 @@ import {
   Languages, Sparkles, ArrowLeft, Globe, Menu, X
 } from "lucide-react";
 
+import { apiUrl } from "@/lib/api";
 import { HeroEditor } from "@/components/admin/HeroEditor";
 import { AboutEditor } from "@/components/admin/AboutEditor";
 import { BlogEditor } from "@/components/admin/BlogEditor";
@@ -41,7 +42,7 @@ function AdminPage() {
     setError("");
 
     try {
-      const res = await fetch("/api/login", {
+      const res = await fetch(apiUrl("/api/login"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: user, password: pass })
@@ -112,7 +113,7 @@ function AdminPage() {
                 </div>
               </div>
 
-              {error && <p className="text-red-500 text-xs text-center font-medium">{error}</p>}
+              {error && <p className="text-destructive text-xs text-center font-medium">{error}</p>}
 
               <button
                 type="submit"
@@ -143,9 +144,9 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
     { id: "about", label: "About", icon: Info },
     { id: "events", label: "Events", icon: Calendar },
     { id: "classes", label: "Classes", icon: BookOpen },
+    { id: "services", label: "Performances", icon: Globe },
     { id: "gallery", label: "Gallery", icon: ImageIcon },
     { id: "blog", label: "Insights", icon: Edit3 },
-    { id: "services", label: "Performances", icon: Globe },
     { id: "contact", label: "Contact", icon: Mail },
   ];
 
@@ -191,13 +192,13 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             <div className="hidden md:flex items-center gap-3 pr-3 border-r border-border/50">
               {/* Language */}
               <div className="flex bg-background/50 border border-border rounded-full p-0.5">
-                <button onClick={() => setEditLang("en")} className={`px-2 py-1 rounded-full text-[10px] font-bold transition-all ${editLang === "en" ? "bg-blue-500 text-white" : "text-muted-foreground"}`}>EN</button>
+                <button onClick={() => setEditLang("en")} className={`px-2 py-1 rounded-full text-[10px] font-bold transition-all ${editLang === "en" ? "bg-accent text-accent-foreground" : "text-muted-foreground"}`}>EN</button>
                 <button onClick={() => setEditLang("kn")} className={`px-2 py-1 rounded-full text-[10px] font-bold transition-all ${editLang === "kn" ? "bg-gold text-background" : "text-muted-foreground"}`}>KN</button>
               </div>
 
               {/* View */}
               <div className="flex bg-background/50 border border-border rounded-lg p-0.5">
-                <button onClick={() => setView("preview")} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold transition-all ${view === "preview" ? "bg-white/10 text-white" : "text-muted-foreground"}`}>
+                <button onClick={() => setView("preview")} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold transition-all ${view === "preview" ? "bg-muted text-foreground" : "text-muted-foreground"}`}>
                   <Eye size={12} /> PREVIEW
                 </button>
                 <button onClick={() => setView("edit")} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold transition-all ${view === "edit" ? "bg-gold text-background" : "text-muted-foreground"}`}>
@@ -220,7 +221,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             {/* Mobile Menu Trigger */}
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 bg-white/5 rounded-lg text-gold border border-white/10"
+              className="lg:hidden p-2 bg-muted/50 rounded-lg text-gold border border-border"
             >
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -228,7 +229,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             {/* Desktop Exit */}
             <div className="hidden md:flex items-center gap-1 ml-2">
               <Link to="/" className="p-2 text-muted-foreground hover:text-gold transition-colors"><ArrowLeft size={18} /></Link>
-              <button onClick={onLogout} className="p-2 text-muted-foreground hover:text-red-500 transition-colors"><LogOut size={18} /></button>
+              <button onClick={onLogout} className="p-2 text-muted-foreground hover:text-destructive transition-colors"><LogOut size={18} /></button>
             </div>
           </div>
         </header>
@@ -243,7 +244,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[70] lg:hidden"
+                className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[70] lg:hidden"
               />
               
               {/* Menu Container (Centering Wrapper) */}
@@ -252,23 +253,23 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
                   initial={{ opacity: 0, scale: 0.95, y: -10 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                  className="w-full max-w-[320px] bg-background/95 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-5 shadow-2xl overflow-y-auto max-h-[80vh] pointer-events-auto"
+                  className="w-full max-w-[320px] bg-background/95 backdrop-blur-2xl border border-border rounded-[2.5rem] p-5 shadow-2xl overflow-y-auto max-h-[80vh] pointer-events-auto"
                 >
                   <div className="space-y-6">
                   {/* Section Selector */}
                   <div>
                     <span className="text-[8px] font-bold text-gold/60 uppercase tracking-[0.2em] mb-3 block text-center">Content Sanctuary</span>
                     
-                    {/* Grid for 3x2 */}
+                    {/* Grid for all nav items (3 columns) */}
                     <div className="grid grid-cols-3 gap-2 mb-2">
-                      {navItems.slice(0, 6).map((item) => (
+                      {navItems.map((item) => (
                         <button
                           key={item.id}
                           onClick={() => { setActiveTab(item.id as Tab); setIsMobileMenuOpen(false); }}
                           className={`flex flex-col items-center justify-center p-2.5 rounded-xl border transition-all gap-1.5 ${
-                            activeTab === item.id 
-                              ? "bg-gold/10 border-gold/50 text-gold shadow-glow" 
-                              : "bg-white/5 border-white/5 text-muted-foreground"
+                            activeTab === item.id
+                              ? "bg-gold/10 border-gold/50 text-gold shadow-glow"
+                              : "bg-muted/40 border-border/50 text-muted-foreground"
                           }`}
                         >
                           <item.icon size={16} />
@@ -277,16 +278,16 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
                       ))}
                     </div>
 
-                    {/* Centered for last 2 */}
-                    <div className="flex justify-center gap-2">
-                      {navItems.slice(6).map((item) => (
+                    {/* hidden after refactor */}
+                    <div className="hidden">
+                      {[].map((item: any) => (
                         <button
                           key={item.id}
                           onClick={() => { setActiveTab(item.id as Tab); setIsMobileMenuOpen(false); }}
                           className={`flex-1 max-w-[32%] flex flex-col items-center justify-center p-2.5 rounded-xl border transition-all gap-1.5 ${
-                            activeTab === item.id 
-                              ? "bg-gold/10 border-gold/50 text-gold shadow-glow" 
-                              : "bg-white/5 border-white/5 text-muted-foreground"
+                            activeTab === item.id
+                              ? "bg-gold/10 border-gold/50 text-gold shadow-glow"
+                              : "bg-muted/40 border-border/50 text-muted-foreground"
                           }`}
                         >
                           <item.icon size={16} />
@@ -300,15 +301,15 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <span className="text-[8px] font-bold text-gold/60 uppercase tracking-widest block text-center">Language</span>
-                      <div className="flex bg-white/5 border border-white/5 rounded-lg p-0.5">
-                        <button onClick={() => setEditLang("en")} className={`flex-1 py-1.5 rounded-md text-[8px] font-bold transition-all ${editLang === "en" ? "bg-blue-500 text-white shadow-lg" : "text-muted-foreground"}`}>EN</button>
+                      <div className="flex bg-muted/40 border border-border/50 rounded-lg p-0.5">
+                        <button onClick={() => setEditLang("en")} className={`flex-1 py-1.5 rounded-md text-[8px] font-bold transition-all ${editLang === "en" ? "bg-accent text-accent-foreground shadow-lg" : "text-muted-foreground"}`}>EN</button>
                         <button onClick={() => setEditLang("kn")} className={`flex-1 py-1.5 rounded-md text-[8px] font-bold transition-all ${editLang === "kn" ? "bg-gold text-background shadow-lg" : "text-muted-foreground"}`}>KN</button>
                       </div>
                     </div>
                     <div className="space-y-2">
                       <span className="text-[8px] font-bold text-gold/60 uppercase tracking-widest block text-center">Mode</span>
-                      <div className="flex bg-white/5 border border-white/5 rounded-lg p-0.5">
-                        <button onClick={() => setView("preview")} className={`flex-1 flex flex-col items-center py-1 rounded-md transition-all ${view === "preview" ? "bg-white/10 text-white" : "text-muted-foreground"}`}>
+                      <div className="flex bg-muted/40 border border-border/50 rounded-lg p-0.5">
+                        <button onClick={() => setView("preview")} className={`flex-1 flex flex-col items-center py-1 rounded-md transition-all ${view === "preview" ? "bg-muted text-foreground" : "text-muted-foreground"}`}>
                           <Eye size={12} /> <span className="text-[7px] font-bold">VIEW</span>
                         </button>
                         <button onClick={() => setView("edit")} className={`flex-1 flex flex-col items-center py-1 rounded-md transition-all ${view === "edit" ? "bg-gold text-background" : "text-muted-foreground"}`}>
@@ -319,11 +320,11 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
                   </div>
 
                   {/* Account/Exit */}
-                  <div className="pt-4 border-t border-white/5 flex flex-col gap-2">
-                    <Link to="/" className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-white/5 text-primary font-bold text-[9px] border border-white/10 tracking-widest uppercase">
+                  <div className="pt-4 border-t border-border/50 flex flex-col gap-2">
+                    <Link to="/" className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-muted/40 text-primary font-bold text-[9px] border border-border tracking-widest uppercase">
                       <ArrowLeft size={14} /> Exit Website
                     </Link>
-                    <button onClick={onLogout} className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-red-500/10 text-red-500 font-bold text-[9px] border border-red-500/10 tracking-widest uppercase">
+                    <button onClick={onLogout} className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-destructive/10 text-destructive font-bold text-[9px] border border-destructive/20 tracking-widest uppercase">
                       <LogOut size={14} /> Logout
                     </button>
                   </div>

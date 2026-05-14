@@ -1,6 +1,7 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { MapPin, Phone, Mail, Loader2, Save, Check } from "lucide-react";
+import { apiUrl } from "@/lib/api";
 
 interface ContactEditorProps {
   isEditing: boolean;
@@ -51,8 +52,8 @@ export function ContactEditor({ isEditing, lang }: ContactEditorProps) {
       subtitle: "We welcome students, scholars, and lovers of the art",
       address: "Kathe Gaararu Cultural Centre, Udupi, Karnataka, India",
       phone_services: "+91 98765 43210",
-      phone_perf: "+91 98765 43211",
-      phone_work: "+91 98765 43212",
+      phone_performances: "+91 98765 43211",
+      phone_workshop: "+91 98765 43212",
       phone_general: "+91 98765 43213",
       email: "info@kathegaararu.com",
     },
@@ -61,14 +62,28 @@ export function ContactEditor({ isEditing, lang }: ContactEditorProps) {
       subtitle: "ವಿದ್ಯಾರ್ಥಿಗಳು, ವಿದ್ವಾಂಸರು ಮತ್ತು ಕಲಾಪ್ರೇಮಿಗಳಿಗೆ ಸ್ವಾಗತ",
       address: "ಕಥೆ ಗಾರಾರು ಸಾಂಸ್ಕೃತಿಕ ಕೇಂದ್ರ, ಉಡುಪಿ, ಕರ್ನಾಟಕ, ಭಾರತ",
       phone_services: "+91 98765 43210",
-      phone_perf: "+91 98765 43211",
-      phone_work: "+91 98765 43212",
+      phone_performances: "+91 98765 43211",
+      phone_workshop: "+91 98765 43212",
       phone_general: "+91 98765 43213",
       email: "info@kathegaararu.com",
     },
   };
 
-  const [data, setData] = useState(defaults[lang]);
+  const [data, setData] = useState<Record<string, string>>(defaults[lang]);
+
+  useEffect(() => {
+    fetch(apiUrl(`/api/content?lang=${lang}`))
+      .then((r) => r.json())
+      .then((raw) => {
+        const map: Record<string, string> = {};
+        (raw.siteContent || []).forEach((row: any) => {
+          if (row.section === "contact") map[row.content_key] = row.content_value;
+        });
+        setData({ ...defaults[lang], ...map });
+      })
+      .catch((err) => console.error("[ContactEditor] fetch failed", err));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang]);
 
   const update = (field: string, value: string) =>
     setData((prev) => ({ ...prev, [field]: value }));
@@ -77,7 +92,7 @@ export function ContactEditor({ isEditing, lang }: ContactEditorProps) {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
-      await fetch(window.location.origin + "/api/save", {
+      await fetch(apiUrl("/api/save"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ section: "contact", lang, data }),
@@ -93,8 +108,8 @@ export function ContactEditor({ isEditing, lang }: ContactEditorProps) {
 
   const desktopItems = [
     { label: "Phone (For Services)", value: data.phone_services, field: "phone_services", icon: Phone },
-    { label: "Phone (For Performances)", value: data.phone_perf, field: "phone_perf", icon: Phone },
-    { label: "Phone (For Workshop)", value: data.phone_work, field: "phone_work", icon: Phone },
+    { label: "Phone (For Performances)", value: data.phone_performances, field: "phone_performances", icon: Phone },
+    { label: "Phone (For Workshop)", value: data.phone_workshop, field: "phone_workshop", icon: Phone },
     { label: "Phone (General)", value: data.phone_general, field: "phone_general", icon: Phone },
     { label: "Email", value: data.email, field: "email", icon: Mail },
     { label: "Address", value: data.address, field: "address", icon: MapPin },
@@ -102,8 +117,8 @@ export function ContactEditor({ isEditing, lang }: ContactEditorProps) {
 
   const mobileItems = [
     { label: "Services", field: "phone_services", icon: Phone },
-    { label: "Performances", field: "phone_perf", icon: Phone },
-    { label: "Workshop", field: "phone_work", icon: Phone },
+    { label: "Performances", field: "phone_performances", icon: Phone },
+    { label: "Workshop", field: "phone_workshop", icon: Phone },
     { label: "General", field: "phone_general", icon: Phone },
     { label: "Email", field: "email", icon: Mail },
     { label: "Address", field: "address", icon: MapPin },
@@ -210,7 +225,7 @@ export function ContactEditor({ isEditing, lang }: ContactEditorProps) {
             disabled={isSaving}
             className={`flex items-center gap-2 px-8 py-4 rounded-full font-bold text-xs uppercase tracking-widest transition-all shadow-glow ${
               saveSuccess
-                ? "bg-green-500 text-white"
+                ? "bg-primary text-foreground"
                 : "bg-gold text-background hover:scale-105"
             }`}
           >

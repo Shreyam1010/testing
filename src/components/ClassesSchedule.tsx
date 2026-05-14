@@ -63,7 +63,7 @@ export function ClassesSchedule({ onFilterToggle }: { onFilterToggle?: (isOpen: 
   return (
     <div className={`w-full transition-all duration-500 ${isTeacherFilterOpen || isDayFilterOpen ? "md:mt-0" : ""}`}>
       {/* Filters */}
-      <div className={`mb-4 md:mb-14 pb-0 md:pb-10 border-b border-white/5 transition-all duration-500 ${isTeacherFilterOpen || isDayFilterOpen ? "mb-6 pb-4" : ""}`}>
+      <div className={`mb-4 md:mb-14 pb-0 md:pb-10 border-b border-border/50 transition-all duration-500 ${isTeacherFilterOpen || isDayFilterOpen ? "mb-6 pb-4" : ""}`}>
         <div className="flex flex-col md:flex-row items-start justify-center gap-3 md:gap-20">
 
           {/* Mobile Buttons Container */}
@@ -71,7 +71,7 @@ export function ClassesSchedule({ onFilterToggle }: { onFilterToggle?: (isOpen: 
             {/* Gurus Toggle */}
             <button
               onClick={() => setIsTeacherFilterOpen(!isTeacherFilterOpen)}
-              className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white/5 rounded-xl border transition-all duration-300 ${isTeacherFilterOpen ? "border-gold/50 bg-gold/5 text-gold" : "border-white/10 text-gold/60"}`}
+              className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-muted/40 rounded-xl border transition-all duration-300 ${isTeacherFilterOpen ? "border-gold/50 bg-gold/5 text-gold" : "border-border text-gold/60"}`}
             >
               <Filter size={14} />
               <span className="text-[10px] uppercase tracking-[0.2em] font-bold">
@@ -82,7 +82,7 @@ export function ClassesSchedule({ onFilterToggle }: { onFilterToggle?: (isOpen: 
             {/* Days Toggle */}
             <button
               onClick={() => setIsDayFilterOpen(!isDayFilterOpen)}
-              className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white/5 rounded-xl border transition-all duration-300 ${isDayFilterOpen ? "border-gold/50 bg-gold/5 text-gold" : "border-white/10 text-gold/60"}`}
+              className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-muted/40 rounded-xl border transition-all duration-300 ${isDayFilterOpen ? "border-gold/50 bg-gold/5 text-gold" : "border-border text-gold/60"}`}
             >
               <Calendar size={14} />
               <span className="text-[10px] uppercase tracking-[0.2em] font-bold">
@@ -178,7 +178,7 @@ export function ClassesSchedule({ onFilterToggle }: { onFilterToggle?: (isOpen: 
 
       {filtered.length === 0 && (
         <div className="text-center py-32 space-y-4">
-          <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 bg-muted/40 rounded-full flex items-center justify-center mx-auto mb-6">
             <Filter className="w-6 h-6 text-gold/30" />
           </div>
           <p className="text-muted-foreground text-lg italic">
@@ -206,7 +206,7 @@ function FilterChip({
       onClick={onClick}
       className={`w-full md:w-auto px-3 py-1.5 md:px-5 md:py-2 text-[9px] md:text-xs uppercase tracking-widest font-bold rounded-full border transition-all duration-300 ${active
         ? "bg-gold text-background border-gold shadow-glow scale-105"
-        : "border-white/10 text-muted-foreground hover:border-gold/50 hover:text-gold bg-white/5"
+        : "border-border text-muted-foreground hover:border-gold/50 hover:text-gold bg-muted/40"
         }`}
     >
       {children}

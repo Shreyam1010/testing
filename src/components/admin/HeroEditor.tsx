@@ -6,15 +6,17 @@ import heroImgDefault from "@/assets/hero-yakshagana.jpg";
 import mandala from "@/assets/mandala.png";
 import logoImg from "@/assets/logo-transparent.png";
 import { FaqManager } from "./FaqManager";
+import { uploadImage } from "@/lib/uploadImage";
+import { apiUrl } from "@/lib/api";
 
-async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> {
+async function getCroppedBlob(imageSrc: string, pixelCrop: any): Promise<Blob | null> {
   const image = new Image();
   image.src = imageSrc;
   await new Promise((resolve) => (image.onload = resolve));
 
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
-  if (!ctx) return "";
+  if (!ctx) return null;
 
   canvas.width = pixelCrop.width;
   canvas.height = pixelCrop.height;
@@ -31,7 +33,7 @@ async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> 
     pixelCrop.height
   );
 
-  return canvas.toDataURL("image/jpeg");
+  return await new Promise<Blob | null>((resolve) => canvas.toBlob((b) => resolve(b), "image/jpeg", 0.9));
 }
 
 interface HeroEditorProps {
@@ -66,7 +68,7 @@ function EditableText({
       contentEditable
       suppressContentEditableWarning
       onBlur={handleBlur}
-      className={`${className} outline-none cursor-text hover:bg-white/5 rounded px-1 transition-colors`}
+      className={`${className} outline-none cursor-text hover:bg-muted/40 rounded px-1 transition-colors`}
       style={{ caretColor: "var(--gold)" }}
     >
       {value}
@@ -112,7 +114,7 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
   useEffect(() => {
     setLoading(true);
     // Try fetching from DB
-    fetch(`${window.location.origin}/api/content?lang=${lang}`)
+    fetch(apiUrl(`/api/content?lang=${lang}`))
       .then((r) => r.json())
       .then((result) => {
         const heroData: any = {};
@@ -136,7 +138,7 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
-      await fetch(window.location.origin + "/api/save", {
+      await fetch(apiUrl("/api/save"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ section: "hero", lang, data }),
@@ -159,9 +161,17 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
 
   const handleApplyCrop = async () => {
     if (tempImage && croppedAreaPixels) {
-      const cropped = await getCroppedImg(tempImage, croppedAreaPixels);
-      update("image", cropped);
-      setTempImage(null);
+      const blob = await getCroppedBlob(tempImage, croppedAreaPixels);
+      if (!blob) { setTempImage(null); return; }
+      try {
+        const file = new File([blob], `hero-${Date.now()}.jpg`, { type: "image/jpeg" });
+        const url = await uploadImage(file, "hero");
+        update("image", url);
+      } catch (err: any) {
+        alert(`Upload failed: ${err.message}`);
+      } finally {
+        setTempImage(null);
+      }
     }
   };
 
@@ -214,9 +224,9 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
               className="w-full h-full object-cover"
             />
             {isEditing && (
-              <label className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+              <label className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/70 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
                 <Upload className="w-5 h-5 text-gold mb-1" />
-                <span className="text-white font-bold uppercase tracking-widest text-[7px]">Change Photo</span>
+                <span className="text-foreground font-bold uppercase tracking-widest text-[7px]">Change Photo</span>
                 <input 
                   type="file" 
                   className="hidden" 
@@ -316,7 +326,7 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
             disabled={isSaving}
             className={`flex items-center gap-2 px-8 py-4 rounded-full font-bold text-xs uppercase tracking-widest transition-all shadow-glow ${
               saveSuccess
-                ? "bg-green-500 text-white"
+                ? "bg-primary text-foreground"
                 : "bg-primary text-background hover:scale-105"
             }`}
           >
@@ -352,12 +362,12 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
                 <Crop className="w-5 h-5 text-gold" />
                 Crop Hero Image
               </h3>
-              <button onClick={() => setTempImage(null)} className="text-muted-foreground hover:text-white transition-colors">
+              <button onClick={() => setTempImage(null)} className="text-muted-foreground hover:text-foreground transition-colors">
                 <X className="w-6 h-6" />
               </button>
             </div>
 
-            <div className="relative h-[300px] sm:h-[400px] bg-black">
+            <div className="relative h-[300px] sm:h-[400px] bg-background">
               <Cropper
                 image={tempImage}
                 crop={crop}
@@ -389,7 +399,7 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
               <div className="flex justify-end gap-4">
                 <button
                   onClick={() => setTempImage(null)}
-                  className="px-6 py-2 rounded-xl border border-border text-muted-foreground hover:text-white transition-colors text-xs font-bold uppercase tracking-widest"
+                  className="px-6 py-2 rounded-xl border border-border text-muted-foreground hover:text-foreground transition-colors text-xs font-bold uppercase tracking-widest"
                 >
                   Cancel
                 </button>

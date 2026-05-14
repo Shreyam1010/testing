@@ -62,9 +62,9 @@ function PhotoCarousel({ images, title }: { images: string[], title: string }) {
                   alt="View more in gallery"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-black/50 flex flex-col justify-center pl-[25%] transition-all group-hover:bg-black/70">
-                  <ArrowRight className="w-8 h-8 text-white transition-transform group-hover:translate-x-1" />
-                  <span className="text-xs font-bold uppercase tracking-widest text-white mt-2 opacity-0 group-hover:opacity-100 transition-opacity">More</span>
+                <div className="absolute inset-0 bg-background/60 flex flex-col justify-center pl-[25%] transition-all group-hover:bg-background/80">
+                  <ArrowRight className="w-8 h-8 text-gold transition-transform group-hover:translate-x-1" />
+                  <span className="text-xs font-bold uppercase tracking-widest text-foreground mt-2 opacity-0 group-hover:opacity-100 transition-opacity">More</span>
                 </div>
               </Link>
             ) : (
@@ -82,12 +82,12 @@ function PhotoCarousel({ images, title }: { images: string[], title: string }) {
                 
                 {isThird && showArrow && (
                   <div className="absolute inset-0 flex items-center justify-start pl-4 pointer-events-none">
-                    <motion.div 
-                      className="bg-black/40 rounded-full p-1.5 backdrop-blur-sm"
+                    <motion.div
+                      className="bg-background/50 rounded-full p-1.5 backdrop-blur-sm"
                       animate={{ x: [0, 5, 0] }}
                       transition={{ repeat: Infinity, duration: 1.5 }}
                     >
-                      <ArrowRight className="w-4 h-4 text-white" />
+                      <ArrowRight className="w-4 h-4 text-gold" />
                     </motion.div>
                   </div>
                 )}
@@ -102,7 +102,7 @@ function PhotoCarousel({ images, title }: { images: string[], title: string }) {
         {images.map((_, dotIdx) => (
           <div 
             key={dotIdx} 
-            className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${dotIdx === activeIndex ? 'bg-gold' : 'bg-white/20'}`} 
+            className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${dotIdx === activeIndex ? 'bg-gold' : 'bg-muted-foreground/30'}`}
           />
         ))}
       </div>
@@ -117,13 +117,18 @@ function PhotoCarousel({ images, title }: { images: string[], title: string }) {
   const pageTitle = servicesMap.title || t.services.title;
   const pageSubtitle = servicesMap.subtitle || t.services.subtitle;
 
+  const perfImagesFallback = ["/images/gallery-1.jpg", "/images/gallery-2.jpg", "/images/gallery-4.jpg", "/images/gallery-5.jpg", "/images/gallery-6.jpg"];
+  const workImagesFallback = ["/images/gallery-4.jpg", "/images/gallery-1.jpg", "/images/gallery-3.jpg", "/images/gallery-6.jpg", "/images/gallery-5.jpg"];
+  const perfImages = data?.servicesImagesByCategory?.performance?.length ? data.servicesImagesByCategory.performance : perfImagesFallback;
+  const workImages = data?.servicesImagesByCategory?.workshop?.length ? data.servicesImagesByCategory.workshop : workImagesFallback;
+
   const sections = [
     {
       id: "performance",
       title: servicesMap.perf_title || t.services.performance.title,
       desc: servicesMap.perf_desc || t.services.performance.desc,
       buttonText: servicesMap.perf_btn || t.services.performance.buttonText,
-      images: ["/images/gallery-1.jpg", "/images/gallery-2.jpg", "/images/gallery-4.jpg", "/images/gallery-5.jpg", "/images/gallery-6.jpg"],
+      images: perfImages,
     },
 
     {
@@ -131,7 +136,7 @@ function PhotoCarousel({ images, title }: { images: string[], title: string }) {
       title: servicesMap.work_title || t.services.workshops.title,
       desc: servicesMap.work_desc || t.services.workshops.desc,
       buttonText: servicesMap.work_btn || t.services.workshops.buttonText,
-      images: ["/images/gallery-4.jpg", "/images/gallery-1.jpg", "/images/gallery-3.jpg", "/images/gallery-6.jpg", "/images/gallery-5.jpg"],
+      images: workImages,
     }
   ];
 
@@ -144,7 +149,7 @@ function PhotoCarousel({ images, title }: { images: string[], title: string }) {
 
         <div className="flex flex-col gap-16">
           {sections.map((section) => (
-            <motion.div 
+            <motion.div
               key={section.id}
               id={section.id}
               className="flex flex-col gap-12 scroll-mt-32"
@@ -167,16 +172,18 @@ function PhotoCarousel({ images, title }: { images: string[], title: string }) {
 
               {/* Book Demo Button */}
               <div className="flex justify-center mt-0">
-                <Link 
-                  to="/contact" 
+                <a
+                  href="https://wa.me/919741508468"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="group relative flex items-center justify-center gap-2 px-6 py-3 bg-gold text-background rounded-full font-bold uppercase tracking-widest text-xs shadow-glow hover:scale-105 transition-all overflow-hidden"
                 >
                   <span className="relative z-10 flex items-center gap-3">
                     <Star className="w-4 h-4" />
                     {section.buttonText}
                   </span>
-                  <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                </Link>
+                  <div className="absolute inset-0 bg-foreground/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                </a>
               </div>
             </motion.div>
           ))}

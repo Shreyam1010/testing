@@ -3,22 +3,36 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Globe } from "lucide-react";
 import { useLang } from "@/contexts/LanguageContext";
+import { useDbContent } from "@/hooks/useDb";
 
 export function Navbar() {
   const { lang, setLang, t } = useLang();
+  const { data } = useDbContent();
   const [open, setOpen] = useState(false);
   const path = useRouterState({ select: (s) => s.location.pathname });
 
-  const links = [
+  // Fallback order must match the seeded nav_links order_index in D1, otherwise
+  // links visibly re-shuffle each time the page re-fetches /api/content.
+  const fallbackLinks = [
     { to: "/", label: t.nav.home },
     { to: "/about", label: t.nav.about },
-    { to: "/services", label: t.nav.services },
     { to: "/classes", label: t.nav.classes },
+    { to: "/services", label: t.nav.services },
     { to: "/gallery", label: lang === "en" ? "Gallery" : "ಗ್ಯಾಲರಿ" },
     { to: "/blog", label: lang === "en" ? "Blog" : "ಬ್ಲಾಗ್" },
-    { to: "/admin", label: t.nav.admin },
     { to: "/contact", label: t.nav.contact },
-  ] as const;
+  ];
+  const dbNavLinks = data?.navLinks;
+  const links: Array<{ to: string; label: string }> = dbNavLinks?.length
+    ? dbNavLinks.map((n: any) => ({ to: n.href, label: n.label?.[lang] || n.label?.en }))
+    : fallbackLinks;
+
+  const brand = data?.branding;
+  const brandName = brand?.brandName || "Kathegaararu";
+  const tagline = brand?.tagline?.[lang] || brand?.tagline?.en || "Centre for Yakshagana Performance, Training & Research";
+  const taglineLines = tagline.split(", ");
+  const taglineLine1 = taglineLines[0] ? `${taglineLines[0]},` : "Centre for Yakshagana Performance,";
+  const taglineLine2 = taglineLines.slice(1).join(", ") || "Training & Research";
 
   return (
     <header className="fixed top-0 inset-x-0 z-50 backdrop-blur-xl bg-background/70 border-b border-border/40">
@@ -27,12 +41,12 @@ export function Navbar() {
           
           <div className="leading-tight">
             <div className="font-display text-lg text-gradient-gold tracking-wider">
-              Kathegaararu
+              {brandName}
             </div>
             <div className="text-[8px] md:text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-              Centre for Yakshagana Performance,
+              {taglineLine1}
             </div>
-            <div className="text-[8px] md:text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Training & Research</div> 
+            <div className="text-[8px] md:text-[10px] uppercase tracking-[0.3em] text-muted-foreground">{taglineLine2}</div>
 
           </div>
         </Link>

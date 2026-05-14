@@ -41,48 +41,48 @@
 :root {
   --radius: 0.5rem;
 
-  /* Yakshagana palette — deep night, ember red, royal gold */
-  --background: oklch(0.12 0 0);          /* pure dark gray/black */
-  --foreground: oklch(0.95 0.03 85);          /* warm off-white */
-  --card: oklch(0.16 0 0);
-  --card-foreground: oklch(0.95 0.03 85);
-  --popover: oklch(0.14 0 0);
-  --popover-foreground: oklch(0.95 0.03 85);
+  /* Yakshagana palette — lamp-lit aubergine stage, royal gold, ember vermilion (Trial #1) */
+  --background: oklch(0.17 0.05 25);          /* lamp-lit aubergine */
+  --foreground: oklch(0.95 0.04 80);          /* warm ivory */
+  --card: oklch(0.21 0.06 24);                /* lifted maroon card */
+  --card-foreground: oklch(0.95 0.04 80);
+  --popover: oklch(0.19 0.05 25);
+  --popover-foreground: oklch(0.95 0.04 80);
 
-  --primary: oklch(0.78 0.16 80);             /* golden yellow */
-  --primary-foreground: oklch(0.12 0 0);
-  --secondary: oklch(0.6 0.25 20);           /* vibrant red */
-  --secondary-foreground: oklch(0.97 0.02 85);
-  --muted: oklch(0.2 0 0);
-  --muted-foreground: oklch(0.72 0.04 80);
-  --accent: oklch(0.65 0.25 20);              /* vibrant red */
-  --accent-foreground: oklch(0.97 0.02 85);
-  --destructive: oklch(0.6 0.25 20);
-  --destructive-foreground: oklch(0.97 0.02 85);
-  --border: oklch(0.32 0.05 50 / 50%);
-  --input: oklch(0.25 0 0);
-  --ring: oklch(0.78 0.16 80);
+  --primary: oklch(0.80 0.16 82);             /* royal gold (kireeta) */
+  --primary-foreground: oklch(0.15 0.04 25);
+  --secondary: oklch(0.42 0.18 22);           /* deep maroon (costume base) */
+  --secondary-foreground: oklch(0.97 0.03 85);
+  --muted: oklch(0.24 0.05 25);               /* warm aubergine muted */
+  --muted-foreground: oklch(0.74 0.05 78);
+  --accent: oklch(0.62 0.22 25);              /* ember vermilion (face paint) */
+  --accent-foreground: oklch(0.15 0.04 25);
+  --destructive: oklch(0.55 0.24 22);
+  --destructive-foreground: oklch(0.97 0.03 85);
+  --border: oklch(0.55 0.12 70 / 25%);        /* soft gold-tinted border */
+  --input: oklch(0.26 0.05 25);
+  --ring: oklch(0.80 0.16 82);
 
   --gold: oklch(0.82 0.17 85);
   --gold-soft: oklch(0.72 0.13 80);
-  --crimson: oklch(0.6 0.25 20);
-  --ember: oklch(0.65 0.25 20);
+  --crimson: oklch(0.42 0.18 22);
+  --ember: oklch(0.62 0.22 25);
 
-  --gradient-hero: radial-gradient(ellipse at 50% 40%, oklch(0.6 0.25 20 / 0.6) 0%, oklch(0.12 0 0) 70%);
+  --gradient-hero: radial-gradient(ellipse at 50% 40%, oklch(0.55 0.20 25 / 0.55) 0%, oklch(0.17 0.05 25) 70%);
   --gradient-gold: linear-gradient(135deg, oklch(0.85 0.17 85), oklch(0.65 0.15 60));
-  --gradient-ember: linear-gradient(135deg, oklch(0.65 0.25 20), oklch(0.4 0.2 20));
-  --gradient-veil: linear-gradient(180deg, transparent 0%, oklch(0.12 0 0 / 0.95) 100%);
+  --gradient-ember: linear-gradient(135deg, oklch(0.62 0.22 25), oklch(0.38 0.18 22));
+  --gradient-veil: linear-gradient(180deg, transparent 0%, oklch(0.17 0.05 25 / 0.95) 100%);
 
-  --shadow-glow: 0 0 60px oklch(0.78 0.16 80 / 0.25), 0 10px 40px oklch(0 0 0 / 0.5);
-  --shadow-ember: 0 0 80px oklch(0.55 0.22 28 / 0.4);
-  --shadow-soft: 0 8px 32px oklch(0 0 0 / 0.4);
+  --shadow-glow: 0 0 60px oklch(0.80 0.16 82 / 0.28), 0 10px 40px oklch(0.08 0.03 25 / 0.6);
+  --shadow-ember: 0 0 80px oklch(0.55 0.22 25 / 0.4);
+  --shadow-soft: 0 8px 32px oklch(0.08 0.03 25 / 0.5);
 
   --transition-smooth: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .dark {
-  --background: oklch(0.12 0 0);
-  --foreground: oklch(0.95 0.03 85);
+  --background: oklch(0.17 0.05 25);
+  --foreground: oklch(0.95 0.04 80);
 }
 
 @layer base {
@@ -91,9 +91,12 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-body);
+    /* Yakshagana stage atmosphere — Trial #1: lamp-lit aubergine, vermilion glow, maroon shadow, gold pool */
     background-image:
-      radial-gradient(circle at 20% 10%, oklch(0.6 0.25 20 / 0.3), transparent 60%),
-      radial-gradient(circle at 80% 80%, oklch(0.65 0.25 20 / 0.25), transparent 60%);
+      radial-gradient(ellipse 60% 50% at 20% 0%, oklch(0.55 0.20 30 / 0.30), transparent 60%),
+      radial-gradient(ellipse 65% 55% at 80% 100%, oklch(0.42 0.18 22 / 0.35), transparent 65%),
+      radial-gradient(ellipse 80% 60% at 50% 50%, oklch(0.65 0.15 75 / 0.06), transparent 70%),
+      linear-gradient(160deg, oklch(0.17 0.05 25) 0%, oklch(0.20 0.06 22) 50%, oklch(0.15 0.04 28) 100%);
     background-attachment: fixed;
   }
   h1, h2, h3, h4 {

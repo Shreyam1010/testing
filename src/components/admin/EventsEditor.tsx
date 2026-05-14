@@ -1,6 +1,8 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Clock, Loader2, Save, Check, Plus, Trash2, Camera, Calendar, ChevronUp, ChevronDown, Edit2, X } from "lucide-react";
+import { uploadImage } from "@/lib/uploadImage";
+import { apiUrl } from "@/lib/api";
 import g2 from "@/assets/gallery-2.jpg";
 import g5 from "@/assets/gallery-5.jpg";
 import g4 from "@/assets/gallery-4.jpg";
@@ -45,7 +47,7 @@ function EditableText({
   );
 }
 
-function useOnClickOutside(ref: React.RefObject<HTMLElement>, handler: () => void) {
+function useOnClickOutside(ref: React.RefObject<HTMLElement | null>, handler: () => void) {
   useEffect(() => {
     const listener = (event: any) => {
       if (!ref.current || ref.current.contains(event.target)) return;
@@ -116,7 +118,7 @@ function ScrollPicker({
             className={`py-2 px-4 text-sm text-center transition-all ${
               item === value 
                 ? "text-gold font-bold scale-110" 
-                : "text-foreground/40 hover:text-primary hover:bg-white/5"
+                : "text-foreground/40 hover:text-primary hover:bg-muted/40"
             }`}
           >
             {item}
@@ -300,7 +302,7 @@ function CustomCalendarPicker({
               key={day}
               onClick={() => handleDateClick(day)}
               className={`w-8 h-8 rounded-full text-xs transition-all flex items-center justify-center ${
-                isSelected ? "bg-gold text-background font-bold shadow-glow" : "hover:bg-white/10 text-foreground"
+                isSelected ? "bg-gold text-background font-bold shadow-glow" : "hover:bg-muted/60 text-foreground"
               }`}
             >
               {day}
@@ -363,7 +365,7 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
   ]);
 
   useEffect(() => {
-    fetch(`${window.location.origin}/api/content?lang=${lang}`)
+    fetch(apiUrl(`/api/content?lang=${lang}`))
       .then((r) => r.json())
       .then((result) => {
         const evData = result.siteContent?.find((item: any) => item.section === "events");
@@ -430,11 +432,16 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && editingImageIndex !== null) {
-      const url = URL.createObjectURL(file);
-      updateEvent(editingImageIndex, "image", url);
+    if (!file || editingImageIndex === null) return;
+    const idx = editingImageIndex;
+    updateEvent(idx, "image", URL.createObjectURL(file));
+    try {
+      const url = await uploadImage(file, "events");
+      updateEvent(idx, "image", url);
+    } catch (err: any) {
+      alert(`Upload failed: ${err.message}`);
     }
   };
 
@@ -442,7 +449,7 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
-      await fetch(window.location.origin + "/api/save", {
+      await fetch(apiUrl("/api/save"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ section: "events", lang, data: events }),
@@ -506,7 +513,7 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
               {isEditing && (
                 <button
                   onClick={() => handleDeleteEvent(i)}
-                  className="absolute top-2 left-2 z-20 p-2 bg-red-500/80 text-white rounded-full hover:bg-red-500 transition-all"
+                  className="absolute top-2 left-2 z-20 p-2 bg-destructive/80 text-foreground rounded-full hover:bg-destructive transition-all"
                   title="Remove Event"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -532,11 +539,11 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
                 )}
                 
                 {isEditing && (
-                  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all z-10">
+                  <div className="absolute inset-0 bg-background/60 backdrop-blur-sm opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all z-10">
                     <div className="absolute top-2 right-2 z-20 flex gap-2">
                       <button
                         onClick={(e) => { e.stopPropagation(); setEditingDialogIndex(i); }}
-                        className="p-2 bg-blue-500/80 text-white rounded-full hover:bg-blue-500 transition-all md:hidden"
+                        className="p-2 bg-accent/80 text-foreground rounded-full hover:bg-accent transition-all md:hidden"
                         title="Edit Event"
                       >
                         <Edit2 className="w-4 h-4" />
@@ -665,7 +672,7 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
             disabled={isSaving}
             className={`flex items-center gap-2 px-8 py-4 rounded-full font-bold text-xs uppercase tracking-widest transition-all shadow-glow ${
               saveSuccess
-                ? "bg-green-500 text-white"
+                ? "bg-primary text-foreground"
                 : "bg-primary text-background hover:scale-105"
             }`}
           >
@@ -743,22 +750,29 @@ function EventDialog({
             <label className="text-[9px] uppercase tracking-widest text-gold font-bold">Event Image</label>
             <div 
               onClick={() => fileInputRef.current?.click()}
-              className="relative aspect-video rounded-xl overflow-hidden border border-border/50 bg-black/20 group cursor-pointer"
+              className="relative aspect-video rounded-xl overflow-hidden border border-border/50 bg-background/40 group cursor-pointer"
             >
               <img src={data.image} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                <Camera className="text-white w-5 h-5" />
+              <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
+                <Camera className="text-foreground w-5 h-5" />
               </div>
             </div>
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              className="hidden" 
-              accept="image/*" 
-              onChange={(e) => {
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept="image/*"
+              onChange={async (e) => {
                 const file = e.target.files?.[0];
-                if (file) setData({...data, image: URL.createObjectURL(file)});
-              }} 
+                if (!file) return;
+                setData({ ...data, image: URL.createObjectURL(file) });
+                try {
+                  const url = await uploadImage(file, "events");
+                  setData((prev: any) => ({ ...prev, image: url }));
+                } catch (err: any) {
+                  alert(`Upload failed: ${err.message}`);
+                }
+              }}
             />
           </div>
 
@@ -766,7 +780,7 @@ function EventDialog({
           <div className="space-y-1.5">
             <label className="text-[9px] uppercase tracking-widest text-gold font-bold">Title ({lang.toUpperCase()})</label>
             <input
-              className="w-full bg-black/40 border border-border rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-gold"
+              className="w-full bg-background/60 border border-border rounded-xl px-4 py-2.5 text-xs text-foreground outline-none focus:border-gold"
               value={data.title[lang]}
               onChange={(e) => setData({...data, title: {...data.title, [lang]: e.target.value}})}
             />
@@ -776,7 +790,7 @@ function EventDialog({
           <div className="space-y-1.5">
             <label className="text-[9px] uppercase tracking-widest text-gold font-bold">Teacher ({lang.toUpperCase()})</label>
             <input
-              className="w-full bg-black/40 border border-border rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-gold"
+              className="w-full bg-background/60 border border-border rounded-xl px-4 py-2.5 text-xs text-foreground outline-none focus:border-gold"
               value={data.teacher[lang]}
               onChange={(e) => setData({...data, teacher: {...data.teacher, [lang]: e.target.value}})}
             />
@@ -789,7 +803,7 @@ function EventDialog({
               <label className="text-[9px] uppercase tracking-widest text-gold font-bold">Date</label>
               <button
                 onClick={() => { setShowDatePicker(!showDatePicker); setShowTimePicker(false); }}
-                className="w-full bg-black/40 border border-border rounded-xl px-4 py-2.5 text-xs text-primary flex items-center gap-2 hover:border-gold transition-colors"
+                className="w-full bg-background/60 border border-border rounded-xl px-4 py-2.5 text-xs text-primary flex items-center gap-2 hover:border-gold transition-colors"
               >
                 <Calendar size={12} className="text-gold" />
                 {data.date || "Select Date"}
@@ -810,7 +824,7 @@ function EventDialog({
               <label className="text-[9px] uppercase tracking-widest text-gold font-bold">Time</label>
               <button
                 onClick={() => { setShowTimePicker(!showTimePicker); setShowDatePicker(false); }}
-                className="w-full bg-black/40 border border-border rounded-xl px-4 py-2.5 text-xs text-primary flex items-center gap-2 hover:border-gold transition-colors"
+                className="w-full bg-background/60 border border-border rounded-xl px-4 py-2.5 text-xs text-primary flex items-center gap-2 hover:border-gold transition-colors"
               >
                 <Clock size={12} className="text-gold" />
                 {data.time[lang] || "Select Time"}
@@ -831,7 +845,7 @@ function EventDialog({
           <div className="space-y-1.5">
             <label className="text-[9px] uppercase tracking-widest text-gold font-bold">Badge ({lang.toUpperCase()})</label>
             <input
-              className="w-full bg-black/40 border border-border rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-gold"
+              className="w-full bg-background/60 border border-border rounded-xl px-4 py-2.5 text-xs text-foreground outline-none focus:border-gold"
               value={data.badge?.[lang] || ""}
               onChange={(e) => setData({...data, badge: {...(data.badge || {}), [lang]: e.target.value}})}
             />
@@ -843,13 +857,13 @@ function EventDialog({
             <div className="flex gap-2">
               <button 
                 onClick={() => setData({...data, status: 'booking'})}
-                className={`flex-1 py-2.5 rounded-xl text-[10px] font-bold transition-all ${data.status === 'booking' ? 'bg-gold text-background' : 'bg-black/30 text-muted-foreground border border-border'}`}
+                className={`flex-1 py-2.5 rounded-xl text-[10px] font-bold transition-all ${data.status === 'booking' ? 'bg-gold text-background' : 'bg-muted/60 text-muted-foreground border border-border'}`}
               >
                 BOOKING
               </button>
               <button 
                 onClick={() => setData({...data, status: 'coming_soon'})}
-                className={`flex-1 py-2.5 rounded-xl text-[10px] font-bold transition-all ${data.status === 'coming_soon' ? 'bg-gold text-background' : 'bg-black/30 text-muted-foreground border border-border'}`}
+                className={`flex-1 py-2.5 rounded-xl text-[10px] font-bold transition-all ${data.status === 'coming_soon' ? 'bg-gold text-background' : 'bg-muted/60 text-muted-foreground border border-border'}`}
               >
                 COMING SOON
               </button>

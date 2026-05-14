@@ -2,16 +2,56 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Trash2, Image as ImageIcon, Video, Camera, Upload, X, Check, Edit2 } from "lucide-react";
 import { initialPerformanceItems, initialWorkshopItems, initialGurukulItems, type GalleryItemType } from "@/lib/galleryData";
+import { uploadImage } from "@/lib/uploadImage";
+import { apiUrl } from "@/lib/api";
 
 interface GalleryEditorProps {
   isEditing: boolean;
   lang: "en" | "kn";
 }
 
+type GalleryRow = GalleryItemType & { id?: string; category?: "performance" | "gurukul" | "workshop" };
+
 export function GalleryEditor({ isEditing, lang }: GalleryEditorProps) {
-  const [performances, setPerformances] = useState<GalleryItemType[]>(initialPerformanceItems);
-  const [gurukul, setGurukul] = useState<GalleryItemType[]>(initialGurukulItems);
-  const [workshops, setWorkshops] = useState<GalleryItemType[]>(initialWorkshopItems);
+  const [performances, setPerformances] = useState<GalleryRow[]>(initialPerformanceItems);
+  const [gurukul, setGurukul] = useState<GalleryRow[]>(initialGurukulItems);
+  const [workshops, setWorkshops] = useState<GalleryRow[]>(initialWorkshopItems);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    fetch(apiUrl(`/api/content?lang=${lang}`))
+      .then(r => r.json())
+      .then((raw) => {
+        const all: any[] = raw.gallery || [];
+        if (!all.length) return;
+        setPerformances(all.filter(g => g.category === "performance").map(g => ({ id: g.id, label: g.label, type: g.type, src: g.src, category: "performance" })));
+        setGurukul(all.filter(g => g.category === "gurukul").map(g => ({ id: g.id, label: g.label, type: g.type, src: g.src, category: "gurukul" })));
+        setWorkshops(all.filter(g => g.category === "workshop").map(g => ({ id: g.id, label: g.label, type: g.type, src: g.src, category: "workshop" })));
+      })
+      .catch(err => console.error("[GalleryEditor] fetch failed", err));
+  }, [lang]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const payload = [
+        ...performances.map(p => ({ ...p, category: "performance" })),
+        ...gurukul.map(g => ({ ...g, category: "gurukul" })),
+        ...workshops.map(w => ({ ...w, category: "workshop" })),
+      ];
+      const res = await fetch(apiUrl(`/api/save`), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ section: "gallery", data: payload, lang }),
+      });
+      if (!res.ok) throw new Error(`Save failed (${res.status})`);
+      alert("Gallery saved.");
+    } catch (err: any) {
+      alert(`Save failed: ${err.message}`);
+    } finally {
+      setSaving(false);
+    }
+  };
   
   const [addingDialog, setAddingDialog] = useState<"performance" | "gurukul" | "workshop" | null>(null);
   const [editingDialog, setEditingDialog] = useState<{ category: "performance" | "gurukul" | "workshop", index: number, item: GalleryItemType } | null>(null);
@@ -67,6 +107,15 @@ export function GalleryEditor({ isEditing, lang }: GalleryEditorProps) {
           <h2 className="text-xl md:text-4xl font-display text-primary mb-1 md:mb-2">Gallery Management</h2>
           <p className="text-[10px] md:text-base text-muted-foreground">Curate the visual journey of the sanctuary</p>
         </div>
+        {isEditing && (
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="px-5 py-2 bg-gold text-background rounded-full font-bold text-xs uppercase tracking-widest shadow-glow disabled:opacity-50"
+          >
+            {saving ? "Saving…" : "Save Gallery"}
+          </button>
+        )}
       </div>
 
       {/* PERFORMANCES */}
@@ -219,14 +268,14 @@ function EditorItem({
       )}
 
       {/* Overlay */}
-      <div className={`absolute inset-0 bg-black/40 backdrop-blur-[2px] transition-all flex flex-col justify-between p-3 md:p-4 ${
+      <div className={`absolute inset-0 bg-background/60 backdrop-blur-[2px] transition-all flex flex-col justify-between p-3 md:p-4 ${
         isEditing ? "opacity-100 md:opacity-0 md:group-hover:opacity-100" : "opacity-0 group-hover:opacity-100"
       }`}>
         <div className="flex justify-end w-full">
           {isEditing && (
             <button
               onClick={(e) => { e.stopPropagation(); onDelete(); }}
-              className="p-1.5 md:p-2.5 bg-red-500/80 text-white rounded-full hover:bg-red-500 hover:scale-105 transition-all shadow-lg z-20"
+              className="p-1.5 md:p-2.5 bg-destructive/80 text-foreground rounded-full hover:bg-destructive hover:scale-105 transition-all shadow-lg z-20"
               title="Delete Media"
             >
               <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
@@ -268,11 +317,21 @@ function ItemDialog({
   const [item, setItem] = useState<GalleryItemType>(initialItem);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [uploading, setUploading] = useState(false);
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
+    if (!file) return;
+    const previewUrl = URL.createObjectURL(file);
+    setItem((prev) => ({ ...prev, src: previewUrl }));
+    setUploading(true);
+    try {
+      const url = await uploadImage(file, "gallery");
       setItem((prev) => ({ ...prev, src: url }));
+    } catch (err: any) {
+      alert(`Upload failed: ${err.message}`);
+      setItem((prev) => ({ ...prev, src: "" }));
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -310,7 +369,7 @@ function ItemDialog({
               <button
                 onClick={() => setItem({ ...item, type: "image", src: "" })}
                 className={`flex-1 py-2 md:py-3 rounded-xl flex items-center justify-center gap-2 text-xs md:text-sm transition-all ${
-                  item.type === "image" ? "bg-gold text-background font-bold shadow-glow" : "bg-black/30 text-muted-foreground border border-border hover:bg-black/40"
+                  item.type === "image" ? "bg-gold text-background font-bold shadow-glow" : "bg-muted/60 text-muted-foreground border border-border hover:bg-background/60"
                 }`}
               >
                 <ImageIcon className="w-3.5 h-3.5 md:w-4 md:h-4" /> Photo
@@ -318,7 +377,7 @@ function ItemDialog({
               <button
                 onClick={() => setItem({ ...item, type: "video", src: "" })}
                 className={`flex-1 py-2 md:py-3 rounded-xl flex items-center justify-center gap-2 text-xs md:text-sm transition-all ${
-                  item.type === "video" ? "bg-blue-500 text-white font-bold shadow-[0_0_15px_rgba(59,130,246,0.5)]" : "bg-black/30 text-muted-foreground border border-border hover:bg-black/40"
+                  item.type === "video" ? "bg-accent text-foreground font-bold shadow-[0_0_15px_rgba(59,130,246,0.5)]" : "bg-muted/60 text-muted-foreground border border-border hover:bg-background/60"
                 }`}
               >
                 <Video className="w-3.5 h-3.5 md:w-4 md:h-4" /> Video
@@ -326,7 +385,7 @@ function ItemDialog({
             </div>
 
             <div 
-              className="mt-3 md:mt-4 border-2 border-dashed border-border/60 hover:border-gold/50 transition-colors rounded-xl p-4 md:p-8 flex flex-col items-center justify-center cursor-pointer bg-black/20"
+              className="mt-3 md:mt-4 border-2 border-dashed border-border/60 hover:border-gold/50 transition-colors rounded-xl p-4 md:p-8 flex flex-col items-center justify-center cursor-pointer bg-background/40"
               onClick={() => fileInputRef.current?.click()}
             >
               {item.src ? (
@@ -359,7 +418,7 @@ function ItemDialog({
         <div className="mt-4 md:mt-8 pt-4 md:pt-6 border-t border-border flex justify-end gap-3 md:gap-4">
           <button
             onClick={onClose}
-            className="px-4 md:px-6 py-2 md:py-2.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-white hover:bg-white/5 transition-all"
+            className="px-4 md:px-6 py-2 md:py-2.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-all"
           >
             Cancel
           </button>

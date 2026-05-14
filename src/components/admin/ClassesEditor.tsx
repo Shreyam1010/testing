@@ -1,8 +1,10 @@
 import { useState, useRef, useCallback, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Camera, User, Clock, BookOpen, Loader2, Save, Check, Plus, Trash2, Edit2, X, ChevronUp, ChevronDown } from "lucide-react";
+import { uploadImage } from "@/lib/uploadImage";
+import { apiUrl } from "@/lib/api";
 
-function useOnClickOutside(ref: React.RefObject<HTMLElement>, handler: () => void) {
+function useOnClickOutside(ref: React.RefObject<HTMLElement | null>, handler: () => void) {
   useEffect(() => {
     const listener = (event: any) => {
       if (!ref.current || ref.current.contains(event.target)) return;
@@ -57,7 +59,7 @@ function ScrollPicker({
   return (
     <div 
       ref={containerRef}
-      className={`flex flex-col items-center bg-[#1a1a1a]/80 backdrop-blur-md border border-gold/20 rounded-xl overflow-hidden ${className}`}
+      className={`flex flex-col items-center bg-card/80 backdrop-blur-md border border-gold/20 rounded-xl overflow-hidden ${className}`}
     >
       <button
         onClick={(e) => { e.stopPropagation(); setStartIndex(prev => Math.max(0, prev - 1)); }}
@@ -73,7 +75,7 @@ function ScrollPicker({
             className={`py-2 px-4 text-sm text-center transition-all ${
               item === value 
                 ? "text-gold font-bold scale-110" 
-                : "text-foreground/40 hover:text-primary hover:bg-white/5"
+                : "text-foreground/40 hover:text-primary hover:bg-muted/40"
             }`}
           >
             {item}
@@ -124,7 +126,7 @@ function TimeScrollPicker({
   };
 
   return (
-    <div ref={containerRef} className="absolute bottom-full left-0 mb-4 z-[100] flex gap-2 p-3 bg-[#121212] border border-gold/30 rounded-2xl shadow-2xl items-center">
+    <div ref={containerRef} className="absolute bottom-full left-0 mb-4 z-[100] flex gap-2 p-3 bg-popover border border-gold/30 rounded-2xl shadow-2xl items-center">
       <ScrollPicker 
         items={hours} 
         value={hour} 
@@ -195,7 +197,7 @@ function EditableText({
       className={`${className} outline-none cursor-text`}
       style={{
         caretColor: "var(--gold)",
-        borderBottom: "1px solid rgba(255,255,255,0.1)",
+        borderBottom: "1px solid var(--border)",
       }}
     >
       {value}
@@ -297,7 +299,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
     async function loadData() {
       setLoading(true);
       try {
-        const res = await fetch(`${window.location.origin}/api/content?lang=${lang}`);
+        const res = await fetch(apiUrl(`/api/content?lang=${lang}`));
         const result = await res.json();
         
         // Update teachers and classes if found in DB
@@ -328,6 +330,19 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
             }
           }));
         }
+
+        // Load feature bullets ("points") from class_features table
+        if (result.classFeatures?.length > 0) {
+          const dbPoints = result.classFeatures
+            .map((cf: any) => cf[`title_${lang}`] || cf.title_en || "")
+            .filter((s: string) => s.length > 0);
+          if (dbPoints.length > 0) {
+            setData(prev => ({
+              ...prev,
+              [lang]: { ...prev[lang], points: dbPoints },
+            }));
+          }
+        }
       } catch (err) {
         console.error("Failed to load classes content:", err);
       } finally {
@@ -342,7 +357,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
-      await fetch(window.location.origin + "/api/save", {
+      await fetch(apiUrl("/api/save"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -351,6 +366,33 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
           data: data[lang]
         })
       });
+
+      // Persist feature bullets ("points") into class_features table.
+      // Send the merged bilingual list so both EN and KN survive.
+      const enPoints = data.en.points;
+      const knPoints = data.kn.points;
+      const maxLen = Math.max(enPoints.length, knPoints.length);
+      const classFeaturesPayload = Array.from({ length: maxLen }, (_, i) => ({
+        id: `cf_${i + 1}`,
+        title: {
+          en: enPoints[i] ?? "",
+          kn: knPoints[i] ?? "",
+        },
+        desc: { en: "", kn: "" },
+        icon: "ಯ",
+        order_index: i,
+      }));
+
+      await fetch(apiUrl("/api/save"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          section: "class_features",
+          lang: lang,
+          data: classFeaturesPayload,
+        }),
+      });
+
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
@@ -441,7 +483,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
 
   if (loading) {
     return (
-      <div className="h-[80vh] flex items-center justify-center bg-[#050505]">
+      <div className="h-[80vh] flex items-center justify-center bg-background">
         <Loader2 className="w-8 h-8 animate-spin text-gold" />
       </div>
     );
@@ -462,7 +504,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
         </h1>
         <div className="h-0.5 w-16 md:w-24 bg-gold/50 mx-auto rounded-full shadow-glow mb-12" />
         
-        <div className="max-w-4xl mx-auto text-center space-y-10 bg-[#0a0a0a]/80 border border-gold/20 rounded-[2.5rem] p-8 md:p-14 shadow-2xl backdrop-blur-md relative overflow-hidden group">
+        <div className="max-w-4xl mx-auto text-center space-y-10 bg-card/60 border border-gold/20 rounded-[2.5rem] p-8 md:p-14 shadow-2xl backdrop-blur-md relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-br from-gold/5 via-transparent to-crimson/5 opacity-50" />
           
            <p className="relative z-10 text-base md:text-xl text-primary/90 leading-relaxed font-medium">
@@ -470,41 +512,44 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
           </p>
           
           <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 text-left max-w-3xl mx-auto mt-10">
-            {[
-              { 
-                en: "Authentic Gurukula style training", 
-                kn: "ಅಪ್ಪಟ ಗುರುಕುಲ ಶೈಲಿಯ ತರಬೇತಿ" 
-              },
-              { 
-                en: "Focus on both theory and practice", 
-                kn: "ಸೈದ್ಧಾಂತಿಕ ಮತ್ತು ಪ್ರಾಯೋಗಿಕ ಕಲಿಕೆಗೆ ಒತ್ತು" 
-              },
-              { 
-                en: "Personalized attention from veteran gurus", 
-                kn: "ಅನುಭವಿ ಗುರುಗಳಿಂದ ವೈಯಕ್ತಿಕ ಗಮನ" 
-              },
-              { 
-                en: "Opportunities for performances", 
-                kn: "ರಂಗ ಪ್ರದರ್ಶನಗಳಿಗೆ ಅವಕಾಶಗಳು" 
-              },
-              { 
-                en: "Comprehensive curriculum for all levels", 
-                kn: "ಎಲ್ಲಾ ಹಂತದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಸಮಗ್ರ ಪಠ್ಯಕ್ರಮ" 
-              },
-              { 
-                en: "In-depth study of Bhagavata literature and music", 
-                kn: "ಭಾಗವತ ಸಾಹಿತ್ಯ ಮತ್ತು ಸಂಗೀತದ ಆಳವಾದ ಅಧ್ಯಯನ" 
-              }
-            ].map((item, idx) => (
-              <div key={idx} className="flex items-center gap-4 group/item">
+            {current.points.map((pt, idx) => (
+              <div key={idx} className="flex items-center gap-4 group/item relative">
                 <div className="w-8 h-8 md:w-10 md:h-10 shrink-0 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center group-hover/item:scale-110 group-hover/item:bg-gold/20 transition-all duration-300">
                   <span className="text-gold font-kannada text-lg md:text-xl font-bold">ಯ</span>
                 </div>
-                <span className="text-sm md:text-base text-foreground/80 group-hover/item:text-primary transition-colors duration-300 leading-tight">
-                  {item[lang]}
-                </span>
+                <EditableText
+                  value={pt}
+                  onChange={(v) => {
+                    const next = [...current.points];
+                    next[idx] = v;
+                    update("points", next);
+                  }}
+                  isEditing={isEditing}
+                  tag="span"
+                  className="text-sm md:text-base text-foreground/80 group-hover/item:text-primary transition-colors duration-300 leading-tight flex-1"
+                />
+                {isEditing && (
+                  <button
+                    onClick={() => {
+                      const next = current.points.filter((_, i) => i !== idx);
+                      update("points", next);
+                    }}
+                    className="opacity-0 group-hover/item:opacity-100 transition-opacity p-1.5 rounded-full bg-destructive/20 text-destructive hover:bg-destructive/40"
+                    title="Delete point"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                )}
               </div>
             ))}
+            {isEditing && (
+              <button
+                onClick={() => update("points", [...current.points, lang === "en" ? "New point" : "ಹೊಸ ಅಂಶ"])}
+                className="flex items-center gap-2 px-4 py-2 bg-gold/10 text-gold rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest hover:bg-gold/20 transition-all justify-center"
+              >
+                <Plus className="w-3.5 h-3.5" /> Add Point
+              </button>
+            )}
           </div>
         </div>
       </motion.div>
@@ -543,7 +588,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                           const idx = current.teachers.findIndex(t => t.id === tch.id);
                           handleDeleteTeacher(idx);
                         }}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 shadow-md hover:bg-red-600 transition-all z-10"
+                        className="absolute -top-2 -right-2 bg-destructive text-foreground rounded-full p-0.5 shadow-md hover:bg-destructive/90 transition-all z-10"
                         title="Teacher has no classes. Delete?"
                       >
                         <X className="w-3 h-3" />
@@ -586,7 +631,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                     }
                   }}
                   className={`h-full group relative bg-card/40 border ${
-                    isEditing ? "border-border/50" : "border-white/10"
+                    isEditing ? "border-border/50" : "border-border"
                   } p-7 rounded-2xl transition-all hover:border-gold/40 flex flex-col ${
                     !isEditing && expandedId === c.id ? "col-span-2 md:col-span-1" : "col-span-1"
                   }`}
@@ -594,7 +639,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                   {isEditing && (
                     <button
                       onClick={(e) => { e.stopPropagation(); handleDeleteClass(c.id); }}
-                      className="absolute top-2 right-2 z-10 p-2 bg-red-500/80 text-white rounded-full hover:bg-red-500 transition-all"
+                      className="absolute top-2 right-2 z-10 p-2 bg-destructive/80 text-foreground rounded-full hover:bg-destructive transition-all"
                       title="Remove Class"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -608,7 +653,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                         <select
                           value={c.day}
                           onChange={(e) => updateClass(originalIndex, "day", e.target.value)}
-                          className="bg-black/40 border border-border/50 rounded px-2 py-1 outline-none focus:border-gold"
+                          className="bg-background/60 border border-border/50 rounded px-2 py-1 outline-none focus:border-gold"
                         >
                           {lang === "en" ? (
                             <>
@@ -640,7 +685,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                         <select
                           value={c.level || "None"}
                           onChange={(e) => updateClass(originalIndex, "level", e.target.value)}
-                          className="bg-black/40 border border-border/50 rounded px-2 py-1 outline-none focus:border-gold"
+                          className="bg-background/60 border border-border/50 rounded px-2 py-1 outline-none focus:border-gold"
                         >
                           {lang === "en" ? (
                             <>
@@ -672,7 +717,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                           <select 
                             value={c.teacherId}
                             onChange={(e) => updateClass(originalIndex, "teacherId", e.target.value)}
-                            className="bg-black/40 border border-border/50 rounded px-2 py-1 outline-none focus:border-gold"
+                            className="bg-background/60 border border-border/50 rounded px-2 py-1 outline-none focus:border-gold"
                           >
                             {current.teachers.map(t => (
                               <option key={t.id} value={t.id}>{t.name}</option>
@@ -724,14 +769,14 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                       <div className="flex items-center justify-between gap-4 mb-4">
                         <div className="flex items-center gap-2 text-[10px] md:text-xs text-gold font-bold uppercase tracking-[0.2em]">
                           <span>{c.day}</span>
-                          <span className={`${expandedId === c.id ? "inline" : "hidden md:inline"} text-white/10`}>•</span>
+                          <span className={`${expandedId === c.id ? "inline" : "hidden md:inline"} text-gold/30`}>•</span>
                           <span className={expandedId === c.id ? "inline" : "hidden md:inline"}>{c.level}</span>
                         </div>
                         <div className="md:hidden">
                           <motion.div
                             animate={{ rotate: expandedId === c.id ? 180 : 0 }}
                             transition={{ duration: 0.3 }}
-                            className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-gold/40"
+                            className="w-6 h-6 rounded-full bg-muted/40 flex items-center justify-center text-gold/40"
                           >
                             <ChevronDown size={14} />
                           </motion.div>
@@ -771,7 +816,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.2 }}
-                            className="md:hidden pt-4 border-t border-white/5 space-y-4 text-sm text-foreground/80"
+                            className="md:hidden pt-4 border-t border-border/50 space-y-4 text-sm text-foreground/80"
                           >
                             <div className="flex items-start gap-3">
                               <User size={14} className="text-gold mt-1" />
@@ -837,14 +882,14 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                   <>
                     <button
                       onClick={() => setEditingTeacherIndex(i)}
-                      className="absolute top-4 left-4 z-10 p-3 bg-blue-500/80 text-white rounded-full hover:bg-blue-500 transition-all shadow-lg"
+                      className="absolute top-4 left-4 z-10 p-3 bg-accent/80 text-foreground rounded-full hover:bg-accent transition-all shadow-lg"
                       title="Edit Guru"
                     >
                       <Edit2 className="w-5 h-5" />
                     </button>
                     <button
                       onClick={() => handleDeleteTeacher(i)}
-                      className="absolute top-4 right-4 z-10 p-3 bg-red-500/80 text-white rounded-full hover:bg-red-500 transition-all shadow-lg"
+                      className="absolute top-4 right-4 z-10 p-3 bg-destructive/80 text-foreground rounded-full hover:bg-destructive transition-all shadow-lg"
                       title="Delete Guru"
                     >
                       <Trash2 className="w-5 h-5" />
@@ -898,17 +943,24 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                   alt={current.teachers[editingTeacherIndex].name}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all cursor-pointer">
+                <div className="absolute inset-0 bg-background/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all cursor-pointer">
                   <button onClick={() => fileInputRefs.current[editingTeacherIndex]?.click()} className="flex items-center gap-2 px-6 py-3 bg-gold text-background rounded-full font-bold text-xs uppercase tracking-widest shadow-glow">
                     <Camera className="w-4 h-4" /> Replace Photo
                   </button>
-                  <input type="file" ref={el => fileInputRefs.current[editingTeacherIndex] = el} className="hidden" accept="image/*" onChange={(e) => {
+                  <input type="file" ref={el => { fileInputRefs.current[editingTeacherIndex] = el; }} className="hidden" accept="image/*" onChange={async (e) => {
                     const file = e.target.files?.[0];
-                    if (file) {
-                      const url = URL.createObjectURL(file);
-                      const newTeachers = [...current.teachers];
-                      newTeachers[editingTeacherIndex] = { ...newTeachers[editingTeacherIndex], image: url };
-                      update("teachers", newTeachers);
+                    if (!file) return;
+                    const previewUrl = URL.createObjectURL(file);
+                    const newTeachers = [...current.teachers];
+                    newTeachers[editingTeacherIndex] = { ...newTeachers[editingTeacherIndex], image: previewUrl };
+                    update("teachers", newTeachers);
+                    try {
+                      const url = await uploadImage(file, "teachers");
+                      const t2 = [...current.teachers];
+                      t2[editingTeacherIndex] = { ...t2[editingTeacherIndex], image: url };
+                      update("teachers", t2);
+                    } catch (err: any) {
+                      alert(`Upload failed: ${err.message}`);
                     }
                   }} />
                 </div>
@@ -943,25 +995,25 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
                 
                 <div className="mt-12 flex flex-wrap gap-4">
                   <div className="px-6 py-3 rounded-full border border-gold/30 text-gold text-xs font-bold uppercase tracking-widest">
-                    <EditableText 
-                      value={current.teachers[editingTeacherIndex].badge1 || (lang === 'en' ? 'Expert Guru' : 'ನುರಿತ ಗುರುಗಳು')}
+                    <EditableText
+                      value={(current.teachers[editingTeacherIndex] as any).badge1 || (lang === 'en' ? 'Expert Guru' : 'ನುರಿತ ಗುರುಗಳು')}
                       onChange={(v) => {
-                        const newTeachers = [...current.teachers];
+                        const newTeachers = [...current.teachers] as any[];
                         newTeachers[editingTeacherIndex] = { ...newTeachers[editingTeacherIndex], badge1: v };
                         update("teachers", newTeachers);
                       }}
-                      isEditing={true} 
+                      isEditing={true}
                     />
                   </div>
                   <div className="px-6 py-3 rounded-full border border-gold/30 text-gold text-xs font-bold uppercase tracking-widest">
-                    <EditableText 
-                      value={current.teachers[editingTeacherIndex].badge2 || (lang === 'en' ? '20+ Years Exp' : '೨೦+ ವರ್ಷಗಳ ಅನುಭವ')}
+                    <EditableText
+                      value={(current.teachers[editingTeacherIndex] as any).badge2 || (lang === 'en' ? '20+ Years Exp' : '೨೦+ ವರ್ಷಗಳ ಅನುಭವ')}
                       onChange={(v) => {
-                        const newTeachers = [...current.teachers];
+                        const newTeachers = [...current.teachers] as any[];
                         newTeachers[editingTeacherIndex] = { ...newTeachers[editingTeacherIndex], badge2: v };
                         update("teachers", newTeachers);
                       }}
-                      isEditing={true} 
+                      isEditing={true}
                     />
                   </div>
                 </div>
@@ -978,7 +1030,7 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
             onClick={handleSave}
             disabled={isSaving}
             className={`flex items-center gap-2 px-8 py-4 rounded-full font-bold text-xs uppercase tracking-widest transition-all shadow-glow ${
-              saveSuccess ? "bg-green-500 text-white" : "bg-primary text-background hover:scale-105"
+              saveSuccess ? "bg-primary text-foreground" : "bg-primary text-background hover:scale-105"
             }`}
           >
             {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : saveSuccess ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}

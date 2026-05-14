@@ -2,7 +2,8 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Camera, Loader2, Save, Check } from "lucide-react";
 import aboutImg from "@/assets/about-performer.jpg";
-import sticker0 from "@/assets/stickers/sticker_0.png";
+import { uploadImage } from "@/lib/uploadImage";
+import { apiUrl } from "@/lib/api";
 interface AboutEditorProps {
   isEditing: boolean;
   lang: "en" | "kn";
@@ -87,7 +88,7 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
 
   // --- FETCH FROM DATABASE ---
   useEffect(() => {
-    fetch(`${window.location.origin}/api/content?lang=${lang}`)
+    fetch(apiUrl(`/api/content?lang=${lang}`))
       .then((r) => r.json())
       .then((result) => {
         const aboutData: any = {};
@@ -115,7 +116,7 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
     setSaveSuccess(false);
     try {
       const current = data[lang];
-      await fetch(window.location.origin + "/api/save", {
+      await fetch(apiUrl("/api/save"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -158,11 +159,16 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
     update("stats", newStats);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
+    if (!file) return;
+    setCurrentAboutImg(URL.createObjectURL(file));
+    try {
+      const url = await uploadImage(file, "about");
       setCurrentAboutImg(url);
+      update("image", url);
+    } catch (err: any) {
+      alert(`Upload failed: ${err.message}`);
     }
   };
 
@@ -193,7 +199,7 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
             <div className="absolute inset-0 bg-gradient-to-r from-transparent to-background/30 lg:to-background/60 rounded-full lg:rounded-none" />
             
             {isEditing && (
-              <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all cursor-pointer rounded-full lg:rounded-none">
+              <div className="absolute inset-0 bg-background/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all cursor-pointer rounded-full lg:rounded-none">
                 <button 
                   onClick={() => fileInputRef.current?.click()}
                   className="flex flex-col items-center gap-1 p-4 bg-gold text-background rounded-full font-bold text-[8px] uppercase tracking-widest shadow-glow hover:scale-105 transition-all"
@@ -223,7 +229,7 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
             </div>
             
             <h1 className="font-display text-[26px] sm:text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-6 lg:mb-10 text-foreground flex items-center justify-center lg:justify-start gap-4">
-              <img src={sticker0} alt="" className="w-10 h-10 md:w-16 md:h-16 object-contain" />
+             
               <EditableText
                 value={current.title}
                 onChange={(v) => update("title", v)}
@@ -293,7 +299,7 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
             disabled={isSaving}
             className={`flex items-center gap-2 px-8 py-4 rounded-full font-bold text-xs uppercase tracking-widest transition-all shadow-glow ${
               saveSuccess
-                ? "bg-green-500 text-white"
+                ? "bg-primary text-foreground"
                 : "bg-primary text-background hover:scale-105"
             }`}
           >

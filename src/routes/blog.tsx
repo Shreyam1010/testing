@@ -97,7 +97,7 @@ function BlogPage() {
                 {/* Close Button */}
                 <button
                   onClick={() => setSelectedBlog(null)}
-                  className="absolute top-4 right-4 z-20 w-10 h-10 bg-black/50 hover:bg-black/80 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-colors"
+                  className="absolute top-4 right-4 z-20 w-10 h-10 bg-background/60 hover:bg-background/90 backdrop-blur-md rounded-full flex items-center justify-center text-foreground transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -117,10 +117,10 @@ function BlogPage() {
                         <span className="inline-block px-2.5 py-1 bg-gold text-background text-[9px] font-bold uppercase tracking-widest rounded-sm">
                           {selectedBlog.category[lang]}
                         </span>
-                        <h1 className="text-2xl font-display text-white leading-tight">
+                        <h1 className="text-2xl font-display text-foreground leading-tight">
                           {selectedBlog.title[lang]}
                         </h1>
-                        <div className="flex items-center gap-4 text-white/70 text-[9px] font-bold uppercase tracking-widest">
+                        <div className="flex items-center gap-4 text-foreground/70 text-[9px] font-bold uppercase tracking-widest">
                           <div className="flex items-center gap-1.5">
                             <User className="w-3.5 h-3.5 text-gold" />
                             {selectedBlog.author[lang]}
@@ -207,7 +207,7 @@ function BlogCard({ post, index, onClick }: { post: any; index: number; onClick:
         <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
 
         <div className="absolute top-2 left-2 sm:top-4 sm:left-4">
-          <span className="px-2 py-0.5 sm:px-3 sm:py-1 bg-black/50 backdrop-blur-md border border-white/20 text-[8px] sm:text-[10px] font-bold text-white uppercase tracking-wider rounded-full">
+          <span className="px-2 py-0.5 sm:px-3 sm:py-1 bg-background/60 backdrop-blur-md border border-gold/30 text-[8px] sm:text-[10px] font-bold text-foreground uppercase tracking-wider rounded-full">
             {post.category?.[lang] || "General"}
           </span>
         </div>

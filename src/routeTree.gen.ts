@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ServicesRouteImport } from './routes/services'
-import { Route as ScheduleRouteImport } from './routes/schedule'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ClassesRouteImport } from './routes/classes'
@@ -18,17 +17,10 @@ import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DataSaveRouteImport } from './routes/data.save'
-import { Route as DataContentRouteImport } from './routes/data.content'
 
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ScheduleRoute = ScheduleRouteImport.update({
-  id: '/schedule',
-  path: '/schedule',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleryRoute = GalleryRouteImport.update({
@@ -66,16 +58,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DataSaveRoute = DataSaveRouteImport.update({
-  id: '/data/save',
-  path: '/data/save',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DataContentRoute = DataContentRouteImport.update({
-  id: '/data/content',
-  path: '/data/content',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -85,10 +67,7 @@ export interface FileRoutesByFullPath {
   '/classes': typeof ClassesRoute
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
-  '/schedule': typeof ScheduleRoute
   '/services': typeof ServicesRoute
-  '/data/content': typeof DataContentRoute
-  '/data/save': typeof DataSaveRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -98,10 +77,7 @@ export interface FileRoutesByTo {
   '/classes': typeof ClassesRoute
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
-  '/schedule': typeof ScheduleRoute
   '/services': typeof ServicesRoute
-  '/data/content': typeof DataContentRoute
-  '/data/save': typeof DataSaveRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -112,10 +88,7 @@ export interface FileRoutesById {
   '/classes': typeof ClassesRoute
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
-  '/schedule': typeof ScheduleRoute
   '/services': typeof ServicesRoute
-  '/data/content': typeof DataContentRoute
-  '/data/save': typeof DataSaveRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -127,10 +100,7 @@ export interface FileRouteTypes {
     | '/classes'
     | '/contact'
     | '/gallery'
-    | '/schedule'
     | '/services'
-    | '/data/content'
-    | '/data/save'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -140,10 +110,7 @@ export interface FileRouteTypes {
     | '/classes'
     | '/contact'
     | '/gallery'
-    | '/schedule'
     | '/services'
-    | '/data/content'
-    | '/data/save'
   id:
     | '__root__'
     | '/'
@@ -153,10 +120,7 @@ export interface FileRouteTypes {
     | '/classes'
     | '/contact'
     | '/gallery'
-    | '/schedule'
     | '/services'
-    | '/data/content'
-    | '/data/save'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -167,10 +131,7 @@ export interface RootRouteChildren {
   ClassesRoute: typeof ClassesRoute
   ContactRoute: typeof ContactRoute
   GalleryRoute: typeof GalleryRoute
-  ScheduleRoute: typeof ScheduleRoute
   ServicesRoute: typeof ServicesRoute
-  DataContentRoute: typeof DataContentRoute
-  DataSaveRoute: typeof DataSaveRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -180,13 +141,6 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/schedule': {
-      id: '/schedule'
-      path: '/schedule'
-      fullPath: '/schedule'
-      preLoaderRoute: typeof ScheduleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gallery': {
@@ -238,20 +192,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/data/save': {
-      id: '/data/save'
-      path: '/data/save'
-      fullPath: '/data/save'
-      preLoaderRoute: typeof DataSaveRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/data/content': {
-      id: '/data/content'
-      path: '/data/content'
-      fullPath: '/data/content'
-      preLoaderRoute: typeof DataContentRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -263,10 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClassesRoute: ClassesRoute,
   ContactRoute: ContactRoute,
   GalleryRoute: GalleryRoute,
-  ScheduleRoute: ScheduleRoute,
   ServicesRoute: ServicesRoute,
-  DataContentRoute: DataContentRoute,
-  DataSaveRoute: DataSaveRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

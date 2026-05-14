@@ -23,14 +23,19 @@ export const Route = createFileRoute("/gallery")({
   component: Gallery,
 });
 
-const performanceItems = initialPerformanceItems;
-const gurukulItems = initialGurukulItems;
-const workshopItems = initialWorkshopItems;
-
-
 function Gallery() {
   const { t, lang } = useLang();
   const { data, loading } = useDbContent();
+
+  const performanceItems: any[] = data?.galleryByCategory?.performance?.length
+    ? data.galleryByCategory.performance
+    : initialPerformanceItems;
+  const gurukulItems: any[] = data?.galleryByCategory?.gurukul?.length
+    ? data.galleryByCategory.gurukul
+    : initialGurukulItems;
+  const workshopItems: any[] = data?.galleryByCategory?.workshop?.length
+    ? data.galleryByCategory.workshop
+    : initialWorkshopItems;
 
   const servicesMap = data?.siteContentMap?.services || {};
   const socialTitle = servicesMap.social_title || t.services.social.title;
@@ -102,7 +107,7 @@ function Gallery() {
           <div className="flex flex-wrap justify-center gap-4">
             {loading ? (
               Array.from({ length: 7 }).map((_, i) => (
-                <div key={i} className="aspect-[4/5] rounded-2xl bg-white/5 animate-pulse w-[calc((100%-1rem)/2)] sm:w-[calc((100%-3rem)/4)] lg:w-[calc((100%-9rem)/7)]" />
+                <div key={i} className="aspect-[4/5] rounded-2xl bg-muted/40 animate-pulse w-[calc((100%-1rem)/2)] sm:w-[calc((100%-3rem)/4)] lg:w-[calc((100%-9rem)/7)]" />
               ))
             ) : (
               socialLinks.slice(0, 21).map((social: any) => {

@@ -4,6 +4,8 @@ import { ArrowRight, Loader2, Save, Check, Plus, Trash2, Edit3, X, User, Calenda
 import { FaqManager } from "./FaqManager";
 import { blogs, BlogItem } from "@/lib/data";
 import { useDbContent } from "@/hooks/useDb";
+import { uploadImage } from "@/lib/uploadImage";
+import { apiUrl } from "@/lib/api";
 import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
 import g4 from "@/assets/gallery-4.jpg";
@@ -116,7 +118,7 @@ export function BlogEditor({ isEditing, lang }: BlogEditorProps) {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
-      await fetch(window.location.origin + "/api/save", {
+      await fetch(apiUrl("/api/save"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ section: "blogs", lang, data: localBlogs }),
@@ -174,13 +176,13 @@ export function BlogEditor({ isEditing, lang }: BlogEditorProps) {
                <>
                  <button 
                    onClick={() => { setEditorData({...post}); setEditorIndex(i); }}
-                   className="absolute top-2 left-2 z-10 w-7 h-7 md:w-10 md:h-10 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg transition-transform hover:scale-110"
+                   className="absolute top-2 left-2 z-10 w-7 h-7 md:w-10 md:h-10 bg-accent hover:bg-accent/90 rounded-full flex items-center justify-center text-foreground shadow-lg transition-transform hover:scale-110"
                  >
                    <Edit3 className="w-3.5 h-3.5 md:w-5 md:h-5" />
                  </button>
                  <button 
                    onClick={() => setLocalBlogs(localBlogs.filter((_, idx) => idx !== i))}
-                   className="absolute top-2 right-2 z-10 w-7 h-7 md:w-10 md:h-10 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center text-white shadow-lg transition-transform hover:scale-110"
+                   className="absolute top-2 right-2 z-10 w-7 h-7 md:w-10 md:h-10 bg-destructive hover:bg-destructive/90 rounded-full flex items-center justify-center text-foreground shadow-lg transition-transform hover:scale-110"
                  >
                    <Trash2 className="w-3.5 h-3.5 md:w-5 md:h-5" />
                  </button>
@@ -195,7 +197,7 @@ export function BlogEditor({ isEditing, lang }: BlogEditorProps) {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
               <div className="absolute top-2 md:top-4 left-2 md:left-4">
-                <span className="px-2 md:px-3 py-0.5 md:py-1 bg-black/40 backdrop-blur-md border border-white/10 text-[7px] md:text-[9px] font-bold text-white uppercase tracking-wider rounded-full">
+                <span className="px-2 md:px-3 py-0.5 md:py-1 bg-background/60 backdrop-blur-md border border-border text-[7px] md:text-[9px] font-bold text-foreground uppercase tracking-wider rounded-full">
                   {post.category[lang]}
                 </span>
               </div>
@@ -229,7 +231,7 @@ export function BlogEditor({ isEditing, lang }: BlogEditorProps) {
               {/* Close Button */}
               <button
                 onClick={() => setEditorData(null)}
-                className="absolute top-4 right-4 z-20 w-10 h-10 bg-black/50 hover:bg-black/80 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-colors"
+                className="absolute top-4 right-4 z-20 w-10 h-10 bg-background/70 hover:bg-background/85 backdrop-blur-md rounded-full flex items-center justify-center text-foreground transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -250,10 +252,10 @@ export function BlogEditor({ isEditing, lang }: BlogEditorProps) {
                             <span className="inline-block px-2.5 py-1 bg-gold text-background text-[9px] font-bold uppercase tracking-widest rounded-sm">
                               {editorData.category[lang]}
                             </span>
-                            <h1 className="text-2xl font-display text-white leading-tight">
+                            <h1 className="text-2xl font-display text-foreground leading-tight">
                               {editorData.title[lang]}
                             </h1>
-                            <div className="flex items-center gap-4 text-white/70 text-[9px] font-bold uppercase tracking-widest">
+                            <div className="flex items-center gap-4 text-foreground/70 text-[9px] font-bold uppercase tracking-widest">
                               <div className="flex items-center gap-1.5">
                                 <User className="w-3.5 h-3.5 text-gold" />
                                 {editorData.author[lang]}
@@ -312,19 +314,25 @@ export function BlogEditor({ isEditing, lang }: BlogEditorProps) {
                           src={editorData.image.startsWith('blob:') ? editorData.image : imgMap[editorData.image] || editorData.image} 
                           className="w-full h-full object-cover" 
                         />
-                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center transition-opacity opacity-0 group-hover:opacity-100">
-                          <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-6 py-3 rounded-full backdrop-blur-md text-white font-bold flex items-center gap-2 transition">
+                        <div className="absolute inset-0 bg-background/70 flex items-center justify-center transition-opacity opacity-0 group-hover:opacity-100">
+                          <label className="cursor-pointer bg-muted/60 hover:bg-muted/80 px-6 py-3 rounded-full backdrop-blur-md text-foreground font-bold flex items-center gap-2 transition">
                             <ImageIcon className="w-5 h-5" />
                             Change Cover Image
-                            <input 
-                              type="file" 
-                              className="hidden" 
-                              accept="image/*" 
-                              onChange={e => {
-                                if (e.target.files?.[0]) {
-                                  setEditorData({ ...editorData, image: URL.createObjectURL(e.target.files[0]) });
+                            <input
+                              type="file"
+                              className="hidden"
+                              accept="image/*"
+                              onChange={async e => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                setEditorData({ ...editorData, image: URL.createObjectURL(file) });
+                                try {
+                                  const url = await uploadImage(file, "blog");
+                                  setEditorData((prev: any) => ({ ...prev, image: url }));
+                                } catch (err: any) {
+                                  alert(`Upload failed: ${err.message}`);
                                 }
-                              }} 
+                              }}
                             />
                           </label>
                         </div>
@@ -443,7 +451,7 @@ export function BlogEditor({ isEditing, lang }: BlogEditorProps) {
             disabled={isSaving}
             className={`flex items-center gap-2 px-8 py-4 rounded-full font-bold text-xs uppercase tracking-widest transition-all shadow-glow ${
               saveSuccess
-                ? "bg-green-500 text-white"
+                ? "bg-primary text-foreground"
                 : "bg-primary text-background hover:scale-105"
             }`}
           >

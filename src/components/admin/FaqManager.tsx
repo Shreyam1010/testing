@@ -5,6 +5,7 @@ import {
   Loader2, HelpCircle, MessageSquare
 } from "lucide-react";
 import { useDbContent } from "@/hooks/useDb";
+import { apiUrl } from "@/lib/api";
 
 interface FaqItem {
   id: string;
@@ -43,7 +44,7 @@ export function FaqManager({ lang, blogId = null, title = "FAQ MANAGER", subtitl
     const orderedFaqs = faqs.map((f, i) => ({ ...f, orderIndex: i }));
 
     try {
-      await fetch(window.location.origin + "/api/save", {
+      await fetch(apiUrl("/api/save"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ section: "faqs", lang, data: orderedFaqs }),
@@ -123,7 +124,7 @@ export function FaqManager({ lang, blogId = null, title = "FAQ MANAGER", subtitl
               {isEditing && blogId !== null && (
                 <button 
                   onClick={() => deleteFaq(faq.id)}
-                  className="absolute top-4 right-4 sm:top-6 sm:right-6 text-muted-foreground hover:text-red-500 transition-colors opacity-100 sm:opacity-0 group-hover:opacity-100 p-2"
+                  className="absolute top-4 right-4 sm:top-6 sm:right-6 text-muted-foreground hover:text-destructive transition-colors opacity-100 sm:opacity-0 group-hover:opacity-100 p-2"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -184,7 +185,7 @@ export function FaqManager({ lang, blogId = null, title = "FAQ MANAGER", subtitl
             disabled={isSaving}
             className={`w-auto flex items-center justify-center gap-2 px-6 py-2.5 sm:py-3.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all shadow-glow ${
               saveSuccess
-                ? "bg-green-500 text-white"
+                ? "bg-primary text-foreground"
                 : "bg-primary text-background hover:scale-105"
             }`}
           >

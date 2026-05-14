@@ -11,6 +11,7 @@ import g3 from "@/assets/gallery-3.jpg";
 import classHero from "@/assets/testing1.png.jpeg";
 
 import { useDbContent } from "@/hooks/useDb";
+import mustache from "@/assets/stickers/mus.png";
 
 export const Route = createFileRoute("/classes")({
   head: () => ({
@@ -48,7 +49,30 @@ function Classes() {
 
   const dbTeachers = data?.teachers || [];
   const classesData = data?.siteContent?.classes || {};
+  const classesMap = data?.siteContentMap?.classes || {};
+  const introFallbackEn = "Step into the sacred circle of learning where tradition meets discipline. Our classes are designed to provide a comprehensive understanding of Yakshagana, from the foundational rhythms to the complex expressions of the epics. Beyond the physical movements, we delve into the literary and musical heritage, ensuring each student becomes a custodian of the art's soul. Join us in this journey of rhythm, expression, and divinity.";
+  const introFallbackKn = "ಪರಂಪರೆ ಮತ್ತು ಶಿಸ್ತು ಸಂಗಮಿಸುವ ಈ ಪವಿತ್ರ ಕಲಿಕಾ ವಲಯಕ್ಕೆ ಹೆಜ್ಜೆ ಇಡಿ. ಯಕ್ಷಗಾನದ ಮೂಲ ಲಯಗಳಿಂದ ಹಿಡಿದು ಪುರಾಣಗಳ ಸಂಕೀರ್ಣ ಅಭಿವ್ಯಕ್ತಿಗಳವರೆಗೆ ಸಮಗ್ರ ತಿಳುವಳಿಕೆಯನ್ನು ನೀಡಲು ನಮ್ಮ ತರಗತಿಗಳನ್ನು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ. ದೈಹಿಕ ಚಲನೆಗಳ ಹೊರತಾಗಿ, ನಾವು ಸಾಹಿತ್ಯ ಮತ್ತು ಸಂಗೀತದ ಪರಂಪರೆಯನ್ನು ಆಳವಾಗಿ ಅಧ್ಯಯನ ಮಾಡುತ್ತೇವೆ, ಪ್ರತಿ ವಿದ್ಯಾರ್ಥಿಯು ಈ ಕಲೆಯ ಆತ್ಮದ ಸಂರಕ್ಷಕನಾಗುವುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳುತ್ತೇವೆ. ಲಯ, ಅಭಿವ್ಯಕ್ತಿ ಮತ್ತು ದೈವಿಕತೆಯ ಈ ಪ್ರಯಾಣದಲ್ಲಿ ನಮ್ಮೊಂದಿಗೆ ಸೇರಿ.";
+  const classesIntro = classesMap.intro || (lang === "en" ? introFallbackEn : introFallbackKn);
+
+  const fallbackFeatures = [
+    { en: "Authentic Gurukula style training",                 kn: "ಅಪ್ಪಟ ಗುರುಕುಲ ಶೈಲಿಯ ತರಬೇತಿ" },
+    { en: "Focus on both theory and practice",                 kn: "ಸೈದ್ಧಾಂತಿಕ ಮತ್ತು ಪ್ರಾಯೋಗಿಕ ಕಲಿಕೆಗೆ ಒತ್ತು" },
+    { en: "Personalized attention from veteran gurus",          kn: "ಅನುಭವಿ ಗುರುಗಳಿಂದ ವೈಯಕ್ತಿಕ ಗಮನ" },
+    { en: "Opportunities for performances",                     kn: "ರಂಗ ಪ್ರದರ್ಶನಗಳಿಗೆ ಅವಕಾಶಗಳು" },
+    { en: "Comprehensive curriculum for all levels",            kn: "ಎಲ್ಲಾ ಹಂತದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಸಮಗ್ರ ಪಠ್ಯಕ್ರಮ" },
+    { en: "In-depth study of Bhagavata literature and music",   kn: "ಭಾಗವತ ಸಾಹಿತ್ಯ ಮತ್ತು ಸಂಗೀತದ ಆಳವಾದ ಅಧ್ಯಯನ" },
+  ];
+  const dbClassFeatures = data?.classFeatures?.length ? data.classFeatures : null;
+  const featureList = dbClassFeatures
+    ? dbClassFeatures.map((f: any) => ({
+        en: f.title?.en || "",
+        kn: f.title?.kn || "",
+        icon: mustache,
+      }))
+    : fallbackFeatures.map((f) => ({ ...f, icon: mustache }));
+
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isIntroExpanded, setIsIntroExpanded] = useState(false);
 
   return (
     <Layout>
@@ -62,10 +86,7 @@ function Classes() {
         {/* Scrolling Content */}
         <div className="relative z-10">
 
-          <section className="relative bg-[oklch(0.25_0.08_20)] pt-10 md:pt-20 pb-32 shadow-[0_-50px_150px_rgba(0,0,0,1)]">
-            {/* Superior Blend Gradient */}
-            <div className="absolute inset-x-0 top-0 h-32 md:h-64 -translate-y-full bg-gradient-to-t from-[oklch(0.25_0.08_20)] to-transparent pointer-events-none" />
-            
+          <section className="relative pt-10 md:pt-20 pb-32">
             <div className="container mx-auto px-6">
               {/* Integrated Title Section */}
               <motion.div
@@ -78,50 +99,38 @@ function Classes() {
                 <h1 className="text-4xl md:text-6xl font-display text-primary uppercase leading-none mb-6">
                   {classesData.title || (lang === "en" ? "Classes" : "ಗುರುಕುಲ")}
                 </h1>
-                <div className="h-0.5 w-16 md:w-24 bg-gold/50 mx-auto rounded-full shadow-glow mb-12" />
+                <div className="h-0.5 w-16 md:w-24 bg-gold/50 mx-auto rounded-full shadow-glow mb-6 md:mb-12" />
                 
-                <div className="max-w-4xl mx-auto text-center space-y-10 bg-[#0a0a0a]/80 border border-gold/20 rounded-[2.5rem] p-8 md:p-14 shadow-2xl backdrop-blur-md relative overflow-hidden group">
+                <div className="max-w-4xl mx-auto text-center space-y-8 md:space-y-10 bg-card/60 border border-gold/20 rounded-[2.5rem] p-6 md:p-14 shadow-2xl backdrop-blur-md relative overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-br from-gold/5 via-transparent to-crimson/5 opacity-50" />
                   
-                   <p className="relative z-10 text-base md:text-xl text-primary/90 leading-relaxed font-medium">
-                    {lang === "en" 
-                      ? "Step into the sacred circle of learning where tradition meets discipline. Our classes are designed to provide a comprehensive understanding of Yakshagana, from the foundational rhythms to the complex expressions of the epics. Beyond the physical movements, we delve into the literary and musical heritage, ensuring each student becomes a custodian of the art's soul. Join us in this journey of rhythm, expression, and divinity."
-                      : "ಪರಂಪರೆ ಮತ್ತು ಶಿಸ್ತು ಸಂಗಮಿಸುವ ಈ ಪವಿತ್ರ ಕಲಿಕಾ ವಲಯಕ್ಕೆ ಹೆಜ್ಜೆ ಇಡಿ. ಯಕ್ಷಗಾನದ ಮೂಲ ಲಯಗಳಿಂದ ಹಿಡಿದು ಪುರಾಣಗಳ ಸಂಕೀರ್ಣ ಅಭಿವ್ಯಕ್ತಿಗಳವರೆಗೆ ಸಮಗ್ರ ತಿಳುವಳಿಕೆಯನ್ನು ನೀಡಲು ನಮ್ಮ ತರಗತಿಗಳನ್ನು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ. ದೈಹಿಕ ಚಲನೆಗಳ ಹೊರತಾಗಿ, ನಾವು ಸಾಹಿತ್ಯ ಮತ್ತು ಸಂಗೀತದ ಪರಂಪರೆಯನ್ನು ಆಳವಾಗಿ ಅಧ್ಯಯನ ಮಾಡುತ್ತೇವೆ, ಪ್ರತಿ ವಿದ್ಯಾರ್ಥಿಯು ಈ ಕಲೆಯ ಆತ್ಮದ ಸಂರಕ್ಷಕನಾಗುವುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳುತ್ತೇವೆ. ಲಯ, ಅಭಿವ್ಯಕ್ತಿ ಮತ್ತು ದೈವಿಕತೆಯ ಈ ಪ್ರಯಾಣದಲ್ಲಿ ನಮ್ಮೊಂದಿಗೆ ಸೇರಿ."}
-                  </p>
-                  
-                  <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 text-left max-w-3xl mx-auto mt-10">
-                    {[
-                      { 
-                        en: "Authentic Gurukula style training", 
-                        kn: "ಅಪ್ಪಟ ಗುರುಕುಲ ಶೈಲಿಯ ತರಬೇತಿ" 
-                      },
-                      { 
-                        en: "Focus on both theory and practice", 
-                        kn: "ಸೈದ್ಧಾಂತಿಕ ಮತ್ತು ಪ್ರಾಯೋಗಿಕ ಕಲಿಕೆಗೆ ಒತ್ತು" 
-                      },
-                      { 
-                        en: "Personalized attention from veteran gurus", 
-                        kn: "ಅನುಭವಿ ಗುರುಗಳಿಂದ ವೈಯಕ್ತಿಕ ಗಮನ" 
-                      },
-                      { 
-                        en: "Opportunities for performances", 
-                        kn: "ರಂಗ ಪ್ರದರ್ಶನಗಳಿಗೆ ಅವಕಾಶಗಳು" 
-                      },
-                      { 
-                        en: "Comprehensive curriculum for all levels", 
-                        kn: "ಎಲ್ಲಾ ಹಂತದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಸಮಗ್ರ ಪಠ್ಯಕ್ರಮ" 
-                      },
-                      { 
-                        en: "In-depth study of Bhagavata literature and music", 
-                        kn: "ಭಾಗವತ ಸಾಹಿತ್ಯ ಮತ್ತು ಸಂಗೀತದ ಆಳವಾದ ಅಧ್ಯಯನ" 
-                      }
-                    ].map((item, idx) => (
+                  <div className="relative z-10">
+                    <p className={`text-sm md:text-xl text-primary/90 leading-relaxed font-medium transition-all duration-500 ${isIntroExpanded ? "" : "line-clamp-3 md:line-clamp-none"}`}>
+                      {classesIntro}
+                    </p>
+                    
+                    {/* Expand/Collapse Button (Mobile Only) */}
+                    <div className="md:hidden mt-4">
+                      <button 
+                        onClick={() => setIsIntroExpanded(!isIntroExpanded)}
+                        className="inline-flex items-center gap-2 text-gold text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors"
+                      >
+                        {isIntroExpanded 
+                          ? (lang === "en" ? "Read Less" : "ಕಡಿಮೆ ಓದಿ") 
+                          : (lang === "en" ? "Read More" : "ಹೆಚ್ಚು ಓದಿ")}
+                        <span className={`transform transition-transform duration-300 ${isIntroExpanded ? "rotate-180" : ""}`}>↓</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 md:gap-y-6 text-left max-w-3xl mx-auto mt-8 md:mt-10 pt-6 md:pt-0 border-t border-gold/10 md:border-0">
+                    {featureList.map((item: any, idx: number) => (
                       <div key={idx} className="flex items-center gap-4 group/item">
-                        <div className="w-8 h-8 md:w-10 md:h-10 shrink-0 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center group-hover/item:scale-110 group-hover/item:bg-gold/20 transition-all duration-300">
-                          <span className="text-gold font-kannada text-lg md:text-xl font-bold">ಯ</span>
+                        <div className="w-10 h-10 md:w-12 md:h-12 shrink-0 flex items-center justify-center !bg-transparent border-none group-hover/item:scale-110 transition-all duration-300">
+                          <img src={mustache} alt="" className="w-full h-full object-contain !bg-transparent border-none" />
                         </div>
                         <span className="text-sm md:text-base text-foreground/80 group-hover/item:text-primary transition-colors duration-300 leading-tight">
-                          {item[lang]}
+                          {item[lang] || item.en}
                         </span>
                       </div>
                     ))}
@@ -194,14 +203,14 @@ function TeacherCard({ teacher, index }: { teacher: any; index: number }) {
         viewport={{ once: true }}
         transition={{ delay: index * 0.1 }}
         onClick={() => setShowModal(true)}
-        className="group relative w-[calc(50%-0.5rem)] md:w-64 lg:w-72 aspect-[3/4] rounded-[32px] overflow-hidden cursor-pointer border border-white/5 shadow-2xl hover:shadow-[0_0_40px_rgba(255,255,255,0.05)] transition-all duration-500"
+        className="group relative w-[calc(50%-0.5rem)] md:w-64 lg:w-72 aspect-[3/4] rounded-[32px] overflow-hidden cursor-pointer border border-border shadow-2xl hover:shadow-glow transition-all duration-500"
       >
         <img
           src={displayImage}
           alt={teacher.name?.[lang] || teacher.name}
           className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent pointer-events-none" />
         
         <div className="absolute bottom-0 inset-x-0 p-6">
           <h3 className="font-display text-xl md:text-2xl text-primary group-hover:text-gold transition-colors leading-tight">

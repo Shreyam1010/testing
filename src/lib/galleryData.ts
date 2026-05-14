@@ -4,23 +4,33 @@ export interface GalleryItemType {
   type: "image" | "video";
 }
 
-export const initialPerformanceItems: GalleryItemType[] = [
-  { src: "/images/gallery-2.jpg", label: "Stage Performance", type: "image" },
-  { src: "/images/gallery-4.jpg", label: "Crown Heritage", type: "image" },
-  { src: "/images/gallery-6.jpg", label: "The Warrior", type: "image" },
-  { src: "/images/gallery-1.jpg", label: "The Mask", type: "image" },
-];
+const R2 = "https://pub-0425f98da8f7405c99bce2e7397bdac4.r2.dev/gallery";
 
-export const initialWorkshopItems: GalleryItemType[] = [
-  { src: "/images/gallery-3.jpg", label: "Summer Workshop", type: "image" },
-  { src: "/images/gallery-5.jpg", label: "Chande Training", type: "image" },
-  { src: "/images/gallery-4.jpg", label: "Makeup Session", type: "image" },
-  { src: "/images/gallery-2.jpg", label: "Step Basics", type: "image" },
+export const initialPerformanceItems: GalleryItemType[] = [
+  { src: `${R2}/edited-1.avif`, label: "Stage Warrior", type: "image" },
+  { src: `${R2}/edited-3.avif`, label: "Twin Halos", type: "image" },
+  { src: `${R2}/edited-13.avif`, label: "Classical Stage", type: "image" },
+  { src: `${R2}/edited-15.avif`, label: "Full Troupe", type: "image" },
+  { src: `${R2}/edited-17.avif`, label: "Under the Spotlight", type: "image" },
+  { src: `${R2}/edited-19.avif`, label: "Festive Lights", type: "image" },
+  { src: `${R2}/edited-20.avif`, label: "Mudra in Motion", type: "image" },
 ];
 
 export const initialGurukulItems: GalleryItemType[] = [
-  { src: "/images/gallery-1.jpg", label: "Mudra Practice", type: "image" },
-  { src: "/images/gallery-3.jpg", label: "Vocal Training", type: "image" },
-  { src: "/images/gallery-5.jpg", label: "Rhythm Class", type: "image" },
-  { src: "/images/gallery-6.jpg", label: "Traditional Dance", type: "image" },
+  { src: `${R2}/edited-11.avif`, label: "Gurukul Family", type: "image" },
+  { src: `${R2}/edited-2.avif`, label: "The Art of Makeup", type: "image" },
+  { src: `${R2}/edited-5.avif`, label: "Vocal Practice", type: "image" },
+  { src: `${R2}/edited-14.avif`, label: "Young Performers", type: "image" },
+  { src: `${R2}/edited-4.avif`, label: "Costume Study", type: "image" },
+  { src: `${R2}/edited-9.avif`, label: "Solo Rehearsal", type: "image" },
+  { src: `${R2}/edited-18.avif`, label: "Scene Practice", type: "image" },
+];
+
+export const initialWorkshopItems: GalleryItemType[] = [
+  { src: `${R2}/edited-6.avif`, label: "Workshop Demonstration", type: "image" },
+  { src: `${R2}/edited-12.avif`, label: "Backstage Moments", type: "image" },
+  { src: `${R2}/edited-7.avif`, label: "Rehearsal Pair", type: "image" },
+  { src: `${R2}/edited-8.avif`, label: "Dialogue Rehearsal", type: "image" },
+  { src: `${R2}/edited-10.avif`, label: "Ensemble Workshop", type: "image" },
+  { src: `${R2}/edited-16.avif`, label: "Chande Session", type: "image" },
 ];

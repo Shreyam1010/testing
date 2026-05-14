@@ -76,7 +76,7 @@ export function UpcomingEvents() {
 
                   {ev.status === "booking" ? (
                     <a
-                      href="https://wa.me/919876543210"
+                      href="https://wa.me/919741508468"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="block w-full text-center py-1.5 md:py-3 px-2 md:px-4 border border-gold/30 text-[8px] md:text-xs font-bold uppercase tracking-widest text-gold hover:bg-gold hover:text-background transition-all rounded-md"

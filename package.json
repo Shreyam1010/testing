@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "dev:backend": "wrangler dev src/worker.ts --port 5667 --remote",
+    "dev:backend": "wrangler dev src/worker.ts --config wrangler.jsonc --port 5667 --remote",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
