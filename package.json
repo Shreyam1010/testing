@@ -7,6 +7,7 @@
     "dev": "vite dev",
     "dev:backend": "wrangler dev src/worker.ts --config wrangler.jsonc --port 5667 --remote",
     "build": "vite build",
+    "build:cloudflare": "DEPLOY_TARGET=cloudflare vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
