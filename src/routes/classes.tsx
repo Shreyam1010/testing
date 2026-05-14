@@ -48,8 +48,8 @@ function Classes() {
   const heroY = useTransform(scrollYProgress, [0, 0.4], ["0%", "20%"]);
 
   const dbTeachers = data?.teachers || [];
-  const classesData = data?.siteContent?.classes || {};
-  const classesMap = data?.siteContentMap?.classes || {};
+  const classesMap: any = data?.siteContentMap?.classes || {};
+  const classesData = classesMap;
   const introFallbackEn = "Step into the sacred circle of learning where tradition meets discipline. Our classes are designed to provide a comprehensive understanding of Yakshagana, from the foundational rhythms to the complex expressions of the epics. Beyond the physical movements, we delve into the literary and musical heritage, ensuring each student becomes a custodian of the art's soul. Join us in this journey of rhythm, expression, and divinity.";
   const introFallbackKn = "ಪರಂಪರೆ ಮತ್ತು ಶಿಸ್ತು ಸಂಗಮಿಸುವ ಈ ಪವಿತ್ರ ಕಲಿಕಾ ವಲಯಕ್ಕೆ ಹೆಜ್ಜೆ ಇಡಿ. ಯಕ್ಷಗಾನದ ಮೂಲ ಲಯಗಳಿಂದ ಹಿಡಿದು ಪುರಾಣಗಳ ಸಂಕೀರ್ಣ ಅಭಿವ್ಯಕ್ತಿಗಳವರೆಗೆ ಸಮಗ್ರ ತಿಳುವಳಿಕೆಯನ್ನು ನೀಡಲು ನಮ್ಮ ತರಗತಿಗಳನ್ನು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ. ದೈಹಿಕ ಚಲನೆಗಳ ಹೊರತಾಗಿ, ನಾವು ಸಾಹಿತ್ಯ ಮತ್ತು ಸಂಗೀತದ ಪರಂಪರೆಯನ್ನು ಆಳವಾಗಿ ಅಧ್ಯಯನ ಮಾಡುತ್ತೇವೆ, ಪ್ರತಿ ವಿದ್ಯಾರ್ಥಿಯು ಈ ಕಲೆಯ ಆತ್ಮದ ಸಂರಕ್ಷಕನಾಗುವುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳುತ್ತೇವೆ. ಲಯ, ಅಭಿವ್ಯಕ್ತಿ ಮತ್ತು ದೈವಿಕತೆಯ ಈ ಪ್ರಯಾಣದಲ್ಲಿ ನಮ್ಮೊಂದಿಗೆ ಸೇರಿ.";
   const classesIntro = classesMap.intro || (lang === "en" ? introFallbackEn : introFallbackKn);
@@ -127,7 +127,7 @@ function Classes() {
                     {featureList.map((item: any, idx: number) => (
                       <div key={idx} className="flex items-center gap-4 group/item">
                         <div className="w-10 h-10 md:w-12 md:h-12 shrink-0 flex items-center justify-center !bg-transparent border-none group-hover/item:scale-110 transition-all duration-300">
-                          <img src={mustache} alt="" className="w-full h-full object-contain !bg-transparent border-none" />
+                          <img src={mustache} alt="" loading="lazy" decoding="async" className="w-full h-full object-contain !bg-transparent border-none" />
                         </div>
                         <span className="text-sm md:text-base text-foreground/80 group-hover/item:text-primary transition-colors duration-300 leading-tight">
                           {item[lang] || item.en}

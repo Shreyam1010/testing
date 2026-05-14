@@ -75,7 +75,7 @@ INSERT INTO blogs (id, title_en, title_kn, excerpt_en, excerpt_kn, content_en, c
 
 -- ======================== WORKSHOPS (4) ========================
 INSERT INTO workshops (id, title_en, title_kn, timestamp_en, timestamp_kn, image) VALUES
-('w1', 'Summer Intensive 2025', 'ಬೇಸಿಗೆ ತೀವ್ರ ಶಿಬಿರ ೨೦೨೫', 'March 2025', 'ಮಾರ್ಚ್ ೨೦೨೫', 'g3'),
-('w2', 'Mask Making Heritage', 'ಮುಖವಾಡ ತಯಾರಿಕೆ ಪರಂಪರೆ', 'January 2025', 'ಜನವರಿ ೨೦೨೫', 'g1'),
-('w3', 'Guru-Shishya Samvada', 'ಗುರು-ಶಿಷ್ಯ ಸಂವಾದ', 'November 2024', 'ನವೆಂಬರ್ ೨೦೨೪', 'g5'),
-('w4', 'Rhythmic Foundations', 'ಲಯಬದ್ಧ ಅಡಿಪಾಯಗಳು', 'September 2024', 'ಸೆಪ್ಟೆಂಬರ್ ೨೦೨೪', 'g6');
+('w1', 'Summer Intensive 2025', 'ಬೇಸಿಗೆ ತೀವ್ರ ಶಿಬಿರ ೨೦೨೫', 'March 2025', 'ಮಾರ್ಚ್ ೨೦೨೫', 'https://pub-0425f98da8f7405c99bce2e7397bdac4.r2.dev/gallery/edited-6.avif'),
+('w2', 'Mask Making Heritage', 'ಮುಖವಾಡ ತಯಾರಿಕೆ ಪರಂಪರೆ', 'January 2025', 'ಜನವರಿ ೨೦೨೫', 'https://pub-0425f98da8f7405c99bce2e7397bdac4.r2.dev/gallery/edited-12.avif'),
+('w3', 'Guru-Shishya Samvada', 'ಗುರು-ಶಿಷ್ಯ ಸಂವಾದ', 'November 2024', 'ನವೆಂಬರ್ ೨೦೨೪', 'https://pub-0425f98da8f7405c99bce2e7397bdac4.r2.dev/gallery/edited-7.avif'),
+('w4', 'Rhythmic Foundations', 'ಲಯಬದ್ಧ ಅಡಿಪಾಯಗಳು', 'September 2024', 'ಸೆಪ್ಟೆಂಬರ್ ೨೦೨೪', 'https://pub-0425f98da8f7405c99bce2e7397bdac4.r2.dev/gallery/edited-8.avif');

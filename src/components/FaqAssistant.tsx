@@ -109,7 +109,7 @@ export function FaqAssistant({ blogId = null }: FaqAssistantProps) {
             <div className="p-5 sm:p-6 bg-gradient-to-br from-crimson/10 to-card border-b border-border/50 relative shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gold/10 rounded-xl flex items-center justify-center border border-gold/20">
-                  <img src={logoImg} alt="Logo" className="w-6 h-6 sm:w-7 sm:h-7 object-contain" />
+                  <img src={logoImg} alt="Logo" loading="lazy" decoding="async" className="w-6 h-6 sm:w-7 sm:h-7 object-contain" />
                 </div>
                 <div>
                   <h3 className="font-display text-base sm:text-lg text-gold leading-tight">{labels.title}</h3>

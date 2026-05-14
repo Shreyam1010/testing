@@ -8,7 +8,7 @@ import { useLang } from "@/contexts/LanguageContext";
 import { UpcomingEvents } from "@/components/UpcomingEvents";
 import { ClassCard } from "@/components/ClassCard";
 import { classes, workshops, blogs } from "@/lib/data";
-import { initialPerformanceItems } from "@/lib/galleryData";
+import { initialPerformanceItems, initialWorkshopItems } from "@/lib/galleryData";
 import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
 import g3 from "@/assets/gallery-3.jpg";
@@ -69,7 +69,12 @@ function OurStorySection({ aboutData, aboutImg, sticker1, lang, t }: any) {
             <img
               src={aboutData.image || aboutImg}
               alt="Yakshagana performer"
-              className="w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] lg:w-full lg:h-full object-cover object-top rounded-full lg:rounded-none border border-gold/20 lg:border-none lg:shadow-none"
+              loading="lazy"
+              decoding="async"
+              className="w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] lg:w-full lg:h-full object-cover rounded-full lg:rounded-none border border-gold/20 lg:border-none lg:shadow-none"
+              style={{
+                objectPosition: `${Number(aboutData.image_focal_x ?? 50)}% ${Number(aboutData.image_focal_y ?? 50)}%`,
+              }}
             />
 
           </div>
@@ -144,8 +149,8 @@ function Index() {
   const stickerIcons = [sticker2, sticker1, sticker0]; // Classes, Workshops, Performances
   const highlightOrder = [2, 0, 1]; // 2: Performances, 0: Classes, 1: Workshops
 
-  const heroData = data?.siteContent?.hero || t.hero;
-  const aboutData = data?.siteContent?.about || t.about;
+  const heroData = { ...t.hero, ...(data?.siteContentMap?.hero || {}) };
+  const aboutData = { ...t.about, ...(data?.siteContentMap?.about || {}) };
   const dbWorkshops = data?.workshops || [];
   const dbBlogs = data?.blogs || [];
   const bodyParagraphs = aboutData.body || t.about.homeSection.body;
@@ -183,12 +188,18 @@ function Index() {
               src={mandala}
               alt=""
               aria-hidden
+              loading="lazy"
+              decoding="async"
+              fetchPriority="low"
               className="absolute -right-40 -top-40 w-[700px] opacity-10 animate-spin-slow pointer-events-none"
             />
             <img
               src={mandala}
               alt=""
               aria-hidden
+              loading="lazy"
+              decoding="async"
+              fetchPriority="low"
               className="absolute -left-60 -bottom-60 w-[600px] opacity-5 animate-spin-slow pointer-events-none"
               style={{ animationDirection: "reverse" }}
             />
@@ -206,6 +217,8 @@ function Index() {
                   <img
                     src={heroData.image || heroImg}
                     alt="Yakshagana performer"
+                    fetchPriority="high"
+                    decoding="async"
                     className="w-full h-full object-cover"
                   />
                 </motion.div>
@@ -218,12 +231,14 @@ function Index() {
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                 className="text-center lg:text-left order-2 lg:order-1"
               >
-                <motion.img 
+                <motion.img
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.1, duration: 0.8 }}
-                  src={logoImg} 
-                  alt="Kathe Gaararu Logo" 
+                  src={logoImg}
+                  alt="Kathe Gaararu Logo"
+                  fetchPriority="high"
+                  decoding="async"
                   className="h-28 sm:h-24 md:h-48 lg:h-56 w-auto object-contain mx-auto lg:ml-0 mb-2 lg:mb-8 drop-shadow-2xl"
                 />
                 
@@ -336,7 +351,7 @@ function Index() {
                         
                         <div className="relative">
                           <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br from-gold to-crimson flex items-center justify-center mb-6 shadow-glow transform transition-transform duration-500 group-hover:rotate-[10deg] group-hover:scale-110 p-2.5">
-                            <img src={sticker} alt="" className="w-full h-full object-contain" />
+                            <img src={sticker} alt="" loading="lazy" decoding="async" className="w-full h-full object-contain" />
                           </div>
                           <h3 className="text-xl md:text-2xl font-display mb-3 text-primary group-hover:text-gold transition-colors">{item.title}</h3>
                           <p className="text-sm md:text-base text-muted-foreground leading-relaxed line-clamp-3 md:line-clamp-none">{item.desc}</p>
@@ -417,7 +432,7 @@ function Index() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-8">
                 <Link to="/classes" className="group relative rounded-2xl md:rounded-3xl overflow-hidden border border-border bg-card/40 p-4 sm:p-8 md:pt-12 md:px-12 md:pb-6 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[220px] sm:min-h-[250px] md:min-h-[450px]">
                   <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent z-10" />
-                  <img src={singingFeature?.image || imgMap.g4} alt="Singing Classes" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <img src={singingFeature?.image || imgMap.g4} alt="Singing Classes" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="relative z-20">
                     <h3 className="text-xl sm:text-3xl md:text-5xl font-display text-primary mb-1 md:mb-4">{singingFeature?.title?.[lang] || (lang === "en" ? "Singing" : "ಗಾಯನ")}</h3>
                     <p className="text-muted-foreground text-[10px] sm:text-base md:text-lg mb-2 md:mb-4 leading-tight sm:leading-relaxed line-clamp-2 md:line-clamp-none">{singingFeature?.desc?.[lang] || (lang === "en" ? "Master the authentic narrative singing tradition (Bhagavatike) of Yakshagana." : "ಯಕ್ಷಗಾನದ ಭಾಗವತಿಕೆ ಪರಂಪರೆಯನ್ನು ಕಲಿಯಿರಿ.")}</p>
@@ -425,7 +440,7 @@ function Index() {
                 </Link>
                 <Link to="/classes" className="group relative rounded-2xl md:rounded-3xl overflow-hidden border border-border bg-card/40 p-4 sm:p-8 md:pt-12 md:px-12 md:pb-6 hover:border-gold/50 transition-all flex flex-col justify-end min-h-[220px] sm:min-h-[250px] md:min-h-[450px]">
                   <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent z-10" />
-                  <img src={dancingFeature?.image || imgMap.g1} alt="Dancing Classes" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <img src={dancingFeature?.image || imgMap.g1} alt="Dancing Classes" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="relative z-20">
                     <h3 className="text-xl sm:text-3xl md:text-5xl font-display text-primary mb-1 md:mb-4">{dancingFeature?.title?.[lang] || (lang === "en" ? "Dancing" : "ನೃತ್ಯ")}</h3>
                     <p className="text-muted-foreground text-[10px] sm:text-base md:text-lg mb-2 md:mb-4 leading-tight sm:leading-relaxed line-clamp-2 md:line-clamp-none">{dancingFeature?.desc?.[lang] || (lang === "en" ? "Immerse yourself in the vigorous footwork and graceful choreography of Yakshagana." : "ಯಕ್ಷಗಾನದ ಶಕ್ತಿಯುತ ಪಾದಭಂಗಿ ಮತ್ತು ನೃತ್ಯವನ್ನು ಕಲಿಯಿರಿ.")}</p>
@@ -449,8 +464,12 @@ function Index() {
                 {dbHighlights[1]?.title?.[lang] || dbHighlights[1]?.title?.en || t.highlights.items[1].title}
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
-                {dbWorkshops.map((w: any) => {
-                  const displayImage = w.image.startsWith('g') ? imgMap[w.image] : w.image;
+                {dbWorkshops.map((w: any, idx: number) => {
+                  const galleryWorkshops = data?.galleryByCategory?.workshop?.length
+                    ? data.galleryByCategory.workshop
+                    : initialWorkshopItems;
+                  const galleryImage = galleryWorkshops[idx % galleryWorkshops.length]?.src;
+                  const displayImage = galleryImage || (w.image.startsWith('g') ? imgMap[w.image] : w.image);
                   return (
                     <Link
                       key={w.id}
@@ -461,6 +480,8 @@ function Index() {
                         <img
                           src={displayImage}
                           alt={w.title[lang]}
+                          loading="lazy"
+                          decoding="async"
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
@@ -503,6 +524,8 @@ function Index() {
                         <img
                           src={displayImage}
                           alt={post.title[lang]}
+                          loading="lazy"
+                          decoding="async"
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />

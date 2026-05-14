@@ -168,25 +168,25 @@ export const workshops: WorkshopItem[] = [
     id: "w1",
     title: { en: "Summer Intensive 2025", kn: "ಬೇಸಿಗೆ ತೀವ್ರ ಶಿಬಿರ ೨೦೨೫" },
     timestamp: { en: "March 2025", kn: "ಮಾರ್ಚ್ ೨೦೨೫" },
-    image: "g3", // Mapping to g3 later
+    image: "https://pub-0425f98da8f7405c99bce2e7397bdac4.r2.dev/gallery/edited-6.avif",
   },
   {
     id: "w2",
     title: { en: "Mask Making Heritage", kn: "ಮುಖವಾಡ ತಯಾರಿಕೆ ಪರಂಪರೆ" },
     timestamp: { en: "January 2025", kn: "ಜನವರಿ ೨೦೨೫" },
-    image: "g1",
+    image: "https://pub-0425f98da8f7405c99bce2e7397bdac4.r2.dev/gallery/edited-12.avif",
   },
   {
     id: "w3",
     title: { en: "Guru-Shishya Samvada", kn: "ಗುರು-ಶಿಷ್ಯ ಸಂವಾದ" },
     timestamp: { en: "November 2024", kn: "ನವೆಂಬರ್ ೨೦೨೪" },
-    image: "g5",
+    image: "https://pub-0425f98da8f7405c99bce2e7397bdac4.r2.dev/gallery/edited-7.avif",
   },
   {
     id: "w4",
     title: { en: "Rhythmic Foundations", kn: "ಲಯಬದ್ಧ ಅಡಿಪಾಯಗಳು" },
     timestamp: { en: "September 2024", kn: "ಸೆಪ್ಟೆಂಬರ್ ೨೦೨೪" },
-    image: "g6",
+    image: "https://pub-0425f98da8f7405c99bce2e7397bdac4.r2.dev/gallery/edited-8.avif",
   },
 ];
 

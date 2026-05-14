@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Camera, Loader2, Save, Check } from "lucide-react";
+import { Camera, Loader2, Save, Check, Crop, X } from "lucide-react";
 import aboutImg from "@/assets/about-performer.jpg";
 import { uploadImage } from "@/lib/uploadImage";
 import { apiUrl } from "@/lib/api";
@@ -53,6 +53,9 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [focalX, setFocalX] = useState(50);
+  const [focalY, setFocalY] = useState(50);
+  const [focalOpen, setFocalOpen] = useState(false);
 
   const [data, setData] = useState({
     en: {
@@ -96,17 +99,21 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
         result.siteContent?.forEach((item: any) => {
           if (item.section === "about") aboutData[item.content_key] = item.content_value;
         });
-        if (aboutData.label) {
-          setData((prev) => ({
-            ...prev,
-            [lang]: {
-              ...prev[lang],
-              label: aboutData.label || prev[lang].label,
-              title: aboutData.title || prev[lang].title,
-              lead: aboutData.lead || prev[lang].lead,
-            },
-          }));
-        }
+        if (aboutData.image) setCurrentAboutImg(aboutData.image);
+        const parsedFx = Number(aboutData.image_focal_x);
+        const parsedFy = Number(aboutData.image_focal_y);
+        if (Number.isFinite(parsedFx)) setFocalX(Math.max(0, Math.min(100, parsedFx)));
+        if (Number.isFinite(parsedFy)) setFocalY(Math.max(0, Math.min(100, parsedFy)));
+        setData((prev) => ({
+          ...prev,
+          [lang]: {
+            ...prev[lang],
+            label: aboutData.label || prev[lang].label,
+            title: aboutData.title || prev[lang].title,
+            lead: aboutData.lead || prev[lang].lead,
+            ...(aboutData.image ? { image: aboutData.image } : {}),
+          } as any,
+        }));
       })
       .catch(() => {});
   }, [lang]);
@@ -116,19 +123,19 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
-      const current = data[lang];
+      const current = data[lang] as any;
+      const payload: Record<string, string> = {
+        label: current.label,
+        title: current.title,
+        lead: current.lead,
+        image_focal_x: String(focalX),
+        image_focal_y: String(focalY),
+      };
+      if (current.image) payload.image = current.image;
       await fetch(apiUrl("/api/save"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          section: "about",
-          lang,
-          data: {
-            label: current.label,
-            title: current.title,
-            lead: current.lead,
-          },
-        }),
+        body: JSON.stringify({ section: "about", lang, data: payload }),
       });
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
@@ -166,6 +173,8 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
     const file = e.target.files?.[0];
     if (!file) return;
     setCurrentAboutImg(URL.createObjectURL(file));
+    setFocalX(50);
+    setFocalY(50);
     try {
       const url = await uploadImage(file, "about");
       setCurrentAboutImg(url);
@@ -173,6 +182,14 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
     } catch (err: any) {
       alert(`Upload failed: ${err.message}`);
     }
+  };
+
+  const pickFocal = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setFocalX(Math.max(0, Math.min(100, Math.round(x))));
+    setFocalY(Math.max(0, Math.min(100, Math.round(y))));
   };
 
   return (
@@ -191,24 +208,32 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
           initial={{ opacity: 0, x: -40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative lg:block flex justify-center pt-16 lg:pt-0 group overflow-hidden"
+          className="relative lg:block flex justify-center pt-16 lg:pt-0 group overflow-hidden lg:h-auto"
         >
-          <div className="relative">
+          <div className="relative h-full w-full flex justify-center items-center lg:block">
             <img
               src={currentAboutImg}
               alt=""
-              className="w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] lg:w-full lg:h-full object-cover object-top rounded-full lg:rounded-none border border-gold/20 lg:border-none shadow-glow lg:shadow-none"
+              className="w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] lg:w-full lg:h-full object-cover rounded-full lg:rounded-none border border-gold/20 lg:border-none shadow-glow lg:shadow-none"
+              style={{ objectPosition: `${focalX}% ${focalY}%` }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-background/30 lg:to-background/60 rounded-full lg:rounded-none" />
-            
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-background/30 lg:to-background/60 rounded-full lg:rounded-none pointer-events-none" />
+
             {isEditing && (
-              <div className="absolute inset-0 bg-background/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all cursor-pointer rounded-full lg:rounded-none">
-                <button 
+              <div className="absolute inset-0 bg-background/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center gap-3 transition-all rounded-full lg:rounded-none">
+                <button
                   onClick={() => fileInputRef.current?.click()}
                   className="flex flex-col items-center gap-1 p-4 bg-gold text-background rounded-full font-bold text-[8px] uppercase tracking-widest shadow-glow hover:scale-105 transition-all"
                 >
                   <Camera className="w-4 h-4" />
                   Replace
+                </button>
+                <button
+                  onClick={() => setFocalOpen(true)}
+                  className="flex flex-col items-center gap-1 p-4 bg-background/70 text-foreground border border-gold/40 rounded-full font-bold text-[8px] uppercase tracking-widest hover:bg-background/90 transition-all"
+                >
+                  <Crop className="w-4 h-4" />
+                  Crop
                 </button>
               </div>
             )}
@@ -315,6 +340,83 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
             )}
             {isSaving ? "Saving..." : saveSuccess ? "Saved to D1!" : "Save Changes"}
           </button>
+        </div>
+      )}
+
+      {focalOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-10">
+          <div
+            onClick={() => setFocalOpen(false)}
+            className="absolute inset-0 bg-background/95 backdrop-blur-sm"
+          />
+          <div className="relative w-full max-w-2xl bg-card border border-border rounded-3xl overflow-hidden shadow-2xl z-10 p-5 md:p-8 flex flex-col">
+            <div className="flex justify-between items-center mb-4 md:mb-6">
+              <h2 className="text-lg md:text-2xl font-display text-primary">Crop position</h2>
+              <button
+                onClick={() => setFocalOpen(false)}
+                className="p-1.5 md:p-2 rounded-full bg-background/50 hover:bg-gold hover:text-background transition-colors"
+              >
+                <X className="w-4 h-4 md:w-5 md:h-5" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-start">
+              {/* Click-to-set focal point */}
+              <div className="relative w-full overflow-hidden rounded-xl border border-border/60 bg-background/40 select-none">
+                <div className="relative w-full cursor-crosshair" onClick={pickFocal}>
+                  <img
+                    src={currentAboutImg}
+                    alt="Focal point preview"
+                    className="block w-full h-auto max-h-[60vh] object-contain mx-auto pointer-events-none"
+                  />
+                  <div
+                    className="absolute w-6 h-6 -ml-3 -mt-3 rounded-full border-2 border-gold bg-gold/30 shadow-glow pointer-events-none"
+                    style={{ left: `${focalX}%`, top: `${focalY}%` }}
+                  >
+                    <div className="absolute inset-1 rounded-full bg-gold" />
+                  </div>
+                </div>
+                <p className="text-[10px] md:text-xs text-muted-foreground px-3 py-2 border-t border-border/60">
+                  Click on the part of the image that must always stay visible.
+                </p>
+              </div>
+
+              {/* Live preview at the same aspect ratio the user side uses */}
+              <div className="flex flex-col items-center gap-2 w-44 shrink-0">
+                <div className="w-44 h-64 rounded-xl overflow-hidden border border-gold/40 bg-background/40">
+                  <img
+                    src={currentAboutImg}
+                    alt="Crop preview"
+                    className="w-full h-full object-cover"
+                    style={{ objectPosition: `${focalX}% ${focalY}%` }}
+                  />
+                </div>
+                <span className="text-[10px] text-muted-foreground uppercase tracking-widest">User-side preview</span>
+                <span className="text-[10px] text-gold">{focalX}% / {focalY}%</span>
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-2 items-center justify-between">
+              <button
+                type="button"
+                onClick={() => { setFocalX(50); setFocalY(50); }}
+                className="text-[10px] md:text-xs px-3 py-1.5 rounded-full bg-muted/60 hover:bg-muted text-muted-foreground"
+              >
+                Reset to center
+              </button>
+              <button
+                type="button"
+                onClick={() => setFocalOpen(false)}
+                className="text-[10px] md:text-xs px-4 py-2 rounded-full bg-gold text-background font-bold uppercase tracking-widest hover:scale-105 transition-all"
+              >
+                Done
+              </button>
+            </div>
+
+            <p className="mt-4 text-[10px] text-muted-foreground">
+              Remember to click <span className="text-gold font-bold">Save Changes</span> to publish the new crop.
+            </p>
+          </div>
         </div>
       )}
     </section>

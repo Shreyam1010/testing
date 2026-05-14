@@ -106,9 +106,10 @@ function BlogPage() {
                 <div className="overflow-y-auto custom-scrollbar flex-1 relative">
                   {/* Hero Image Section - Fixed overlay for mobile */}
                   <div className="relative h-[50vh] sm:h-80 md:h-96 w-full shrink-0">
-                    <img 
-                      src={postImage(selectedBlog)} 
-                      alt={selectedBlog.title[lang]} 
+                    <img
+                      src={postImage(selectedBlog)}
+                      alt={selectedBlog.title[lang]}
+                      decoding="async"
                       className="w-full h-full object-cover"
                     />
                     {/* Mobile Overlay - Text over image */}

@@ -27,7 +27,7 @@ function About() {
   const { t, lang } = useLang();
   const { data, loading } = useDbContent();
 
-  const aboutData = data?.siteContent?.about || t.about;
+  const aboutData = { ...t.about, ...(data?.siteContentMap?.about || {}) };
 
   return (
     <Layout>
@@ -49,7 +49,10 @@ function About() {
                 <img
                   src={aboutData.image || aboutImg}
                   alt="Yakshagana performer"
-                  className="w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] lg:w-full lg:h-full object-cover object-top rounded-full lg:rounded-none border border-gold/20 lg:border-none lg:shadow-none"
+                  className="w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] lg:w-full lg:h-full object-cover rounded-full lg:rounded-none border border-gold/20 lg:border-none lg:shadow-none"
+                  style={{
+                    objectPosition: `${Number((aboutData as any).image_focal_x ?? 50)}% ${Number((aboutData as any).image_focal_y ?? 50)}%`,
+                  }}
                 />
               </div>
             </motion.div>
