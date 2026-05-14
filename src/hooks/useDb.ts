@@ -38,6 +38,29 @@ export function useDbContent() {
         const raw = await inflight[lang];
         delete inflight[lang];
 
+        // Image fields (e.g. hero image, about image) are language-agnostic but
+        // stored per-language in site_content. The admin may upload while on
+        // either language, so we always fetch the "other" language alongside
+        // and pick whichever side has a non-seed value for media keys.
+        const otherLang = lang === "en" ? "kn" : "en";
+        let otherFallback: any = null;
+        if (cache[otherLang]) {
+          otherFallback = cache[otherLang];
+        } else {
+          try {
+            if (!inflight[otherLang]) {
+              inflight[otherLang] = fetch(apiUrl(`/api/content?lang=${otherLang}`)).then(r => {
+                if (!r.ok) throw new Error(`HTTP error! status: ${r.status}`);
+                return r.json();
+              });
+            }
+            otherFallback = await inflight[otherLang];
+            delete inflight[otherLang];
+          } catch {
+            otherFallback = null;
+          }
+        }
+
         if (!isMounted) return;
 
         const transformed: any = {
@@ -108,6 +131,7 @@ export function useDbContent() {
             category: g.category,
             focalX: typeof g.focal_x === "number" ? g.focal_x : 50,
             focalY: typeof g.focal_y === "number" ? g.focal_y : 50,
+            thumbnail: g.thumbnail || "",
           })) || [],
           galleryByCategory: { performance: [], gurukul: [], workshop: [] } as Record<string, any[]>,
           highlights: raw.highlights?.map((h: any) => ({
@@ -168,6 +192,26 @@ export function useDbContent() {
           if (!transformed.siteContentMap[item.section]) transformed.siteContentMap[item.section] = {};
           transformed.siteContentMap[item.section][item.content_key] = item.content_value;
         });
+
+        // Media fields (hero image, about image, etc.) are stored per-language in
+        // site_content but the image itself is language-agnostic. The admin may
+        // upload while on either language, so for media keys we pick whichever
+        // side has a non-seed value — making uploads visible in both languages
+        // regardless of which language the admin was on when uploading.
+        if (otherFallback?.siteContent?.length) {
+          const isMediaKey = (k: string) =>
+            /image/i.test(k) || /_focal_(x|y)$/i.test(k) || /^(logo|photo|video|media)/i.test(k);
+          const isSeededDefault = (v: any) =>
+            typeof v !== "string" || v === "" || v.startsWith("/images/");
+          for (const item of otherFallback.siteContent) {
+            if (!isMediaKey(item.content_key)) continue;
+            if (!transformed.siteContentMap[item.section]) transformed.siteContentMap[item.section] = {};
+            const current = transformed.siteContentMap[item.section][item.content_key];
+            if (isSeededDefault(current) && !isSeededDefault(item.content_value)) {
+              transformed.siteContentMap[item.section][item.content_key] = item.content_value;
+            }
+          }
+        }
 
         for (const g of transformed.gallery) {
           const cat = g.category || "performance";

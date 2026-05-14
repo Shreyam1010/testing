@@ -172,12 +172,26 @@ export default {
             .run();
         };
 
-        if (section === "hero" || section === "about" || section === "services" || section === "contact") {
+        // Map admin "section" identifiers to the site_content.section column.
+        // Some pages have both a key/value meta block (stored in site_content) AND
+        // structured rows (stored in their own table). The admin uses a distinct
+        // *_meta name for the site_content writes so the table writer below isn't
+        // shadowed (e.g. "highlights_meta" -> site_content.section = "highlights",
+        // while "highlights" still writes individual rows to the highlights table).
+        const siteContentSectionMap: Record<string, string> = {
+          hero: "hero",
+          about: "about",
+          services: "services",
+          contact: "contact",
+          highlights_meta: "highlights",
+        };
+        if (siteContentSectionMap[section]) {
+          const dbSection = siteContentSectionMap[section];
           for (const [key, value] of Object.entries(data)) {
             await env.DB.prepare(
               "INSERT OR REPLACE INTO site_content (id, lang, section, content_key, content_value) VALUES (?, ?, ?, ?, ?)"
             )
-              .bind(`${section}_${lang}_${key}`, lang, section, key, value as string)
+              .bind(`${dbSection}_${lang}_${key}`, lang, dbSection, key, value as string)
               .run();
           }
         }
@@ -345,23 +359,25 @@ export default {
         }
 
         if (section === "gallery") {
-          // Backfill focal-point columns on legacy DBs. Idempotent: errors when columns already exist.
+          // Backfill columns on legacy DBs. Idempotent: errors when columns already exist.
           try { await env.DB.prepare("ALTER TABLE gallery ADD COLUMN focal_x INTEGER DEFAULT 50").run(); } catch {}
           try { await env.DB.prepare("ALTER TABLE gallery ADD COLUMN focal_y INTEGER DEFAULT 50").run(); } catch {}
+          try { await env.DB.prepare("ALTER TABLE gallery ADD COLUMN thumbnail TEXT").run(); } catch {}
           await reconcileDeletes("gallery", data.map((g: any) => g.id).filter(Boolean));
           for (const g of data) {
             const fx = Math.max(0, Math.min(100, Math.round(Number(g.focalX ?? g.focal_x ?? 50))));
             const fy = Math.max(0, Math.min(100, Math.round(Number(g.focalY ?? g.focal_y ?? 50))));
             await env.DB.prepare(
-              `INSERT INTO gallery (id, label, type, src, category, focal_x, focal_y)
-               VALUES (?, ?, ?, ?, ?, ?, ?)
+              `INSERT INTO gallery (id, label, type, src, category, focal_x, focal_y, thumbnail)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                ON CONFLICT(id) DO UPDATE SET
                label=excluded.label,
                type=excluded.type,
                src=excluded.src,
                category=excluded.category,
                focal_x=excluded.focal_x,
-               focal_y=excluded.focal_y`
+               focal_y=excluded.focal_y,
+               thumbnail=excluded.thumbnail`
             )
               .bind(
                 g.id || `g_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
@@ -370,7 +386,8 @@ export default {
                 g.src || "",
                 g.category || "performance",
                 fx,
-                fy
+                fy,
+                g.thumbnail || null
               )
               .run();
           }

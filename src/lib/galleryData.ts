@@ -4,6 +4,7 @@ export interface GalleryItemType {
   type: "image" | "video";
   focalX?: number;
   focalY?: number;
+  thumbnail?: string;
 }
 
 const R2 = "https://pub-0425f98da8f7405c99bce2e7397bdac4.r2.dev/gallery";

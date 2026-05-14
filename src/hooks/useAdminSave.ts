@@ -16,9 +16,15 @@ export function useAdminSave(section: Section, handler: () => void | Promise<voi
 
   useEffect(() => {
     const listener = (e: Event) => {
-      const detail = (e as CustomEvent<{ section?: string }>).detail;
+      const detail = (e as CustomEvent<{
+        section?: string;
+        collect?: (p: Promise<void>) => void;
+      }>).detail;
       if (!detail?.section || detail.section === section) {
-        void handlerRef.current();
+        const result = handlerRef.current();
+        const promise = Promise.resolve(result).then(() => undefined);
+        if (detail?.collect) detail.collect(promise);
+        else void promise;
       }
     };
     window.addEventListener("admin:save", listener);

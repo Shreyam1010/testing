@@ -272,8 +272,7 @@ function Index() {
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                   <Link
-                    to="/services"
-                    hash="classes"
+                    to="/classes"
                     className="inline-flex items-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-full border border-border hover:border-gold text-foreground transition-colors text-sm sm:text-base"
                   >
                     {heroData.ctaSecondary}
@@ -465,11 +464,20 @@ function Index() {
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
                 {dbWorkshops.map((w: any, idx: number) => {
+                  // Image priority: an admin-uploaded URL on the workshop row
+                  // wins. Otherwise (legacy "g*" seed values or empty), fall
+                  // back to the gallery's workshop tile at the same index so
+                  // the home grid still looks rich on a fresh DB. Keep this in
+                  // sync with src/components/admin/HeroEditor.tsx so admin
+                  // preview matches the user view.
                   const galleryWorkshops = data?.galleryByCategory?.workshop?.length
                     ? data.galleryByCategory.workshop
                     : initialWorkshopItems;
                   const galleryImage = galleryWorkshops[idx % galleryWorkshops.length]?.src;
-                  const displayImage = galleryImage || (w.image.startsWith('g') ? imgMap[w.image] : w.image);
+                  const hasRealImage = w.image && !w.image.startsWith('g');
+                  const displayImage = hasRealImage
+                    ? w.image
+                    : (galleryImage || (w.image && imgMap[w.image]) || galleryImage);
                   return (
                     <Link
                       key={w.id}

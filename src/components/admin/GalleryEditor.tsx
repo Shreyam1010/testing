@@ -33,6 +33,7 @@ export function GalleryEditor({ isEditing, lang }: GalleryEditorProps) {
           category,
           focalX: typeof g.focal_x === "number" ? g.focal_x : 50,
           focalY: typeof g.focal_y === "number" ? g.focal_y : 50,
+          thumbnail: g.thumbnail || "",
         });
         setPerformances(all.filter(g => g.category === "performance").map(g => pick(g, "performance")));
         setGurukul(all.filter(g => g.category === "gurukul").map(g => pick(g, "gurukul")));
@@ -166,7 +167,7 @@ export function GalleryEditor({ isEditing, lang }: GalleryEditorProps) {
       <section className="mb-20">
         <div className="flex items-center justify-between gap-4 mb-6 md:mb-8">
           <h3 className="text-base md:text-2xl font-display text-primary border-l-4 border-gold pl-3 md:pl-4">
-            {lang === "en" ? "Gurukul" : "ಗುರುಕುಲ"}
+            {lang === "en" ? "Classes" : "ತರಗತಿಗಳು"}
           </h3>
           {isEditing && (
             <button
@@ -274,7 +275,25 @@ function EditorItem({
       }`}
     >
       {item.type === "video" ? (
-        <video src={item.src} className="w-full h-full object-cover" muted loop />
+        item.thumbnail ? (
+          <>
+            <img
+              src={item.thumbnail}
+              alt={item.label || "Video thumbnail"}
+              className="w-full h-full object-cover"
+              style={{ objectPosition: `${item.focalX ?? 50}% ${item.focalY ?? 50}%` }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-background/60 backdrop-blur-sm border border-gold/60 flex items-center justify-center">
+                <Video className="w-4 h-4 md:w-5 md:h-5 text-gold" />
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="w-full h-full bg-background flex items-center justify-center">
+            <Video className="w-8 h-8 text-muted-foreground" />
+          </div>
+        )
       ) : (
         <img
           src={item.src}
@@ -337,8 +356,10 @@ function ItemDialog({
     ...initialItem,
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const thumbInputRef = useRef<HTMLInputElement>(null);
 
   const [uploading, setUploading] = useState(false);
+  const [thumbUploading, setThumbUploading] = useState(false);
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -353,6 +374,23 @@ function ItemDialog({
       setItem((prev) => ({ ...prev, src: "" }));
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleThumbChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const previewUrl = URL.createObjectURL(file);
+    setItem((prev) => ({ ...prev, thumbnail: previewUrl }));
+    setThumbUploading(true);
+    try {
+      const url = await uploadImage(file, "gallery");
+      setItem((prev) => ({ ...prev, thumbnail: url }));
+    } catch (err: any) {
+      alert(`Thumbnail upload failed: ${err.message}`);
+      setItem((prev) => ({ ...prev, thumbnail: "" }));
+    } finally {
+      setThumbUploading(false);
     }
   };
 
@@ -402,7 +440,7 @@ function ItemDialog({
             <label className="text-[10px] md:text-xs uppercase tracking-widest text-gold font-bold">Media Type</label>
             <div className="flex gap-3 md:gap-4">
               <button
-                onClick={() => setItem({ ...item, type: "image", src: "" })}
+                onClick={() => setItem({ ...item, type: "image", src: "", thumbnail: "" })}
                 className={`flex-1 py-2 md:py-3 rounded-xl flex items-center justify-center gap-2 text-xs md:text-sm transition-all ${
                   item.type === "image" ? "bg-gold text-background font-bold shadow-glow" : "bg-muted/60 text-muted-foreground border border-border hover:bg-background/60"
                 }`}
@@ -410,7 +448,7 @@ function ItemDialog({
                 <ImageIcon className="w-3.5 h-3.5 md:w-4 md:h-4" /> Photo
               </button>
               <button
-                onClick={() => setItem({ ...item, type: "video", src: "" })}
+                onClick={() => setItem({ ...item, type: "video", src: "", thumbnail: "" })}
                 className={`flex-1 py-2 md:py-3 rounded-xl flex items-center justify-center gap-2 text-xs md:text-sm transition-all ${
                   item.type === "video" ? "bg-accent text-foreground font-bold shadow-[0_0_15px_rgba(59,130,246,0.5)]" : "bg-muted/60 text-muted-foreground border border-border hover:bg-background/60"
                 }`}
@@ -510,6 +548,52 @@ function ItemDialog({
               onChange={handleFileChange}
             />
           </div>
+
+          {/* Thumbnail — required for video items */}
+          {item.type === "video" && (
+            <div className="space-y-3 md:space-y-4 pt-2">
+              <label className="text-[10px] md:text-xs uppercase tracking-widest text-gold font-bold">
+                Video Thumbnail <span className="text-destructive">*</span>
+              </label>
+              {!item.thumbnail ? (
+                <div
+                  className="border-2 border-dashed border-border/60 hover:border-gold/50 transition-colors rounded-xl p-4 md:p-6 flex flex-col items-center justify-center cursor-pointer bg-background/40"
+                  onClick={() => thumbInputRef.current?.click()}
+                >
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gold/10 flex items-center justify-center mb-2 md:mb-3">
+                    <ImageIcon className="w-5 h-5 md:w-6 md:h-6 text-gold" />
+                  </div>
+                  <span className="text-xs md:text-sm font-bold text-primary mb-0.5">Click to upload thumbnail</span>
+                  <span className="text-[10px] md:text-xs text-muted-foreground">Shown on the gallery tile before play</span>
+                </div>
+              ) : (
+                <div className="border border-border/60 rounded-xl p-4 flex flex-col items-center bg-background/40">
+                  <div className="w-32 h-32 md:w-40 md:h-40 rounded-xl overflow-hidden border border-gold/40 bg-background/40">
+                    <img
+                      src={item.thumbnail}
+                      alt="Video thumbnail"
+                      className="w-full h-full object-cover"
+                      style={{ objectPosition: `${focalX}% ${focalY}%` }}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => thumbInputRef.current?.click()}
+                    className="mt-3 text-[10px] md:text-xs text-gold hover:underline"
+                  >
+                    {thumbUploading ? "Uploading…" : "Replace thumbnail"}
+                  </button>
+                </div>
+              )}
+              <input
+                type="file"
+                ref={thumbInputRef}
+                className="hidden"
+                accept="image/*"
+                onChange={handleThumbChange}
+              />
+            </div>
+          )}
         </div>
 
         {/* Action Buttons */}
@@ -522,10 +606,16 @@ function ItemDialog({
           </button>
           <button
             onClick={() => onSave(item)}
-            disabled={!item.src}
+            disabled={
+              !item.src ||
+              uploading ||
+              thumbUploading ||
+              item.src.startsWith("blob:") ||
+              (item.type === "video" && (!item.thumbnail || item.thumbnail.startsWith("blob:")))
+            }
             className="px-6 md:px-8 py-2 md:py-2.5 rounded-full bg-gold text-background text-[10px] md:text-xs font-bold uppercase tracking-widest disabled:opacity-50 hover:shadow-glow transition-all flex items-center gap-2"
           >
-            <Check className="w-3.5 h-3.5 md:w-4 md:h-4" /> Save Item
+            <Check className="w-3.5 h-3.5 md:w-4 md:h-4" /> {uploading || thumbUploading ? "Uploading…" : "Save Item"}
           </button>
         </div>
       </motion.div>

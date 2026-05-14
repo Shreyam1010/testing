@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { Play, X } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { useLang } from "@/contexts/LanguageContext";
 import { initialPerformanceItems, initialWorkshopItems, initialGurukulItems } from "@/lib/galleryData";
@@ -26,6 +28,21 @@ export const Route = createFileRoute("/gallery")({
 function Gallery() {
   const { t, lang } = useLang();
   const { data, loading } = useDbContent();
+  const [videoSrc, setVideoSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!videoSrc) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setVideoSrc(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [videoSrc]);
 
   const performanceItems: any[] = data?.galleryByCategory?.performance?.length
     ? data.galleryByCategory.performance
@@ -62,7 +79,7 @@ function Gallery() {
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 grid-flow-dense">
             {performanceItems.map((it, i) => (
-              <GalleryItem key={i} it={it} i={i} />
+              <GalleryItem key={i} it={it} i={i} onPlayVideo={setVideoSrc} />
             ))}
           </div>
         </div>
@@ -74,7 +91,7 @@ function Gallery() {
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 grid-flow-dense">
             {gurukulItems.map((it, i) => (
-              <GalleryItem key={i} it={it} i={i} />
+              <GalleryItem key={i} it={it} i={i} onPlayVideo={setVideoSrc} />
             ))}
           </div>
         </div>
@@ -86,7 +103,7 @@ function Gallery() {
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 grid-flow-dense">
             {workshopItems.map((it, i) => (
-              <GalleryItem key={i} it={it} i={i} />
+              <GalleryItem key={i} it={it} i={i} onPlayVideo={setVideoSrc} />
             ))}
           </div>
         </div>
@@ -150,34 +167,50 @@ function Gallery() {
           </div>
         </motion.div>
       </section>
+
+      <AnimatePresence>
+        {videoSrc && <VideoLightbox src={videoSrc} onClose={() => setVideoSrc(null)} />}
+      </AnimatePresence>
     </Layout>
   );
 }
 
-function GalleryItem({ it, i }: { it: any; i: number }) {
+function GalleryItem({ it, i, onPlayVideo }: { it: any; i: number; onPlayVideo: (src: string) => void }) {
+  const isVideo = it.type === "video";
+  const handleClick = () => {
+    if (isVideo && it.src) onPlayVideo(it.src);
+  };
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: (i % 4) * 0.1 }}
-      className={`group relative overflow-hidden rounded-2xl border border-border hover:border-gold/50 transition ${i === 0 || i === 3 ? "md:col-span-2 md:row-span-2 aspect-square md:aspect-auto" : "aspect-square"
+      onClick={handleClick}
+      className={`group relative overflow-hidden rounded-2xl border border-border hover:border-gold/50 transition ${isVideo ? "cursor-pointer" : ""} ${i === 0 || i === 3 ? "md:col-span-2 md:row-span-2 aspect-square md:aspect-auto" : "aspect-square"
         }`}
     >
-      {it.type === "video" ? (
-        <video
-          src={it.src}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-          style={{ objectPosition: `${it.focalX ?? 50}% ${it.focalY ?? 50}%` }}
-          muted
-          loop
-          playsInline
-          onMouseEnter={(e) => e.currentTarget.play()}
-          onMouseLeave={(e) => {
-            e.currentTarget.pause();
-            e.currentTarget.currentTime = 0;
-          }}
-        />
+      {isVideo ? (
+        <>
+          {it.thumbnail ? (
+            <img
+              src={it.thumbnail}
+              alt={it.label || "Video thumbnail"}
+              loading="lazy"
+              width={1024}
+              height={1024}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              style={{ objectPosition: `${it.focalX ?? 50}% ${it.focalY ?? 50}%` }}
+            />
+          ) : (
+            <div className="w-full h-full bg-background" />
+          )}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-background/60 backdrop-blur-sm border border-gold/60 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-glow">
+              <Play className="w-6 h-6 sm:w-7 sm:h-7 text-gold fill-gold ml-1" />
+            </div>
+          </div>
+        </>
       ) : (
         <img
           src={it.src}
@@ -194,6 +227,43 @@ function GalleryItem({ it, i }: { it: any; i: number }) {
       <div className="absolute bottom-0 inset-x-0 p-4 sm:p-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition duration-500">
         <div className="font-display text-sm sm:text-lg text-primary drop-shadow-md">{it.label}</div>
       </div>
+    </motion.div>
+  );
+}
+
+function VideoLightbox({ src, onClose }: { src: string; onClose: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+      className="fixed inset-0 z-[300] flex items-center justify-center p-4 md:p-10 bg-background/90 backdrop-blur-md"
+    >
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 md:top-6 md:right-6 p-2 md:p-3 rounded-full bg-background/60 hover:bg-gold hover:text-background border border-border transition-colors z-10"
+        aria-label="Close video"
+      >
+        <X className="w-5 h-5 md:w-6 md:h-6" />
+      </button>
+      <motion.div
+        initial={{ scale: 0.92, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.92, opacity: 0 }}
+        transition={{ duration: 0.2 }}
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-5xl aspect-video rounded-2xl overflow-hidden border border-gold/40 shadow-2xl bg-black"
+      >
+        <video
+          src={src}
+          className="w-full h-full"
+          controls
+          autoPlay
+          playsInline
+          controlsList="nodownload"
+        />
+      </motion.div>
     </motion.div>
   );
 }

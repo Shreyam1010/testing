@@ -151,7 +151,25 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const activeNavItem = navItems.find(item => item.id === activeTab);
+
+  const handleNavbarSave = async () => {
+    if (isSaving) return;
+    const collected: Promise<void>[] = [];
+    window.dispatchEvent(
+      new CustomEvent("admin:save", {
+        detail: { section: activeTab, collect: (p: Promise<void>) => collected.push(p) },
+      }),
+    );
+    if (collected.length === 0) return;
+    setIsSaving(true);
+    try {
+      await Promise.all(collected);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-background">
@@ -210,13 +228,12 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             {/* Save Button (Always visible when needed) */}
             {view === "edit" && (
               <button
-                onClick={() => {
-                  window.dispatchEvent(new CustomEvent("admin:save", { detail: { section: activeTab } }));
-                }}
-                className="flex items-center gap-1.5 px-4 py-2 bg-gold text-background rounded-lg font-bold shadow-glow hover:scale-105 active:scale-95 transition-all text-[11px] uppercase tracking-widest"
+                onClick={handleNavbarSave}
+                disabled={isSaving}
+                className="flex items-center gap-1.5 px-4 py-2 bg-gold text-background rounded-lg font-bold shadow-glow hover:scale-105 active:scale-95 transition-all text-[11px] uppercase tracking-widest disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                <Save size={14} />
-                <span className="hidden sm:inline">Save</span>
+                <Save size={14} className={isSaving ? "animate-pulse" : ""} />
+                <span className="hidden sm:inline">{isSaving ? "Saving…" : "Save"}</span>
               </button>
             )}
 

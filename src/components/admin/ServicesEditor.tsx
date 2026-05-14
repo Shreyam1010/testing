@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Globe, Plus, Trash2, Save, Check, Loader2, 
+import {
+  Globe, Plus, Trash2, Save, Check, Loader2,
   Image as ImageIcon, Link as LinkIcon, Edit3, Type, AlignLeft, Star, ArrowRight, X, Upload, Crop
 } from "lucide-react";
 import Cropper from "react-easy-crop";
 import { useDbContent } from "@/hooks/useDb";
 import { apiUrl } from "@/lib/api";
+import { uploadImage } from "@/lib/uploadImage";
 import { useAdminSave } from "@/hooks/useAdminSave";
 import sticker0 from "@/assets/stickers/Asset 1.png";
 import sticker5 from "@/assets/stickers/Asset 5.png";
@@ -42,6 +43,37 @@ async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<string> 
 
   return canvas.toDataURL("image/jpeg", 0.9);
 }
+
+async function getCroppedBlob(imageSrc: string, pixelCrop: any): Promise<Blob | null> {
+  const image = new Image();
+  image.src = imageSrc;
+  await new Promise((resolve) => (image.onload = resolve));
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+
+  canvas.width = pixelCrop.width;
+  canvas.height = pixelCrop.height;
+
+  ctx.drawImage(
+    image,
+    pixelCrop.x,
+    pixelCrop.y,
+    pixelCrop.width,
+    pixelCrop.height,
+    0,
+    0,
+    pixelCrop.width,
+    pixelCrop.height
+  );
+
+  return await new Promise<Blob | null>((resolve) => canvas.toBlob((b) => resolve(b), "image/jpeg", 0.9));
+}
+
+type TileTarget = { kind: "tile"; category: "performance" | "workshop"; index: number };
+type SocialTarget = { kind: "social" };
+type CropTarget = TileTarget | SocialTarget;
 
 function EditableText({
   value,
@@ -92,36 +124,75 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
     perf_title: "Performances",
     perf_desc: "Experience the awe-inspiring magic of Yakshagana with our year-round stage events. We celebrate ancient epics through powerful storytelling, bringing the rich, vibrant heritage of coastal Karnataka directly to your venue. Every performance is a complete cultural immersion featuring authentic, elaborately crafted costumes, mesmerizing live traditional music, and seasoned veteran artists who breathe life into mythological legends.",
     perf_btn: "Host the Show",
-    perf_imgs: JSON.stringify(["/images/gallery-1.jpg", "/images/gallery-2.jpg", "/images/gallery-4.jpg", "/images/gallery-6.jpg", "/images/gallery-5.jpg", "/images/gallery-3.jpg"]),
     class_title: "Classes",
     class_desc: "Step into the sacred circle of learning with our authentic training programs. We offer comprehensive, gurukula-style instruction in traditional dance, intricate footwork, classical music (Bhagavatike), and powerful dialogue delivery, guided by highly experienced veteran gurus.",
     class_btn: "Book Demo",
-    class_imgs: JSON.stringify(["/images/gallery-3.jpg", "/images/gallery-5.jpg", "/images/gallery-6.jpg", "/images/gallery-1.jpg", "/images/gallery-2.jpg"]),
     work_title: "Workshops",
     work_desc: "Dive deep into the world of Yakshagana with our intensive, seasonal workshops designed for performers, dedicated students, and passionate enthusiasts. Join our weekend crash courses or immersive week-long retreats to learn the subtle, complex nuances of traditional face-painting.",
     work_btn: "Book the Show",
-    work_imgs: JSON.stringify(["/images/gallery-4.jpg", "/images/gallery-1.jpg", "/images/gallery-3.jpg", "/images/gallery-6.jpg", "/images/gallery-5.jpg"]),
     social_title: "Follow our journey on social media",
     social_subtitle: "",
   });
 
+  // Tile images come from the `services_images` D1 table (the public services
+  // page reads from the same source). Stored as { id, image } so we can
+  // round-trip stable IDs to the worker on save.
+  const [tileImages, setTileImages] = useState<{
+    performance: Array<{ id: string; image: string }>;
+    workshop: Array<{ id: string; image: string }>;
+  }>({ performance: [], workshop: [] });
+
   const [socialLinks, setSocialLinks] = useState<any[]>([]);
   const [editingLink, setEditingLink] = useState<any>(null);
 
-  // Cropping state
+  // Cropping state. `cropTarget` tells handleApplyCrop where to write back to.
   const [tempImage, setTempImage] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [cropTarget, setCropTarget] = useState<CropTarget>({ kind: "social" });
+  const [isUploadingTile, setIsUploadingTile] = useState(false);
 
   const onCropComplete = useCallback((_croppedArea: any, croppedAreaPixels: any) => {
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
 
+  const loadIntoCropper = (file: File, target: CropTarget) => {
+    setCropTarget(target);
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
+    setCroppedAreaPixels(null);
+    const reader = new FileReader();
+    reader.addEventListener("load", () => setTempImage(reader.result as string));
+    reader.readAsDataURL(file);
+  };
+
   const handleApplyCrop = async () => {
-    if (tempImage && croppedAreaPixels) {
+    if (!tempImage || !croppedAreaPixels) return;
+
+    if (cropTarget.kind === "social") {
       const cropped = await getCroppedImg(tempImage, croppedAreaPixels);
       setEditingLink((prev: any) => ({ ...prev, image: cropped }));
+      setTempImage(null);
+      return;
+    }
+
+    // Tile upload: crop -> upload to R2 -> swap the URL in state.
+    setIsUploadingTile(true);
+    try {
+      const blob = await getCroppedBlob(tempImage, croppedAreaPixels);
+      if (!blob) return;
+      const file = new File([blob], `services-${Date.now()}.jpg`, { type: "image/jpeg" });
+      const url = await uploadImage(file, "services");
+      const { category, index } = cropTarget;
+      setTileImages((prev) => ({
+        ...prev,
+        [category]: prev[category].map((t, i) => (i === index ? { ...t, image: url } : t)),
+      }));
+    } catch (err: any) {
+      alert(`Upload failed: ${err?.message || err}`);
+    } finally {
+      setIsUploadingTile(false);
       setTempImage(null);
     }
   };
@@ -141,6 +212,18 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
         }));
       }
 
+      // Pull tile rows directly (we need their stable IDs to round-trip on save).
+      const allTiles = dbData.servicesImages || [];
+      const perfTiles = allTiles
+        .filter((s: any) => s.category === "performance")
+        .sort((a: any, b: any) => (a.orderIndex || 0) - (b.orderIndex || 0))
+        .map((s: any) => ({ id: s.id, image: s.image }));
+      const workTiles = allTiles
+        .filter((s: any) => s.category === "workshop")
+        .sort((a: any, b: any) => (a.orderIndex || 0) - (b.orderIndex || 0))
+        .map((s: any) => ({ id: s.id, image: s.image }));
+      setTileImages({ performance: perfTiles, workshop: workTiles });
+
       setSocialLinks(dbData.socialLinks || []);
       setLoading(false);
     }
@@ -156,12 +239,8 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
     return () => { document.body.style.overflow = "auto"; };
   }, [editingLink]);
 
-  const handleUpdateImage = (secId: string, index: number, file: File) => {
-    const key = `${secId}_imgs`;
-    const imgs = JSON.parse((pageContent as any)[key]);
-    const blobUrl = URL.createObjectURL(file);
-    imgs[index] = blobUrl;
-    setPageContent({ ...pageContent, [key]: JSON.stringify(imgs) });
+  const handleTileFile = (category: "performance" | "workshop", index: number, file: File) => {
+    loadIntoCropper(file, { kind: "tile", category, index });
   };
 
   const handleSave = async () => {
@@ -176,6 +255,31 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
           lang: lang,
           data: pageContent
         })
+      });
+
+      // Flatten tiles into the `services_images` row shape the worker expects.
+      const serviceImageRows = [
+        ...tileImages.performance.map((t, i) => ({
+          id: t.id || `si_perf_${Date.now()}_${i}`,
+          category: "performance",
+          image: t.image,
+          order_index: i,
+        })),
+        ...tileImages.workshop.map((t, i) => ({
+          id: t.id || `si_work_${Date.now()}_${i}`,
+          category: "workshop",
+          image: t.image,
+          order_index: i,
+        })),
+      ];
+      await fetch(apiUrl("/api/save"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          section: "services_images",
+          lang: lang,
+          data: serviceImageRows,
+        }),
       });
 
       await fetch(apiUrl("/api/save"), {
@@ -200,9 +304,9 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
 
   useAdminSave("services", handleSave);
 
-  const sections = [
-    { id: "perf", label: "Performances", imgs: JSON.parse(pageContent.perf_imgs) },
-    { id: "work", label: "Workshops", imgs: JSON.parse(pageContent.work_imgs) }
+  const sections: Array<{ id: "perf" | "work"; category: "performance" | "workshop"; label: string; imgs: Array<{ id: string; image: string }> }> = [
+    { id: "perf", category: "performance", label: "Performances", imgs: tileImages.performance },
+    { id: "work", category: "workshop", label: "Workshops", imgs: tileImages.workshop },
   ];
 
   return (
@@ -231,9 +335,9 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
 
               <div className="w-full overflow-hidden pb-4">
                 <div className="flex flex-nowrap gap-4 lg:gap-6 overflow-x-auto snap-x snap-mandatory no-scrollbar">
-                  {sec.imgs.map((img: string, idx: number) => (
-                    <div key={idx} className="group shrink-0 w-[calc((100%-1rem)/2.5)] sm:w-[calc((100%-2rem)/3.5)] lg:w-[calc((100%-6rem)/4.5)] relative aspect-[4/5] rounded-2xl overflow-hidden border border-border shadow-xl">
-                      <img src={img} className="w-full h-full object-cover" alt="" />
+                  {sec.imgs.map((tile, idx) => (
+                    <div key={tile.id || idx} className="group shrink-0 w-[calc((100%-1rem)/2.5)] sm:w-[calc((100%-2rem)/3.5)] lg:w-[calc((100%-6rem)/4.5)] relative aspect-[4/5] rounded-2xl overflow-hidden border border-border shadow-xl">
+                      <img src={tile.image} className="w-full h-full object-cover" alt="" />
                       {isEditing && (
                         <label className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 text-foreground font-bold text-[10px] uppercase tracking-widest cursor-pointer">
                           <Upload className="w-4 h-4 text-gold" /> Replace Photo
@@ -242,7 +346,7 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
                             className="hidden"
                             accept="image/*"
                             onChange={(e) => {
-                              if (e.target.files?.[0]) handleUpdateImage(sec.id, idx, e.target.files[0]);
+                              if (e.target.files?.[0]) handleTileFile(sec.category, idx, e.target.files[0]);
                             }}
                           />
                         </label>
@@ -370,13 +474,13 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
                     <img src={editingLink.image} className="w-full h-full object-cover" alt="" />
                     <label className="absolute inset-0 bg-background/75 flex flex-col items-center justify-center gap-2 text-foreground font-bold text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
                       <Upload className="w-5 h-5 text-gold" /> Change Image
-                      <input 
-                        type="file" 
-                        className="hidden" 
-                        accept="image/*" 
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
                         onChange={(e) => {
                           if (e.target.files?.[0]) {
-                            setTempImage(URL.createObjectURL(e.target.files[0]));
+                            loadIntoCropper(e.target.files[0], { kind: "social" });
                           }
                         }}
                       />
@@ -502,9 +606,11 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
                   </button>
                   <button
                     onClick={handleApplyCrop}
-                    className="px-8 py-2 rounded-xl bg-gold text-background hover:scale-105 transition-transform text-xs font-bold uppercase tracking-widest shadow-glow"
+                    disabled={isUploadingTile}
+                    className="px-8 py-2 rounded-xl bg-gold text-background hover:scale-105 transition-transform text-xs font-bold uppercase tracking-widest shadow-glow disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
                   >
-                    Apply Crop
+                    {isUploadingTile && <Loader2 className="w-3 h-3 animate-spin" />}
+                    {isUploadingTile ? "Uploading…" : "Apply Crop"}
                   </button>
                 </div>
               </div>
