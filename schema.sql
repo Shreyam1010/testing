@@ -88,7 +88,9 @@ CREATE TABLE IF NOT EXISTS gallery (
     label TEXT,
     type TEXT DEFAULT 'image',  -- 'image' or 'video'
     src TEXT,
-    category TEXT DEFAULT 'performance'  -- 'performance' or 'workshop'
+    category TEXT DEFAULT 'performance',  -- 'performance', 'gurukul' or 'workshop'
+    focal_x INTEGER DEFAULT 50,  -- 0-100, horizontal focal point for object-position
+    focal_y INTEGER DEFAULT 50   -- 0-100, vertical focal point for object-position
 );
 
 -- 8. Social Links

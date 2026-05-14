@@ -7,6 +7,7 @@ import {
 import Cropper from "react-easy-crop";
 import { useDbContent } from "@/hooks/useDb";
 import { apiUrl } from "@/lib/api";
+import { useAdminSave } from "@/hooks/useAdminSave";
 import sticker0 from "@/assets/stickers/Asset 1.png";
 import sticker5 from "@/assets/stickers/Asset 5.png";
 
@@ -196,6 +197,8 @@ export function ServicesEditor({ isEditing, lang }: ServicesEditorProps) {
       setIsSaving(false);
     }
   };
+
+  useAdminSave("services", handleSave);
 
   const sections = [
     { id: "perf", label: "Performances", imgs: JSON.parse(pageContent.perf_imgs) },

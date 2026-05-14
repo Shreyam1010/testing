@@ -4,6 +4,7 @@ import { Camera, Loader2, Save, Check } from "lucide-react";
 import aboutImg from "@/assets/about-performer.jpg";
 import { uploadImage } from "@/lib/uploadImage";
 import { apiUrl } from "@/lib/api";
+import { useAdminSave } from "@/hooks/useAdminSave";
 interface AboutEditorProps {
   isEditing: boolean;
   lang: "en" | "kn";
@@ -137,6 +138,8 @@ export function AboutEditor({ isEditing, lang }: AboutEditorProps) {
       setIsSaving(false);
     }
   };
+
+  useAdminSave("about", handleSave);
 
   const current = data[lang];
 

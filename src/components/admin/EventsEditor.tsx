@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { User, Clock, Loader2, Save, Check, Plus, Trash2, Camera, Calendar, ChevronUp, ChevronDown, Edit2, X } from "lucide-react";
 import { uploadImage } from "@/lib/uploadImage";
 import { apiUrl } from "@/lib/api";
+import { useAdminSave } from "@/hooks/useAdminSave";
 import g2 from "@/assets/gallery-2.jpg";
 import g5 from "@/assets/gallery-5.jpg";
 import g4 from "@/assets/gallery-4.jpg";
@@ -462,6 +463,8 @@ export function EventsEditor({ isEditing, lang }: EventsEditorProps) {
       setIsSaving(false);
     }
   };
+
+  useAdminSave("events", handleSave);
 
   return (
     <section className="container mx-auto px-6 pt-8 pb-12 md:py-24">

@@ -8,6 +8,7 @@ import logoImg from "@/assets/logo-transparent.png";
 import { FaqManager } from "./FaqManager";
 import { uploadImage } from "@/lib/uploadImage";
 import { apiUrl } from "@/lib/api";
+import { useAdminSave } from "@/hooks/useAdminSave";
 
 async function getCroppedBlob(imageSrc: string, pixelCrop: any): Promise<Blob | null> {
   const image = new Image();
@@ -151,6 +152,8 @@ export function HeroEditor({ isEditing, lang }: HeroEditorProps) {
       setIsSaving(false);
     }
   };
+
+  useAdminSave("hero", handleSave);
 
   const update = (field: string, value: string) =>
     setData((prev) => ({ ...prev, [field]: value }));

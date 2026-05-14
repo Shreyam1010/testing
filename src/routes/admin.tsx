@@ -209,8 +209,10 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
             {/* Save Button (Always visible when needed) */}
             {view === "edit" && (
-              <button 
-                onClick={() => { alert("Changes saved successfully!"); setView("preview"); }}
+              <button
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent("admin:save", { detail: { section: activeTab } }));
+                }}
                 className="flex items-center gap-1.5 px-4 py-2 bg-gold text-background rounded-lg font-bold shadow-glow hover:scale-105 active:scale-95 transition-all text-[11px] uppercase tracking-widest"
               >
                 <Save size={14} />

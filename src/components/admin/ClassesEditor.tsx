@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Camera, User, Clock, BookOpen, Loader2, Save, Check, Plus, Trash2, Edit2, X, ChevronUp, ChevronDown } from "lucide-react";
 import { uploadImage } from "@/lib/uploadImage";
 import { apiUrl } from "@/lib/api";
+import { useAdminSave } from "@/hooks/useAdminSave";
 
 function useOnClickOutside(ref: React.RefObject<HTMLElement | null>, handler: () => void) {
   useEffect(() => {
@@ -401,6 +402,8 @@ export function ClassesEditor({ isEditing, lang }: ClassesEditorProps) {
       setIsSaving(false);
     }
   };
+
+  useAdminSave("classes", handleSave);
 
   const current = data[lang];
 

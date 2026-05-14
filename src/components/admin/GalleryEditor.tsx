@@ -4,6 +4,7 @@ import { Plus, Trash2, Image as ImageIcon, Video, Camera, Upload, X, Check, Edit
 import { initialPerformanceItems, initialWorkshopItems, initialGurukulItems, type GalleryItemType } from "@/lib/galleryData";
 import { uploadImage } from "@/lib/uploadImage";
 import { apiUrl } from "@/lib/api";
+import { useAdminSave } from "@/hooks/useAdminSave";
 
 interface GalleryEditorProps {
   isEditing: boolean;
@@ -24,9 +25,18 @@ export function GalleryEditor({ isEditing, lang }: GalleryEditorProps) {
       .then((raw) => {
         const all: any[] = raw.gallery || [];
         if (!all.length) return;
-        setPerformances(all.filter(g => g.category === "performance").map(g => ({ id: g.id, label: g.label, type: g.type, src: g.src, category: "performance" })));
-        setGurukul(all.filter(g => g.category === "gurukul").map(g => ({ id: g.id, label: g.label, type: g.type, src: g.src, category: "gurukul" })));
-        setWorkshops(all.filter(g => g.category === "workshop").map(g => ({ id: g.id, label: g.label, type: g.type, src: g.src, category: "workshop" })));
+        const pick = (g: any, category: "performance" | "gurukul" | "workshop") => ({
+          id: g.id,
+          label: g.label,
+          type: g.type,
+          src: g.src,
+          category,
+          focalX: typeof g.focal_x === "number" ? g.focal_x : 50,
+          focalY: typeof g.focal_y === "number" ? g.focal_y : 50,
+        });
+        setPerformances(all.filter(g => g.category === "performance").map(g => pick(g, "performance")));
+        setGurukul(all.filter(g => g.category === "gurukul").map(g => pick(g, "gurukul")));
+        setWorkshops(all.filter(g => g.category === "workshop").map(g => pick(g, "workshop")));
       })
       .catch(err => console.error("[GalleryEditor] fetch failed", err));
   }, [lang]);
@@ -52,7 +62,9 @@ export function GalleryEditor({ isEditing, lang }: GalleryEditorProps) {
       setSaving(false);
     }
   };
-  
+
+  useAdminSave("gallery", handleSave);
+
   const [addingDialog, setAddingDialog] = useState<"performance" | "gurukul" | "workshop" | null>(null);
   const [editingDialog, setEditingDialog] = useState<{ category: "performance" | "gurukul" | "workshop", index: number, item: GalleryItemType } | null>(null);
 
@@ -264,7 +276,12 @@ function EditorItem({
       {item.type === "video" ? (
         <video src={item.src} className="w-full h-full object-cover" muted loop />
       ) : (
-        <img src={item.src} alt={item.label} className="w-full h-full object-cover" />
+        <img
+          src={item.src}
+          alt={item.label}
+          className="w-full h-full object-cover"
+          style={{ objectPosition: `${item.focalX ?? 50}% ${item.focalY ?? 50}%` }}
+        />
       )}
 
       {/* Overlay */}
@@ -314,7 +331,11 @@ function ItemDialog({
   onClose: () => void;
   onSave: (item: GalleryItemType) => void;
 }) {
-  const [item, setItem] = useState<GalleryItemType>(initialItem);
+  const [item, setItem] = useState<GalleryItemType>({
+    focalX: 50,
+    focalY: 50,
+    ...initialItem,
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [uploading, setUploading] = useState(false);
@@ -322,7 +343,7 @@ function ItemDialog({
     const file = e.target.files?.[0];
     if (!file) return;
     const previewUrl = URL.createObjectURL(file);
-    setItem((prev) => ({ ...prev, src: previewUrl }));
+    setItem((prev) => ({ ...prev, src: previewUrl, focalX: 50, focalY: 50 }));
     setUploading(true);
     try {
       const url = await uploadImage(file, "gallery");
@@ -333,6 +354,20 @@ function ItemDialog({
     } finally {
       setUploading(false);
     }
+  };
+
+  const focalX = item.focalX ?? 50;
+  const focalY = item.focalY ?? 50;
+
+  const handleFocalPick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setItem((prev) => ({
+      ...prev,
+      focalX: Math.max(0, Math.min(100, Math.round(x))),
+      focalY: Math.max(0, Math.min(100, Math.round(y))),
+    }));
   };
 
   return (
@@ -384,17 +419,11 @@ function ItemDialog({
               </button>
             </div>
 
-            <div 
-              className="mt-3 md:mt-4 border-2 border-dashed border-border/60 hover:border-gold/50 transition-colors rounded-xl p-4 md:p-8 flex flex-col items-center justify-center cursor-pointer bg-background/40"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              {item.src ? (
-                item.type === "video" ? (
-                  <video src={item.src} className="max-h-40 md:max-h-56 rounded-lg object-contain shadow-lg" muted />
-                ) : (
-                  <img src={item.src} className="max-h-40 md:max-h-56 rounded-lg object-contain shadow-lg" alt="Preview" />
-                )
-              ) : (
+            {!item.src ? (
+              <div
+                className="mt-3 md:mt-4 border-2 border-dashed border-border/60 hover:border-gold/50 transition-colors rounded-xl p-4 md:p-8 flex flex-col items-center justify-center cursor-pointer bg-background/40"
+                onClick={() => fileInputRef.current?.click()}
+              >
                 <div className="flex flex-col items-center py-4 md:py-6 text-center">
                   <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gold/10 flex items-center justify-center mb-3 md:mb-4">
                     <Upload className="w-6 h-6 md:w-8 md:h-8 text-gold" />
@@ -402,8 +431,77 @@ function ItemDialog({
                   <span className="text-xs md:text-sm font-bold text-primary mb-0.5 md:mb-1">Click to upload {item.type}</span>
                   <span className="text-[10px] md:text-xs text-muted-foreground">Select a file from your device</span>
                 </div>
-              )}
-            </div>
+              </div>
+            ) : item.type === "video" ? (
+              <div className="mt-3 md:mt-4 border border-border/60 rounded-xl p-4 flex flex-col items-center bg-background/40">
+                <video src={item.src} className="max-h-40 md:max-h-56 rounded-lg object-contain shadow-lg" muted />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="mt-3 text-[10px] md:text-xs text-gold hover:underline"
+                >
+                  Replace video
+                </button>
+              </div>
+            ) : (
+              <div className="mt-3 md:mt-4 space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-4 items-start">
+                  {/* Focal point picker */}
+                  <div className="relative w-full overflow-hidden rounded-xl border border-border/60 bg-background/40 select-none">
+                    <div
+                      className="relative w-full cursor-crosshair"
+                      onClick={handleFocalPick}
+                    >
+                      <img
+                        src={item.src}
+                        alt="Focal point preview"
+                        className="block w-full h-auto max-h-72 object-contain mx-auto pointer-events-none"
+                      />
+                      <div
+                        className="absolute w-6 h-6 -ml-3 -mt-3 rounded-full border-2 border-gold bg-gold/30 shadow-glow pointer-events-none"
+                        style={{ left: `${focalX}%`, top: `${focalY}%` }}
+                      >
+                        <div className="absolute inset-1 rounded-full bg-gold" />
+                      </div>
+                    </div>
+                    <p className="text-[10px] md:text-xs text-muted-foreground px-3 py-2 border-t border-border/60">
+                      Click anywhere on the image to mark the part that must always stay visible inside the gallery tile.
+                    </p>
+                  </div>
+
+                  {/* Square crop preview — mirrors the gallery tile */}
+                  <div className="flex flex-col items-center gap-2 w-32 md:w-40 shrink-0">
+                    <div className="w-32 h-32 md:w-40 md:h-40 rounded-xl overflow-hidden border border-gold/40 bg-background/40">
+                      <img
+                        src={item.src}
+                        alt="Crop preview"
+                        className="w-full h-full object-cover"
+                        style={{ objectPosition: `${focalX}% ${focalY}%` }}
+                      />
+                    </div>
+                    <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Tile preview</span>
+                    <span className="text-[10px] text-gold">{focalX}% / {focalY}%</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2 items-center">
+                  <button
+                    type="button"
+                    onClick={() => setItem((prev) => ({ ...prev, focalX: 50, focalY: 50 }))}
+                    className="text-[10px] md:text-xs px-3 py-1.5 rounded-full bg-muted/60 hover:bg-muted text-muted-foreground"
+                  >
+                    Reset to center
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="text-[10px] md:text-xs px-3 py-1.5 rounded-full bg-gold/10 hover:bg-gold/20 text-gold"
+                  >
+                    Replace image
+                  </button>
+                </div>
+              </div>
+            )}
             <input
               type="file"
               ref={fileInputRef}

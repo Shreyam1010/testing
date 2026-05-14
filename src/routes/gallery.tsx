@@ -168,6 +168,7 @@ function GalleryItem({ it, i }: { it: any; i: number }) {
         <video
           src={it.src}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          style={{ objectPosition: `${it.focalX ?? 50}% ${it.focalY ?? 50}%` }}
           muted
           loop
           playsInline
@@ -185,6 +186,7 @@ function GalleryItem({ it, i }: { it: any; i: number }) {
           width={1024}
           height={1024}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          style={{ objectPosition: `${it.focalX ?? 50}% ${it.focalY ?? 50}%` }}
         />
       )}
 

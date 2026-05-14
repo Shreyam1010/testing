@@ -6,6 +6,7 @@ import { blogs, BlogItem } from "@/lib/data";
 import { useDbContent } from "@/hooks/useDb";
 import { uploadImage } from "@/lib/uploadImage";
 import { apiUrl } from "@/lib/api";
+import { useAdminSave } from "@/hooks/useAdminSave";
 import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
 import g4 from "@/assets/gallery-4.jpg";
@@ -131,6 +132,8 @@ export function BlogEditor({ isEditing, lang }: BlogEditorProps) {
       setIsSaving(false);
     }
   };
+
+  useAdminSave("blog", handleSave);
 
   const handleAddBlog = () => {
     const newBlogTemplate: BlogItem = {

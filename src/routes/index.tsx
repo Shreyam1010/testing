@@ -8,6 +8,7 @@ import { useLang } from "@/contexts/LanguageContext";
 import { UpcomingEvents } from "@/components/UpcomingEvents";
 import { ClassCard } from "@/components/ClassCard";
 import { classes, workshops, blogs } from "@/lib/data";
+import { initialPerformanceItems } from "@/lib/galleryData";
 import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
 import g3 from "@/assets/gallery-3.jpg";
@@ -161,14 +162,11 @@ function Index() {
   const singingFeature = dbHomeFeatures.find((f: any) => f.id === "hf_singing");
   const dancingFeature = dbHomeFeatures.find((f: any) => f.id === "hf_dancing");
 
-  const galleryItems = [
-    { src: imgMap.g1, label: "The Mask" },
-    { src: imgMap.g2, label: "Stage Performance" },
-    { src: imgMap.g4, label: "Crown Heritage" },
-    { src: imgMap.g6, label: "The Warrior" },
-    { src: imgMap.g5, label: "Chande Master" },
-    { src: imgMap.g3, label: "Workshop" },
-  ];
+  const galleryItems = (
+    data?.galleryByCategory?.performance?.length
+      ? data.galleryByCategory.performance
+      : initialPerformanceItems
+  ).slice(0, 6);
 
   return (
     <Layout>
@@ -381,7 +379,7 @@ function Index() {
                 {dbHighlights[2]?.title?.[lang] || dbHighlights[2]?.title?.en || t.highlights.items[2].title}
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3 md:gap-6">
-                {galleryItems.map((it, i) => (
+                {galleryItems.map((it: any, i: number) => (
                   <Link
                     key={i}
                     to="/gallery"
@@ -402,6 +400,7 @@ function Index() {
                         alt={it.label}
                         loading="lazy"
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        style={{ objectPosition: `${it.focalX ?? 50}% ${it.focalY ?? 50}%` }}
                       />
                       {/* Title overlay removed per user request */}
                     </motion.div>

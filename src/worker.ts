@@ -19,6 +19,11 @@ interface R2Bucket {
   put(key: string, value: ArrayBuffer | ReadableStream, options?: { httpMetadata?: { contentType?: string } }): Promise<unknown>;
 }
 
+interface ExecutionContext {
+  waitUntil(promise: Promise<unknown>): void;
+  passThroughOnException(): void;
+}
+
 export interface Env {
   DB: D1Database;
   IMAGES?: R2Bucket;
@@ -27,7 +32,7 @@ export interface Env {
 console.log("[Worker] Global scope evaluating...");
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     console.log("[Worker] Incoming request:", request.method, url.pathname);
 
@@ -56,6 +61,23 @@ export default {
       // ─── GET /api/content ───
       if (url.pathname === "/api/content" && request.method === "GET") {
         const lang = url.searchParams.get("lang") || "en";
+
+        // Edge cache lookup. Keyed by full URL, so ?lang=en and ?lang=kn are
+        // cached separately. Hits return in ~10-30ms instead of ~200ms.
+        // POST /api/save purges these entries so admin edits propagate fast.
+        const cacheKey = new Request(url.toString(), { method: "GET" });
+        const cache = (globalThis as any).caches?.default as Cache | undefined;
+        if (cache) {
+          const cached = await cache.match(cacheKey);
+          if (cached) {
+            // Re-attach CORS headers (the cached response carries Cache-Control
+            // and Content-Type already; CORS is needed because the Hostinger
+            // origin and the Worker origin differ).
+            const headers = new Headers(cached.headers);
+            for (const [k, v] of Object.entries(corsHeaders)) headers.set(k, v);
+            return new Response(cached.body, { status: cached.status, headers });
+          }
+        }
 
         const [
           siteContent,
@@ -93,7 +115,7 @@ export default {
           env.DB.prepare("SELECT * FROM branding LIMIT 1").first(),
         ]);
 
-        return json({
+        const payload = {
           siteContent: siteContent.results,
           teachers: teachers.results,
           classes: classes.results,
@@ -110,6 +132,26 @@ export default {
           navLinks: navLinks.results,
           footerLinks: footerLinks.results,
           branding,
+        };
+        const body = JSON.stringify(payload);
+        // s-maxage=60: cache served fresh for 60s at the edge.
+        // stale-while-revalidate=300: for the next 5 min after that, serve the
+        // stale copy instantly while regenerating in the background. Net effect:
+        // virtually no user waits the full 200ms after the first request in a
+        // given Cloudflare PoP. Admin saves purge this cache below.
+        const cacheableHeaders = {
+          "Content-Type": "application/json",
+          "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+        };
+        // Store a copy in the edge cache (without CORS headers, since cache
+        // matching is origin-agnostic and we re-attach CORS on serve).
+        if (cache) {
+          ctx.waitUntil(
+            cache.put(cacheKey, new Response(body, { headers: cacheableHeaders }))
+          );
+        }
+        return new Response(body, {
+          headers: { ...corsHeaders, ...cacheableHeaders },
         });
       }
 
@@ -303,23 +345,32 @@ export default {
         }
 
         if (section === "gallery") {
+          // Backfill focal-point columns on legacy DBs. Idempotent: errors when columns already exist.
+          try { await env.DB.prepare("ALTER TABLE gallery ADD COLUMN focal_x INTEGER DEFAULT 50").run(); } catch {}
+          try { await env.DB.prepare("ALTER TABLE gallery ADD COLUMN focal_y INTEGER DEFAULT 50").run(); } catch {}
           await reconcileDeletes("gallery", data.map((g: any) => g.id).filter(Boolean));
           for (const g of data) {
+            const fx = Math.max(0, Math.min(100, Math.round(Number(g.focalX ?? g.focal_x ?? 50))));
+            const fy = Math.max(0, Math.min(100, Math.round(Number(g.focalY ?? g.focal_y ?? 50))));
             await env.DB.prepare(
-              `INSERT INTO gallery (id, label, type, src, category)
-               VALUES (?, ?, ?, ?, ?)
+              `INSERT INTO gallery (id, label, type, src, category, focal_x, focal_y)
+               VALUES (?, ?, ?, ?, ?, ?, ?)
                ON CONFLICT(id) DO UPDATE SET
                label=excluded.label,
                type=excluded.type,
                src=excluded.src,
-               category=excluded.category`
+               category=excluded.category,
+               focal_x=excluded.focal_x,
+               focal_y=excluded.focal_y`
             )
               .bind(
                 g.id || `g_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
                 g.label || "",
                 g.type || "image",
                 g.src || "",
-                g.category || "performance"
+                g.category || "performance",
+                fx,
+                fy
               )
               .run();
           }
@@ -417,6 +468,18 @@ export default {
               )
               .run();
           }
+        }
+
+        // Purge edge cache for both languages so the next /api/content request
+        // re-queries D1 and serves the just-written content. Without this,
+        // admin edits would be invisible to users for up to ~60s.
+        const cache = (globalThis as any).caches?.default as Cache | undefined;
+        if (cache) {
+          const origin = new URL(request.url).origin;
+          ctx.waitUntil(Promise.all([
+            cache.delete(new Request(`${origin}/api/content?lang=en`, { method: "GET" })),
+            cache.delete(new Request(`${origin}/api/content?lang=kn`, { method: "GET" })),
+          ]));
         }
 
         return json({ success: true });

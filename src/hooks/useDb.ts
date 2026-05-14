@@ -105,7 +105,9 @@ export function useDbContent() {
             label: g.label,
             type: g.type || "image",
             src: g.src,
-            category: g.category
+            category: g.category,
+            focalX: typeof g.focal_x === "number" ? g.focal_x : 50,
+            focalY: typeof g.focal_y === "number" ? g.focal_y : 50,
           })) || [],
           galleryByCategory: { performance: [], gurukul: [], workshop: [] } as Record<string, any[]>,
           highlights: raw.highlights?.map((h: any) => ({

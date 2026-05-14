@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { MapPin, Phone, Mail, Loader2, Save, Check } from "lucide-react";
 import { apiUrl } from "@/lib/api";
+import { useAdminSave } from "@/hooks/useAdminSave";
 
 interface ContactEditorProps {
   isEditing: boolean;
@@ -105,6 +106,8 @@ export function ContactEditor({ isEditing, lang }: ContactEditorProps) {
       setIsSaving(false);
     }
   };
+
+  useAdminSave("contact", handleSave);
 
   const desktopItems = [
     { label: "Phone (For Services)", value: data.phone_services, field: "phone_services", icon: Phone },
